@@ -61,6 +61,8 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio('sfx-loot', 'assets/audio/loot.mp3');
     this.load.audio('sfx-teleport', 'assets/audio/teleport.mp3');
     this.load.audio('sfx-achievement', 'assets/audio/achievement.mp3');
+    this.load.audio('sfx-hit', 'assets/audio/hit1.mp3');
+    this.load.audio('sfx-hurt', 'assets/audio/hurt.mp3');
   }
 
   create(): void {
@@ -126,6 +128,11 @@ export class PreloadScene extends Phaser.Scene {
     g.fillStyle(0xffffff).fillRect(18, 2, 8, 28); // alas
     g.fillStyle(0x00a9a5).fillRect(0, 10, 6, 12); // cola turquesa
     g.generateTexture('avion', 48, 32);
+
+    // Tajo de espada (arco blanco)
+    g.clear();
+    g.fillStyle(0xffffff, 0.9).fillRoundedRect(0, 0, 30, 10, 5);
+    g.generateTexture('slash', 30, 10);
 
     // Símbolo guanche (espiral dorada simplificada)
     g.clear();

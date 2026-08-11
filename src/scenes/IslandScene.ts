@@ -22,6 +22,7 @@ export class IslandScene extends Phaser.Scene {
   private aviso!: Phaser.GameObjects.Text;
   private cabras: Phaser.GameObjects.Sprite[] = [];
   private enemigos: Enemigo[] = [];
+  private entrada = { x: 400, y: 900 };
 
   constructor() {
     super('Island');
@@ -52,6 +53,7 @@ export class IslandScene extends Phaser.Scene {
     }));
 
     const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === 'spawn') ?? { x: 400, y: 900 };
+    this.entrada = { x: spawn.x, y: spawn.y };
     this.jugador = new Jugador(this, spawn.x, spawn.y, (x, y) =>
       Phaser.Geom.Polygon.Contains(this.andable, x, y),
     );
@@ -108,8 +110,25 @@ export class IslandScene extends Phaser.Scene {
 
     this.crearFauna();
 
+    // Combate y muerte
+    this.input.keyboard?.on('keydown-SPACE', () => this.atacar());
+    const alAtacar = () => this.atacar();
+    const alMorir = () => {
+      this.cameras.main.fadeOut(300);
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.jugador.setPosition(this.entrada.x, this.entrada.y);
+        this.jugador.pararObjetivo();
+        this.cameras.main.fadeIn(300);
+      });
+    };
+    this.game.events.on('atacar', alAtacar);
+    this.game.events.on('jugador-muerto', alMorir);
+    this.events.once('shutdown', () => {
+      this.game.events.off('atacar', alAtacar);
+      this.game.events.off('jugador-muerto', alMorir);
+    });
+
     Musica.reproducir(this, 'musica-isla');
-    Musica.crearBotonMute(this);
 
     // Depuración: ?debug=1 pinta el polígono andable
     if (new URLSearchParams(location.search).get('debug') === '1') {
@@ -148,11 +167,37 @@ export class IslandScene extends Phaser.Scene {
     this.enemigos.push(alimana);
   }
 
+  private atacar(): void {
+    if (this.registry.get('dialogo-abierto') === true) return;
+    const golpe = this.jugador.atacar();
+    if (golpe === null) return;
+    for (const enemigo of this.enemigos) {
+      if (
+        !enemigo.estaMuerto &&
+        Phaser.Math.Distance.Between(golpe.x, golpe.y, enemigo.x, enemigo.y) < golpe.radio + 14
+      ) {
+        enemigo.recibirGolpe(this.jugador.x, this.jugador.y);
+        this.game.events.emit('derrotado', { enemigo: enemigo.especie });
+      }
+    }
+  }
+
   update(_time: number, delta: number): void {
+    this.jugador.bloqueado = this.registry.get('dialogo-abierto') === true;
+    const pad = (this.registry.get('pad') as { x: number; y: number }) ?? { x: 0, y: 0 };
+    this.jugador.padTactil.set(pad.x, pad.y);
     this.jugador.actualizar(delta);
 
     for (const enemigo of this.enemigos) {
       enemigo.actualizar(this.jugador.x, this.jugador.y);
+      if (
+        !enemigo.estaMuerto &&
+        !this.jugador.invulnerable &&
+        Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y - 10, enemigo.x, enemigo.y) < 26
+      ) {
+        this.jugador.recibirDano(enemigo.x, enemigo.y);
+        this.game.events.emit('dano');
+      }
     }
 
     // Recoger cabras al tocarlas

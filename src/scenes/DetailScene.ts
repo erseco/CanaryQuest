@@ -85,11 +85,13 @@ export class DetailScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown-ENTER', () => this.interactuar());
 
     Musica.reproducir(this, 'musica-isla');
-    Musica.crearBotonMute(this);
     this.game.events.emit('escena-cambiada', { escena: 'Detail', mapaId: this.datos.mapaId });
   }
 
   update(_time: number, delta: number): void {
+    this.jugador.bloqueado = this.registry.get('dialogo-abierto') === true;
+    const pad = (this.registry.get('pad') as { x: number; y: number }) ?? { x: 0, y: 0 };
+    this.jugador.padTactil.set(pad.x, pad.y);
     this.jugador.actualizar(delta);
 
     // Salir del pueblo caminando por el borde inferior

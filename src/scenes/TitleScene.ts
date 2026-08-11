@@ -97,6 +97,7 @@ export class TitleScene extends Phaser.Scene {
     this.registry.set('partida', partida);
     this.cameras.main.fadeOut(300);
     this.cameras.main.once('camerafadeoutcomplete', () => {
+      this.scene.launch('UI');
       this.scene.start('Island', { islaId: partida.islaActual });
     });
   }

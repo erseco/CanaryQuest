@@ -16,6 +16,9 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
   /** Dirección virtual del pad táctil (-1..1 en cada eje). */
   public padTactil = new Phaser.Math.Vector2(0, 0);
   public bloqueado = false;
+  public direccion: 'front' | 'back' | 'left' | 'right' = 'front';
+  public invulnerable = false;
+  private ultimoAtaque = 0;
 
   constructor(
     escena: Phaser.Scene,
@@ -98,13 +101,66 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
 
     if (vx !== 0 || vy !== 0) {
       if (Math.abs(vx) >= Math.abs(vy)) {
-        this.anims.play(vx < 0 ? 'misa-left-walk' : 'misa-right-walk', true);
+        this.direccion = vx < 0 ? 'left' : 'right';
       } else {
-        this.anims.play(vy < 0 ? 'misa-back-walk' : 'misa-front-walk', true);
+        this.direccion = vy < 0 ? 'back' : 'front';
       }
+      this.anims.play(`misa-${this.direccion}-walk`, true);
     } else {
       this.pararAnimacion();
     }
+  }
+
+  /**
+   * Golpe de espada hacia la dirección actual. Devuelve el círculo de
+   * impacto, o null si aún está en cooldown o el jugador está bloqueado.
+   */
+  atacar(): { x: number; y: number; radio: number } | null {
+    const ahora = this.scene.time.now;
+    if (this.bloqueado || ahora - this.ultimoAtaque < 350) return null;
+    this.ultimoAtaque = ahora;
+
+    const offsets: Record<Jugador['direccion'], [number, number, number]> = {
+      front: [0, 10, 90],
+      back: [0, -46, -90],
+      left: [-22, -18, 180],
+      right: [22, -18, 0],
+    };
+    const [ox, oy, angulo] = offsets[this.direccion];
+    const tajo = this.scene.add
+      .image(this.x + ox, this.y + oy, 'slash')
+      .setAngle(angulo)
+      .setDepth(this.depth + 1);
+    this.scene.tweens.add({
+      targets: tajo,
+      alpha: 0,
+      scale: 1.4,
+      duration: 150,
+      onComplete: () => tajo.destroy(),
+    });
+    this.scene.sound.play('sfx-hit', { volume: 0.5 });
+    return { x: this.x + ox, y: this.y + oy - 4, radio: 30 };
+  }
+
+  /** Daño recibido: knockback + invulnerabilidad parpadeante de 1 s. */
+  recibirDano(desdeX: number, desdeY: number): void {
+    if (this.invulnerable) return;
+    this.invulnerable = true;
+    const angulo = Math.atan2(this.y - desdeY, this.x - desdeX);
+    this.x += Math.cos(angulo) * 18;
+    this.y += Math.sin(angulo) * 18;
+    this.scene.sound.play('sfx-hurt', { volume: 0.6 });
+    this.scene.tweens.add({
+      targets: this,
+      alpha: 0.3,
+      duration: 100,
+      yoyo: true,
+      repeat: 4,
+      onComplete: () => {
+        this.setAlpha(1);
+        this.invulnerable = false;
+      },
+    });
   }
 
   private pararAnimacion(): void {
