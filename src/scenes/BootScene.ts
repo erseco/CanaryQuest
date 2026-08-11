@@ -6,12 +6,6 @@ export class BootScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.add
-      .text(480, 270, 'CanaryQuest', {
-        fontFamily: 'monospace',
-        fontSize: '48px',
-        color: '#ffffff',
-      })
-      .setOrigin(0.5);
+    this.scene.start('Preload');
   }
 }

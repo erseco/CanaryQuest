@@ -1,0 +1,74 @@
+{
+  "type": "map",
+  "version": "1.10",
+  "tiledversion": "1.10.2",
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "infinite": false,
+  "width": 40,
+  "height": 40,
+  "tilewidth": 32,
+  "tileheight": 32,
+  "nextlayerid": 4,
+  "nextobjectid": 20,
+  "tilesets": [],
+  "layers": [
+    {
+      "id": 1,
+      "name": "colisiones",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        {
+          "id": 1,
+          "name": "andable",
+          "type": "andable",
+          "x": 0,
+          "y": 0,
+          "visible": true,
+          "rotation": 0,
+          "polygon": [
+            { "x": 330, "y": 120 },
+            { "x": 520, "y": 90 },
+            { "x": 760, "y": 120 },
+            { "x": 950, "y": 170 },
+            { "x": 1060, "y": 260 },
+            { "x": 1120, "y": 420 },
+            { "x": 1130, "y": 620 },
+            { "x": 1080, "y": 800 },
+            { "x": 1000, "y": 930 },
+            { "x": 870, "y": 1040 },
+            { "x": 700, "y": 1130 },
+            { "x": 520, "y": 1120 },
+            { "x": 380, "y": 1050 },
+            { "x": 260, "y": 980 },
+            { "x": 180, "y": 860 },
+            { "x": 140, "y": 700 },
+            { "x": 150, "y": 520 },
+            { "x": 200, "y": 330 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "pois",
+      "type": "objectgroup",
+      "visible": true,
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "objects": [
+        { "id": 10, "name": "spawn", "type": "spawn", "point": true, "x": 400, "y": 900, "visible": true, "rotation": 0 },
+        { "id": 11, "name": "pueblo", "type": "entrada", "point": true, "x": 250, "y": 940, "visible": true, "rotation": 0 },
+        { "id": 12, "name": "puerto", "type": "transporte", "point": true, "x": 215, "y": 1000, "visible": true, "rotation": 0 },
+        { "id": 13, "name": "aeropuerto", "type": "transporte", "point": true, "x": 1060, "y": 700, "visible": true, "rotation": 0 },
+        { "id": 14, "name": "roque-nublo", "type": "hito", "point": true, "x": 650, "y": 500, "visible": true, "rotation": 0 },
+        { "id": 15, "name": "dunas", "type": "hito", "point": true, "x": 680, "y": 1080, "visible": true, "rotation": 0 }
+      ]
+    }
+  ]
+}
