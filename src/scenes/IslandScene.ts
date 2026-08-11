@@ -3,6 +3,7 @@ import { ISLAS, type IslaId } from '../data/islas';
 import { Jugador } from '../sistemas/Jugador';
 import { Enemigo } from '../sistemas/Enemigo';
 import { Musica } from '../sistemas/Musica';
+import type { QuestManager } from '../sistemas/QuestManager';
 
 interface Poi {
   nombre: string;
@@ -23,6 +24,7 @@ export class IslandScene extends Phaser.Scene {
   private cabras: Phaser.GameObjects.Sprite[] = [];
   private enemigos: Enemigo[] = [];
   private entrada = { x: 400, y: 900 };
+  private saliendo = false;
 
   constructor() {
     super('Island');
@@ -30,27 +32,51 @@ export class IslandScene extends Phaser.Scene {
 
   init(datos: { islaId: IslaId; entrada?: { x: number; y: number } }): void {
     this.islaId = datos.islaId;
+    this.saliendo = false;
+    this.cabras = [];
+    this.enemigos = [];
+    this.poiCercano = null;
   }
 
   create(datos: { islaId: IslaId; entrada?: { x: number; y: number } }): void {
     const isla = ISLAS[this.islaId];
     const fondo = this.add.image(0, 0, `isla-${this.islaId}`).setOrigin(0);
 
-    // Cargar polígono andable y POIs del .tmj de la isla.
-    const mapa = this.make.tilemap({ key: `map-${this.islaId}` });
-    const capaColisiones = mapa.getObjectLayer('colisiones');
-    const poligono = capaColisiones?.objects.find((o) => o.name === 'andable');
-    const puntos = (poligono?.polygon ?? []).map(
-      (p) => new Phaser.Geom.Point((poligono?.x ?? 0) + p.x, (poligono?.y ?? 0) + p.y),
-    );
-    this.andable = new Phaser.Geom.Polygon(puntos);
+    // Cargar polígono andable y POIs del .tmj de la isla, si existe.
+    // Las islas aún sin mapa de colisiones usan un rectángulo genérico
+    // y los POIs de transporte definidos en datos (pendientes de pulir).
+    if (this.cache.tilemap.exists(`map-${this.islaId}`)) {
+      const mapa = this.make.tilemap({ key: `map-${this.islaId}` });
+      const capaColisiones = mapa.getObjectLayer('colisiones');
+      const poligono = capaColisiones?.objects.find((o) => o.name === 'andable');
+      const puntos = (poligono?.polygon ?? []).map(
+        (p) => new Phaser.Geom.Point((poligono?.x ?? 0) + p.x, (poligono?.y ?? 0) + p.y),
+      );
+      this.andable = new Phaser.Geom.Polygon(puntos);
 
-    this.pois = (mapa.getObjectLayer('pois')?.objects ?? []).map((o) => ({
-      nombre: o.name,
-      tipo: (o.type ?? (o as unknown as Record<string, string>)['class']) || '',
-      x: o.x ?? 0,
-      y: o.y ?? 0,
-    }));
+      this.pois = (mapa.getObjectLayer('pois')?.objects ?? []).map((o) => ({
+        nombre: o.name,
+        tipo: (o.type ?? (o as unknown as Record<string, string>)['class']) || '',
+        x: o.x ?? 0,
+        y: o.y ?? 0,
+      }));
+    } else {
+      const margen = 150;
+      this.andable = new Phaser.Geom.Polygon([
+        new Phaser.Geom.Point(margen, margen),
+        new Phaser.Geom.Point(fondo.width - margen, margen),
+        new Phaser.Geom.Point(fondo.width - margen, fondo.height - margen),
+        new Phaser.Geom.Point(margen, fondo.height - margen),
+      ]);
+      this.pois = [];
+      if (isla.puerto !== null) {
+        this.pois.push({ nombre: 'puerto', tipo: 'transporte', ...isla.puerto });
+        this.pois.push({ nombre: 'spawn', tipo: 'spawn', x: isla.puerto.x, y: isla.puerto.y - 60 });
+      }
+      if (isla.aeropuerto !== null) {
+        this.pois.push({ nombre: 'aeropuerto', tipo: 'transporte', ...isla.aeropuerto });
+      }
+    }
 
     const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === 'spawn') ?? { x: 400, y: 900 };
     this.entrada = { x: spawn.x, y: spawn.y };
@@ -160,6 +186,10 @@ export class IslandScene extends Phaser.Scene {
       });
       this.cabras.push(cabra);
     }
+    this.crearAlimana();
+  }
+
+  private crearAlimana(): void {
     const alimana = new Enemigo(this, 850, 900, 'alimana', 'crab', (x, y) =>
       Phaser.Geom.Polygon.Contains(this.andable, x, y),
     );
@@ -178,6 +208,10 @@ export class IslandScene extends Phaser.Scene {
       ) {
         enemigo.recibirGolpe(this.jugador.x, this.jugador.y);
         this.game.events.emit('derrotado', { enemigo: enemigo.especie });
+        // La alimaña reaparece pasado un rato (por si la misión la vuelve a pedir)
+        this.time.delayedCall(9000, () => {
+          if (this.scene.isActive() && this.islaId === 'gran-canaria') this.crearAlimana();
+        });
       }
     }
   }
@@ -200,9 +234,15 @@ export class IslandScene extends Phaser.Scene {
       }
     }
 
-    // Recoger cabras al tocarlas
+    this.enemigos = this.enemigos.filter((e) => e.active);
+
+    // Recoger cabras al tocarlas (solo con la misión en el paso de recogerlas)
+    const qm = this.registry.get('quest-manager') as QuestManager | undefined;
+    const paso = qm?.pasoActual('pastor-roque-nublo');
+    const puedeRecoger = paso?.tipo === 'recoger' && paso.item === 'cabra';
     for (const cabra of [...this.cabras]) {
       if (
+        puedeRecoger &&
         cabra.active &&
         Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, cabra.x, cabra.y) < 28
       ) {
@@ -250,9 +290,10 @@ export class IslandScene extends Phaser.Scene {
   }
 
   private activarPoi(): void {
-    if (this.poiCercano === null) return;
+    if (this.poiCercano === null || this.saliendo) return;
     const poi = this.poiCercano;
     if (poi.nombre === 'pueblo') {
+      this.saliendo = true;
       this.cameras.main.fadeOut(250);
       this.cameras.main.once('camerafadeoutcomplete', () => {
         this.scene.start('Detail', {
@@ -265,6 +306,8 @@ export class IslandScene extends Phaser.Scene {
         origen: this.islaId,
         medio: poi.nombre === 'puerto' ? 'barco' : 'avion',
       });
+    } else if (poi.tipo === 'hito') {
+      this.game.events.emit('llegar', { poi: poi.nombre });
     }
   }
 }

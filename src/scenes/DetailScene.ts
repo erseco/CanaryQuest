@@ -21,6 +21,7 @@ export class DetailScene extends Phaser.Scene {
   private npcCercano: Npc | null = null;
   private aviso!: Phaser.GameObjects.Text;
   private altoMapa = 0;
+  private saliendo = false;
 
   constructor() {
     super('Detail');
@@ -30,6 +31,7 @@ export class DetailScene extends Phaser.Scene {
     this.datos = datos;
     this.npcs = [];
     this.npcCercano = null;
+    this.saliendo = false;
   }
 
   create(): void {
@@ -89,6 +91,7 @@ export class DetailScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
+    if (this.saliendo) return;
     this.jugador.bloqueado = this.registry.get('dialogo-abierto') === true;
     const pad = (this.registry.get('pad') as { x: number; y: number }) ?? { x: 0, y: 0 };
     this.jugador.padTactil.set(pad.x, pad.y);
@@ -120,6 +123,8 @@ export class DetailScene extends Phaser.Scene {
   }
 
   private volverALaIsla(): void {
+    if (this.saliendo) return;
+    this.saliendo = true;
     this.jugador.bloqueado = true;
     this.cameras.main.fadeOut(250);
     this.cameras.main.once('camerafadeoutcomplete', () => {

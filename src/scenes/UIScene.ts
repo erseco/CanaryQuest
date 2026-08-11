@@ -60,15 +60,18 @@ export class UIScene extends Phaser.Scene {
       this.pintarCorazones();
     };
     const alMision = () => this.pintarMision();
+    const alSimbolo = ({ isla }: { isla: string }) => this.mostrarSimbolo(isla);
     eventos.on('dialogo', alDialogo);
     eventos.on('dano', alDano);
     eventos.on('curar', alCurar);
     eventos.on('mision-cambiada', alMision);
+    eventos.on('simbolo-conseguido', alSimbolo);
     this.events.once('shutdown', () => {
       eventos.off('dialogo', alDialogo);
       eventos.off('dano', alDano);
       eventos.off('curar', alCurar);
       eventos.off('mision-cambiada', alMision);
+      eventos.off('simbolo-conseguido', alSimbolo);
     });
 
     this.input.keyboard?.on('keydown-SPACE', () => {
@@ -114,6 +117,34 @@ export class UIScene extends Phaser.Scene {
       s += restante >= 2 ? '♥' : restante === 1 ? '❥' : '♡';
     }
     this.corazones.setText(s);
+  }
+
+  /** Toast celebratorio al conseguir el símbolo guanche de una isla. */
+  private mostrarSimbolo(_isla: string): void {
+    const { width, height } = this.scale;
+    const icono = this.add.image(width / 2, height / 2 - 40, 'simbolo').setScale(3).setDepth(400);
+    const texto = this.add
+      .text(width / 2, height / 2 + 10, '¡Símbolo guanche conseguido!', {
+        fontFamily: 'monospace',
+        fontSize: '26px',
+        fontStyle: 'bold',
+        color: '#f4c542',
+        stroke: '#0a1a3a',
+        strokeThickness: 6,
+      })
+      .setOrigin(0.5)
+      .setDepth(400);
+    this.tweens.add({
+      targets: [icono, texto],
+      y: '-=30',
+      alpha: { from: 1, to: 0 },
+      delay: 1600,
+      duration: 700,
+      onComplete: () => {
+        icono.destroy();
+        texto.destroy();
+      },
+    });
   }
 
   private pintarMision(): void {

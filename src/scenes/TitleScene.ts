@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { SaveManager } from '../sistemas/SaveManager';
 import { Musica } from '../sistemas/Musica';
+import { iniciarOrquestador } from '../sistemas/Orquestador';
 
 export class TitleScene extends Phaser.Scene {
   private opciones: Phaser.GameObjects.Text[] = [];
@@ -95,6 +96,7 @@ export class TitleScene extends Phaser.Scene {
       texto === 'Continuar' ? SaveManager.cargar() ?? SaveManager.nueva() : SaveManager.nueva();
     if (texto === 'Nueva partida') SaveManager.guardar(partida);
     this.registry.set('partida', partida);
+    iniciarOrquestador(this.game);
     this.cameras.main.fadeOut(300);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.scene.launch('UI');
