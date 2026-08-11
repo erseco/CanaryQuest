@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ISLAS, type IslaId } from '../data/islas';
 import { Jugador } from '../sistemas/Jugador';
+import { Enemigo } from '../sistemas/Enemigo';
 import { Musica } from '../sistemas/Musica';
 
 interface Poi {
@@ -19,6 +20,8 @@ export class IslandScene extends Phaser.Scene {
   private pois: Poi[] = [];
   private poiCercano: Poi | null = null;
   private aviso!: Phaser.GameObjects.Text;
+  private cabras: Phaser.GameObjects.Sprite[] = [];
+  private enemigos: Enemigo[] = [];
 
   constructor() {
     super('Island');
@@ -103,6 +106,8 @@ export class IslandScene extends Phaser.Scene {
       .setScrollFactor(0)
       .setDepth(100);
 
+    this.crearFauna();
+
     Musica.reproducir(this, 'musica-isla');
     Musica.crearBotonMute(this);
 
@@ -116,8 +121,58 @@ export class IslandScene extends Phaser.Scene {
     this.game.events.emit('escena-cambiada', { escena: 'Island', islaId: this.islaId });
   }
 
+  /** Cabras perdidas y alimañas de la misión (solo Gran Canaria en el slice). */
+  private crearFauna(): void {
+    if (this.islaId !== 'gran-canaria') return;
+    const posicionesCabras: Array<[number, number]> = [
+      [600, 1020],
+      [770, 990],
+      [660, 1090],
+    ];
+    for (const [x, y] of posicionesCabras) {
+      const cabra = this.add.sprite(x, y, 'cabra').setDepth(5);
+      this.tweens.add({
+        targets: cabra,
+        y: y - 4,
+        duration: 700,
+        yoyo: true,
+        repeat: -1,
+        ease: 'sine.inOut',
+      });
+      this.cabras.push(cabra);
+    }
+    const alimana = new Enemigo(this, 850, 900, 'alimana', 'crab', (x, y) =>
+      Phaser.Geom.Polygon.Contains(this.andable, x, y),
+    );
+    alimana.setDepth(5);
+    this.enemigos.push(alimana);
+  }
+
   update(_time: number, delta: number): void {
     this.jugador.actualizar(delta);
+
+    for (const enemigo of this.enemigos) {
+      enemigo.actualizar(this.jugador.x, this.jugador.y);
+    }
+
+    // Recoger cabras al tocarlas
+    for (const cabra of [...this.cabras]) {
+      if (
+        cabra.active &&
+        Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, cabra.x, cabra.y) < 28
+      ) {
+        this.sound.play('sfx-loot', { volume: 0.7 });
+        this.cabras.splice(this.cabras.indexOf(cabra), 1);
+        this.tweens.add({
+          targets: cabra,
+          y: cabra.y - 24,
+          alpha: 0,
+          duration: 350,
+          onComplete: () => cabra.destroy(),
+        });
+        this.game.events.emit('recoger', { item: 'cabra' });
+      }
+    }
 
     // Detectar POI cercano
     const cercano =
