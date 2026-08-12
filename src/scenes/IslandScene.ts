@@ -1,9 +1,7 @@
 import Phaser from 'phaser';
 import { ISLAS, type IslaId } from '../data/islas';
 import { Jugador } from '../sistemas/Jugador';
-import { Enemigo } from '../sistemas/Enemigo';
 import { Musica } from '../sistemas/Musica';
-import type { QuestManager } from '../sistemas/QuestManager';
 
 interface Poi {
   nombre: string;
@@ -14,6 +12,13 @@ interface Poi {
 
 const RADIO_POI = 48;
 
+/** POIs del overworld que abren un mapa de detalle (pueblo, dunas, mazmorras…). */
+const ENTRADAS_DETALLE = new Set(['pueblo', 'dunas']);
+
+/**
+ * Overworld de isla: ilustración + polígono andable + POIs.
+ * Sin NPCs, monstruos ni items de misión — eso vive solo en DetailScene.
+ */
 export class IslandScene extends Phaser.Scene {
   private islaId!: IslaId;
   private jugador!: Jugador;
@@ -21,9 +26,6 @@ export class IslandScene extends Phaser.Scene {
   private pois: Poi[] = [];
   private poiCercano: Poi | null = null;
   private aviso!: Phaser.GameObjects.Text;
-  private cabras: Phaser.GameObjects.Sprite[] = [];
-  private enemigos: Enemigo[] = [];
-  private entrada = { x: 400, y: 900 };
   private saliendo = false;
 
   constructor() {
@@ -33,8 +35,6 @@ export class IslandScene extends Phaser.Scene {
   init(datos: { islaId: IslaId; entrada?: { x: number; y: number } }): void {
     this.islaId = datos.islaId;
     this.saliendo = false;
-    this.cabras = [];
-    this.enemigos = [];
     this.poiCercano = null;
   }
 
@@ -80,7 +80,6 @@ export class IslandScene extends Phaser.Scene {
     }
 
     const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === 'spawn') ?? { x: 400, y: 900 };
-    this.entrada = { x: spawn.x, y: spawn.y };
     this.jugador = new Jugador(this, spawn.x, spawn.y, (x, y) =>
       Phaser.Geom.Polygon.Contains(this.andable, x, y),
     );
@@ -88,7 +87,14 @@ export class IslandScene extends Phaser.Scene {
     // Marcadores visuales de POIs
     for (const poi of this.pois) {
       if (poi.tipo === 'spawn') continue;
-      const icono = poi.tipo === 'transporte' ? (poi.nombre === 'puerto' ? '⚓' : '✈') : '★';
+      const icono =
+        poi.tipo === 'transporte'
+          ? poi.nombre === 'puerto'
+            ? '⚓'
+            : '✈'
+          : ENTRADAS_DETALLE.has(poi.nombre)
+            ? '★'
+            : '◆';
       this.add
         .text(poi.x, poi.y, icono, { fontSize: '28px' })
         .setOrigin(0.5)
@@ -135,26 +141,6 @@ export class IslandScene extends Phaser.Scene {
       .setScrollFactor(0)
       .setDepth(100);
 
-    this.crearFauna();
-
-    // Combate y muerte
-    this.input.keyboard?.on('keydown-SPACE', () => this.atacar());
-    const alAtacar = () => this.atacar();
-    const alMorir = () => {
-      this.cameras.main.fadeOut(300);
-      this.cameras.main.once('camerafadeoutcomplete', () => {
-        this.jugador.setPosition(this.entrada.x, this.entrada.y);
-        this.jugador.pararObjetivo();
-        this.cameras.main.fadeIn(300);
-      });
-    };
-    this.game.events.on('atacar', alAtacar);
-    this.game.events.on('jugador-muerto', alMorir);
-    this.events.once('shutdown', () => {
-      this.game.events.off('atacar', alAtacar);
-      this.game.events.off('jugador-muerto', alMorir);
-    });
-
     Musica.reproducir(this, 'musica-isla');
 
     // Depuración: ?debug=1 pinta el polígono andable
@@ -167,98 +153,11 @@ export class IslandScene extends Phaser.Scene {
     this.game.events.emit('escena-cambiada', { escena: 'Island', islaId: this.islaId });
   }
 
-  /** Cabras perdidas y alimañas de la misión (solo Gran Canaria en el slice). */
-  private crearFauna(): void {
-    if (this.islaId !== 'gran-canaria') return;
-    const posicionesCabras: Array<[number, number]> = [
-      [600, 1020],
-      [770, 990],
-      [660, 1090],
-    ];
-    for (const [x, y] of posicionesCabras) {
-      const cabra = this.add.sprite(x, y, 'cabra').setDepth(5);
-      this.tweens.add({
-        targets: cabra,
-        y: y - 4,
-        duration: 700,
-        yoyo: true,
-        repeat: -1,
-        ease: 'sine.inOut',
-      });
-      this.cabras.push(cabra);
-    }
-    this.crearAlimana();
-  }
-
-  private crearAlimana(): void {
-    const alimana = new Enemigo(this, 850, 900, 'alimana', 'crab', (x, y) =>
-      Phaser.Geom.Polygon.Contains(this.andable, x, y),
-    );
-    alimana.setDepth(5);
-    this.enemigos.push(alimana);
-  }
-
-  private atacar(): void {
-    if (this.registry.get('dialogo-abierto') === true) return;
-    const golpe = this.jugador.atacar();
-    if (golpe === null) return;
-    for (const enemigo of this.enemigos) {
-      if (
-        !enemigo.estaMuerto &&
-        Phaser.Math.Distance.Between(golpe.x, golpe.y, enemigo.x, enemigo.y) < golpe.radio + 14
-      ) {
-        enemigo.recibirGolpe(this.jugador.x, this.jugador.y);
-        this.game.events.emit('derrotado', { enemigo: enemigo.especie });
-        // La alimaña reaparece pasado un rato (por si la misión la vuelve a pedir)
-        this.time.delayedCall(9000, () => {
-          if (this.scene.isActive() && this.islaId === 'gran-canaria') this.crearAlimana();
-        });
-      }
-    }
-  }
-
   update(_time: number, delta: number): void {
     this.jugador.bloqueado = this.registry.get('dialogo-abierto') === true;
     const pad = (this.registry.get('pad') as { x: number; y: number }) ?? { x: 0, y: 0 };
     this.jugador.padTactil.set(pad.x, pad.y);
     this.jugador.actualizar(delta);
-
-    for (const enemigo of this.enemigos) {
-      enemigo.actualizar(this.jugador.x, this.jugador.y);
-      if (
-        !enemigo.estaMuerto &&
-        !this.jugador.invulnerable &&
-        Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y - 10, enemigo.x, enemigo.y) < 26
-      ) {
-        this.jugador.recibirDano(enemigo.x, enemigo.y);
-        this.game.events.emit('dano');
-      }
-    }
-
-    this.enemigos = this.enemigos.filter((e) => e.active);
-
-    // Recoger cabras al tocarlas (solo con la misión en el paso de recogerlas)
-    const qm = this.registry.get('quest-manager') as QuestManager | undefined;
-    const paso = qm?.pasoActual('pastor-roque-nublo');
-    const puedeRecoger = paso?.tipo === 'recoger' && paso.item === 'cabra';
-    for (const cabra of [...this.cabras]) {
-      if (
-        puedeRecoger &&
-        cabra.active &&
-        Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, cabra.x, cabra.y) < 28
-      ) {
-        this.sound.play('sfx-loot', { volume: 0.7 });
-        this.cabras.splice(this.cabras.indexOf(cabra), 1);
-        this.tweens.add({
-          targets: cabra,
-          y: cabra.y - 24,
-          alpha: 0,
-          duration: 350,
-          onComplete: () => cabra.destroy(),
-        });
-        this.game.events.emit('recoger', { item: 'cabra' });
-      }
-    }
 
     // Detectar POI cercano
     const cercano =
@@ -293,12 +192,12 @@ export class IslandScene extends Phaser.Scene {
   private activarPoi(): void {
     if (this.poiCercano === null || this.saliendo) return;
     const poi = this.poiCercano;
-    if (poi.nombre === 'pueblo') {
+    if (ENTRADAS_DETALLE.has(poi.nombre) || poi.tipo === 'entrada') {
       this.saliendo = true;
       this.cameras.main.fadeOut(250);
       this.cameras.main.once('camerafadeoutcomplete', () => {
         this.scene.start('Detail', {
-          mapaId: 'pueblo',
+          mapaId: poi.nombre,
           retorno: { islaId: this.islaId, x: poi.x, y: poi.y + 50 },
         });
       });

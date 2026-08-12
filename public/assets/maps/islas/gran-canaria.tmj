@@ -67,7 +67,7 @@
         { "id": 12, "name": "puerto", "type": "transporte", "point": true, "x": 215, "y": 1000, "visible": true, "rotation": 0 },
         { "id": 13, "name": "aeropuerto", "type": "transporte", "point": true, "x": 1060, "y": 700, "visible": true, "rotation": 0 },
         { "id": 14, "name": "roque-nublo", "type": "hito", "point": true, "x": 650, "y": 500, "visible": true, "rotation": 0 },
-        { "id": 15, "name": "dunas", "type": "hito", "point": true, "x": 680, "y": 1080, "visible": true, "rotation": 0 }
+        { "id": 15, "name": "dunas", "type": "entrada", "point": true, "x": 680, "y": 1080, "visible": true, "rotation": 0 }
       ]
     }
   ]

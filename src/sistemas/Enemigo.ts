@@ -6,7 +6,8 @@ const RADIO_PERSECUCION = 130;
 
 /**
  * Enemigo simple: patrulla horizontal alrededor de su origen y persigue
- * al jugador cuando se acerca. `puedeEstar` restringe su área (islas).
+ * al jugador cuando se acerca. Solo se usa en mapas Detail (no en Island).
+ * `puedeEstar` puede restringir el área de movimiento si hace falta.
  */
 export class Enemigo extends Phaser.Physics.Arcade.Sprite {
   readonly especie: string;

@@ -36,8 +36,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('mapa-mundo', 'assets/islas/mapa-mundo.jpg');
     this.load.image('titulo-fondo', 'assets/titulo/archipielago-aereo.jpg');
 
-    // Pueblo (tilemap Tiled + tileset extruido)
+    // Mapas de detalle (tilemap Tiled + tileset extruido) e islas
     this.load.tilemapTiledJSON('map-pueblo', 'assets/maps/pueblo.tmj');
+    this.load.tilemapTiledJSON('map-dunas', 'assets/maps/dunas.tmj');
     this.load.image('tiles-pueblo', 'assets/tilesets/tuxemon-32px-extruido.png');
     this.load.tilemapTiledJSON('map-gran-canaria', 'assets/maps/islas/gran-canaria.tmj');
 

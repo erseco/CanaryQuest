@@ -8,7 +8,7 @@ export const DIALOGOS: Record<string, string[]> = {
   ],
   'pastor-en-curso-cabras': [
     '¿Ya las tienes? Las cabras, mi niño, las cabras…',
-    'Andan por las dunas, al sur del pueblo.',
+    'Andan por las dunas de Maspalomas, al sur. Entra en el sitio marcado en el mapa.',
   ],
   'pastor-en-curso-alimana': [
     '¡Ya casi lo tienes! Ahora espántame esa alimaña que ronda las dunas.',
