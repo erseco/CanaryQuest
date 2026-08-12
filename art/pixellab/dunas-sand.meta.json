@@ -1,0 +1,42 @@
+{
+  "id": "683b2ce3-7e48-41a6-9f86-684ec95585de",
+  "name": "dunas-sand",
+  "request": {
+    "lower_description": "16-bit SNES Zelda A Link to the Past style golden fine sand dunes of Maspalomas Canary Islands, soft pixel clusters, warm ochre and pale gold sand, high top-down RPG floor tile",
+    "upper_description": "16-bit SNES Zelda style sparse dry dune grass tufts and slightly darker packed sand path, Canary Islands desert scrub, high top-down RPG tile",
+    "transition_description": "soft sand ridge between loose sand and packed path, subtle foam of wind-blown sand, pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 1101
+  },
+  "raw_meta": {
+    "edge_types": [
+      "lower",
+      "upper"
+    ],
+    "terrain_prompts": {
+      "lower": "16-bit SNES Zelda A Link to the Past style golden fine sand dunes of Maspalomas Canary Islands, soft pixel clusters, warm ochre and pale gold sand, high top-down RPG floor tile",
+      "upper": "16-bit SNES Zelda style sparse dry dune grass tufts and slightly darker packed sand path, Canary Islands desert scrub, high top-down RPG tile",
+      "transition": "soft sand ridge between loose sand and packed path, subtle foam of wind-blown sand, pixel art"
+    },
+    "terrain_ids": null,
+    "transition_size": 0.25,
+    "view": "high top-down",
+    "generation_parameters": {
+      "tile_strength": 1.0,
+      "tileset_adherence": 100.0,
+      "text_guidance_scale": 8.0,
+      "tileset_adherence_freedom": 500
+    },
+    "created_at": "2026-08-12T06:18:52.841302+00:00"
+  }
+}

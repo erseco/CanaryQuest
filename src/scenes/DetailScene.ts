@@ -45,10 +45,10 @@ export class DetailScene extends Phaser.Scene {
 
   create(): void {
     const mapa = this.make.tilemap({ key: `map-${this.datos.mapaId}` });
-    const tileset = mapa.addTilesetImage('tuxemon-sample-32px-extruded', 'tiles-pueblo')!;
-    mapa.createLayer('Below Player', tileset, 0, 0);
-    const mundo = mapa.createLayer('World', tileset, 0, 0)!;
-    const encima = mapa.createLayer('Above Player', tileset, 0, 0)!;
+    const tilesets = this.cargarTilesets(mapa);
+    mapa.createLayer('Below Player', tilesets, 0, 0);
+    const mundo = mapa.createLayer('World', tilesets, 0, 0)!;
+    const encima = mapa.createLayer('Above Player', tilesets, 0, 0)!;
     mundo.setCollisionByProperty({ collides: true });
     encima.setDepth(30);
     this.altoMapa = mapa.heightInPixels;
@@ -115,8 +115,28 @@ export class DetailScene extends Phaser.Scene {
     this.game.events.emit('escena-cambiada', { escena: 'Detail', mapaId: this.datos.mapaId });
   }
 
+  /** Asocia cada tileset del .tmj con la textura precargada. */
+  private cargarTilesets(mapa: Phaser.Tilemaps.Tilemap): Phaser.Tilemaps.Tileset[] {
+    const clavePorNombre: Record<string, string> = {
+      'tuxemon-sample-32px-extruded': 'tiles-pueblo',
+      'pixellab-dunas': 'tiles-dunas',
+      'pixellab-pueblo': 'tiles-plaza',
+    };
+    const cargados: Phaser.Tilemaps.Tileset[] = [];
+    for (const ts of mapa.tilesets) {
+      const clave = clavePorNombre[ts.name] ?? 'tiles-pueblo';
+      const añadido = mapa.addTilesetImage(ts.name, clave);
+      if (añadido) cargados.push(añadido);
+    }
+    if (cargados.length === 0) {
+      const fallback = mapa.addTilesetImage('tuxemon-sample-32px-extruded', 'tiles-pueblo');
+      if (fallback) cargados.push(fallback);
+    }
+    return cargados;
+  }
+
   /**
-   * Contenido por mapa: NPCs en pueblo; fauna/enemigos en dunas (objetos Tiled o fallback).
+   * Contenido por mapa: NPCs en pueblo; fauna/enemigos/decor en dunas (objetos Tiled).
    */
   private poblarContenido(mapa: Phaser.Tilemaps.Tilemap): void {
     if (this.datos.mapaId === 'pueblo') {
@@ -157,6 +177,17 @@ export class DetailScene extends Phaser.Scene {
           ? { x: enemigosTiled[0].x ?? 480, y: enemigosTiled[0].y ?? 400 }
           : { x: 480, y: 400 };
       this.crearAlimana(posAlimana.x, posAlimana.y);
+
+      // Decoración PixelLab (palmeras, rocas…)
+      for (const o of objetos) {
+        if (o.type !== 'decor') continue;
+        const clave = `decor-${o.name}`;
+        if (!this.textures.exists(clave)) continue;
+        this.add
+          .image(o.x ?? 0, o.y ?? 0, clave)
+          .setOrigin(0.5, 0.85)
+          .setDepth(6);
+      }
     }
   }
 

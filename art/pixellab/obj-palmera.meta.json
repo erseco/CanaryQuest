@@ -1,0 +1,17 @@
+{
+  "id": "46e87341-5b71-4ee2-8663-02ea5ba71e75",
+  "request": {
+    "description": "16-bit SNES Zelda style top-down Canary Islands palm tree with green fronds and brown trunk, transparent background, map prop",
+    "image_size": {
+      "width": 64,
+      "height": 64
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 302
+  },
+  "download_url": "https://api.pixellab.ai/mcp/map-objects/46e87341-5b71-4ee2-8663-02ea5ba71e75/download"
+}

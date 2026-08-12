@@ -1,0 +1,17 @@
+{
+  "id": "f12a0506-4ea3-4c61-8844-4f686eefa62c",
+  "request": {
+    "description": "16-bit SNES Zelda style top-down dark volcanic rock boulder on sand, Canary Islands, transparent background, map prop",
+    "image_size": {
+      "width": 48,
+      "height": 48
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 303
+  },
+  "download_url": "https://api.pixellab.ai/mcp/map-objects/f12a0506-4ea3-4c61-8844-4f686eefa62c/download"
+}

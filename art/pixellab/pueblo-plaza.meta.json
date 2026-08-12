@@ -1,0 +1,42 @@
+{
+  "id": "4babf2d4-cd3c-40fd-8cfb-171ed1ee5d90",
+  "name": "pueblo-plaza",
+  "request": {
+    "lower_description": "16-bit SNES Zelda style dusty earth and dirt path of a Canarian village, warm brown soil, high top-down RPG floor",
+    "upper_description": "16-bit SNES Zelda style light gray cobblestone plaza tiles of a white Canarian town, clean stone pavement, high top-down RPG floor",
+    "transition_description": "edge where dirt path meets cobblestone plaza, SNES pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 2202
+  },
+  "raw_meta": {
+    "edge_types": [
+      "lower",
+      "upper"
+    ],
+    "terrain_prompts": {
+      "lower": "16-bit SNES Zelda style dusty earth and dirt path of a Canarian village, warm brown soil, high top-down RPG floor",
+      "upper": "16-bit SNES Zelda style light gray cobblestone plaza tiles of a white Canarian town, clean stone pavement, high top-down RPG floor",
+      "transition": "edge where dirt path meets cobblestone plaza, SNES pixel art"
+    },
+    "terrain_ids": null,
+    "transition_size": 0.25,
+    "view": "high top-down",
+    "generation_parameters": {
+      "tile_strength": 1.0,
+      "tileset_adherence": 100.0,
+      "text_guidance_scale": 8.0,
+      "tileset_adherence_freedom": 500
+    },
+    "created_at": "2026-08-12T06:20:35.162645+00:00"
+  }
+}

@@ -36,10 +36,12 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('mapa-mundo', 'assets/islas/mapa-mundo.jpg');
     this.load.image('titulo-fondo', 'assets/titulo/archipielago-aereo.jpg');
 
-    // Mapas de detalle (tilemap Tiled + tileset extruido) e islas
+    // Mapas de detalle (tilemap Tiled + tilesets) e islas
     this.load.tilemapTiledJSON('map-pueblo', 'assets/maps/pueblo.tmj');
     this.load.tilemapTiledJSON('map-dunas', 'assets/maps/dunas.tmj');
     this.load.image('tiles-pueblo', 'assets/tilesets/tuxemon-32px-extruido.png');
+    this.load.image('tiles-dunas', 'assets/tilesets/pixellab-dunas-32.png');
+    this.load.image('tiles-plaza', 'assets/tilesets/pixellab-pueblo-32.png');
     this.load.tilemapTiledJSON('map-gran-canaria', 'assets/maps/islas/gran-canaria.tmj');
 
     // Personajes
@@ -52,6 +54,10 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+    // Decor PixelLab (props de mapa)
+    this.load.image('decor-palmera', 'assets/sprites/pixellab-palmera.png');
+    this.load.image('decor-roca-duna', 'assets/sprites/pixellab-roca-duna.png');
+    this.load.image('decor-casa-canaria', 'assets/sprites/pixellab-casa-canaria.png');
 
     // Audio
     this.load.audio('musica-titulo', 'assets/audio/title-music.ogg');
