@@ -10,8 +10,8 @@ Naviera Armas) desde el puerto o aeropuerto de cada isla.
 ## Jugar
 
 ```bash
-npm install
-npm run dev      # http://localhost:5173
+npm install      # o: make install
+npm run dev      # o: make up (http://localhost:5173)
 ```
 
 - **Escritorio:** flechas/WASD para moverte, click para caminar hacia un
@@ -22,6 +22,8 @@ npm run dev      # http://localhost:5173
 
 `npm run build` genera un build 100 % estático en `dist/` que funciona en
 cualquier hosting (GitHub Pages, itch.io, un Apache cualquiera…).
+`make package` además lo empaqueta en `canaryquest.zip` listo para subir.
+`make help` lista todos los atajos.
 
 ## Documentación
 
