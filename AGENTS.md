@@ -8,6 +8,8 @@ Estilo Zelda de SNES / juego de Stranger Things de Android. Todo en español.
 ```bash
 npm run dev        # servidor de desarrollo (Vite)
 npm test           # tests unitarios (Vitest)
+npm run lint       # ESLint (también: make lint)
+npm run fix        # ESLint --fix (también: make fix)
 npm run build      # type-check + build estático en dist/
 npm run preview    # servir el build
 ```
@@ -16,7 +18,7 @@ Añade `?debug=1` a la URL para ver los polígonos de colisión de las islas.
 
 ## Stack (decisiones cerradas — no cambiar sin leer docs/decisiones.md)
 
-- **Phaser 3.90 + TypeScript strict + Vite**. Sin más librerías de juego.
+- **Phaser 4 + TypeScript strict + Vite**. Sin más librerías de juego.
 - **Tiles de 32 px** para los mapas de detalle (pueblos/mazmorras).
 - **Mapas híbridos**: las islas son ilustraciones (JPG) con polígonos de
   colisión definidos en formato Tiled; los pueblos/mazmorras son tilemaps

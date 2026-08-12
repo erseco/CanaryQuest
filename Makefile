@@ -1,9 +1,11 @@
 # CanaryQuest — atajos de desarrollo
-.PHONY: help install up dev test build package preview clean
+.PHONY: help install up dev test lint fix build package preview clean
 
 help:
 	@echo "make up / make dev  - servidor de desarrollo (Vite)"
 	@echo "make test           - tests unitarios (Vitest)"
+	@echo "make lint           - ESLint (fallo si hay errores)"
+	@echo "make fix            - ESLint con --fix (auto-correcciones)"
 	@echo "make build          - type-check + build estático en dist/"
 	@echo "make package        - build + canaryquest.zip listo para subir a una web"
 	@echo "make preview        - servir el build de producción"
@@ -20,6 +22,12 @@ dev:
 
 test:
 	npm test
+
+lint:
+	npm run lint
+
+fix:
+	npm run fix
 
 build:
 	npm run build

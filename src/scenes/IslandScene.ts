@@ -49,8 +49,9 @@ export class IslandScene extends Phaser.Scene {
       const mapa = this.make.tilemap({ key: `map-${this.islaId}` });
       const capaColisiones = mapa.getObjectLayer('colisiones');
       const poligono = capaColisiones?.objects.find((o) => o.name === 'andable');
+      // Phaser 4: Geom.Point se eliminó; los vértices de polígono son Vector2.
       const puntos = (poligono?.polygon ?? []).map(
-        (p) => new Phaser.Geom.Point((poligono?.x ?? 0) + p.x, (poligono?.y ?? 0) + p.y),
+        (p) => new Phaser.Math.Vector2((poligono?.x ?? 0) + p.x, (poligono?.y ?? 0) + p.y),
       );
       this.andable = new Phaser.Geom.Polygon(puntos);
 
@@ -63,10 +64,10 @@ export class IslandScene extends Phaser.Scene {
     } else {
       const margen = 150;
       this.andable = new Phaser.Geom.Polygon([
-        new Phaser.Geom.Point(margen, margen),
-        new Phaser.Geom.Point(fondo.width - margen, margen),
-        new Phaser.Geom.Point(fondo.width - margen, fondo.height - margen),
-        new Phaser.Geom.Point(margen, fondo.height - margen),
+        new Phaser.Math.Vector2(margen, margen),
+        new Phaser.Math.Vector2(fondo.width - margen, margen),
+        new Phaser.Math.Vector2(fondo.width - margen, fondo.height - margen),
+        new Phaser.Math.Vector2(margen, fondo.height - margen),
       ]);
       this.pois = [];
       if (isla.puerto !== null) {

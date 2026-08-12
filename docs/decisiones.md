@@ -3,13 +3,15 @@
 Formato corto: contexto → decisión → consecuencias. Estas decisiones están
 **cerradas**; reabrirlas exige un bloqueo técnico real documentado aquí.
 
-## ADR-1: Phaser 3 + TypeScript + Vite (no RPGJS, no Kaplay, no vanilla)
+## ADR-1: Phaser 4 + TypeScript + Vite (no RPGJS, no Kaplay, no vanilla)
 
 **Contexto.** Hubo 5 intentos previos con 4 motores distintos (BrowserQuest
 engine, Phaser puro, Phaser+grid-engine, RPGJS v4, plantilla phaser-rpg).
 Cada cambio de motor descartó el trabajo anterior. Ninguno llegó a jugable.
+El vertical slice nació en Phaser 3.90; en 2026 se migró a Phaser 4 (guía
+oficial: `Geom.Point` → `Vector2`, filtros en lugar de FX/máscaras, etc.).
 
-**Decisión.** Phaser 3.90 con TypeScript estricto y Vite. Sin librerías de
+**Decisión.** Phaser 4.x con TypeScript estricto y Vite. Sin librerías de
 juego adicionales (ni grid-engine ni phaser-jsx).
 
 **Por qué.** Phaser trae de serie lo que este juego necesita (tilemaps Tiled,
@@ -21,7 +23,8 @@ estático); Kaplay es más simple pero sin soporte Tiled nativo; vanilla canvas
 implica reimplementar cámara/colisiones/animaciones.
 
 **Consecuencias.** Bundle de ~340 KB gzip (aceptable); a cambio, cero código
-de infraestructura propio.
+de infraestructura propio. En v4 no usar `Geom.Point` (eliminado): vértices
+de geometría con `Phaser.Math.Vector2`.
 
 ## ADR-2: tiles de 32 px
 
