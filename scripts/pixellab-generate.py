@@ -2,6 +2,10 @@
 """Genera tilesets y props con la API de PixelLab (no commitear el secret).
 
 Uso:
+  # Opción A: secret en .env (recomendado; no se pushea)
+  python3 scripts/pixellab-generate.py
+
+  # Opción B: variable de entorno
   export PIXELLAB_API_KEY='…'
   python3 scripts/pixellab-generate.py
 
@@ -36,10 +40,28 @@ PUBLIC_TS = ROOT / "public" / "assets" / "tilesets"
 PUBLIC_SP = ROOT / "public" / "assets" / "sprites"
 
 
+def load_dotenv() -> None:
+    """Carga KEY=VALUE desde .env del repo si existe (sin dependencia extra)."""
+    env_path = ROOT / ".env"
+    if not env_path.is_file():
+        return
+    for line in env_path.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        key = key.strip()
+        value = value.strip().strip("'").strip('"')
+        if key and key not in os.environ:
+            os.environ[key] = value
+
+
 def api(method: str, path: str, body: dict | None = None):
     token = os.environ.get("PIXELLAB_API_KEY")
     if not token:
-        raise SystemExit("Define PIXELLAB_API_KEY en el entorno")
+        raise SystemExit(
+            "Falta PIXELLAB_API_KEY. Crea .env (copia .env.example) o exporta la variable."
+        )
     data = None if body is None else json.dumps(body).encode()
     req = urllib.request.Request(
         API + path,
@@ -182,6 +204,7 @@ def create_map_object(name: str, description: str, size: int = 64, seed: int | N
 
 
 def main() -> None:
+    load_dotenv()
     OUT.mkdir(parents=True, exist_ok=True)
     PUBLIC_TS.mkdir(parents=True, exist_ok=True)
     PUBLIC_SP.mkdir(parents=True, exist_ok=True)
