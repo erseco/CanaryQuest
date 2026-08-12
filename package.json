@@ -12,11 +12,11 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "phaser": "^3.90.0"
+    "phaser": "^4.2.1"
   },
   "devDependencies": {
-    "typescript": "~5.9.0",
+    "typescript": "~7.0.2",
     "vite": "^8.2.1",
-    "vitest": "^3.0.0"
+    "vitest": "^4.1.10"
   }
 }
