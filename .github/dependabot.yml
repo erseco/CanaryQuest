@@ -9,6 +9,12 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    # typescript-eslint@8 solo admite TypeScript < 6.1 (peer). Un major a TS 7
+    # rompe `npm ci` con ERESOLVE. Quitar este ignore cuando typescript-eslint
+    # declare soporte para TypeScript 7+.
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-dependencies:
         patterns:
