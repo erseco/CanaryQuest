@@ -1,0 +1,16 @@
+{
+  "id": "400f61c1-e824-47fe-8796-1a13b9e4466c",
+  "request": {
+    "description": "16-bit SNES Zelda style top-down colorful commercial street house of Triana Las Palmas, shop front and balcony, transparent background, map building prop 64x64",
+    "image_size": {
+      "width": 64,
+      "height": 64
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 503
+  }
+}

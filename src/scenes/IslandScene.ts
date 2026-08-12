@@ -12,8 +12,8 @@ interface Poi {
 
 const RADIO_POI = 48;
 
-/** POIs del overworld que abren un mapa de detalle (pueblo, dunas, mazmorras…). */
-const ENTRADAS_DETALLE = new Set(['pueblo', 'dunas']);
+/** POIs del overworld que abren un mapa de detalle (pueblo, dunas, ciudades…). */
+const ENTRADAS_DETALLE = new Set(['pueblo', 'dunas', 'las-palmas', 'isleta']);
 
 /**
  * Overworld de isla: ilustración + polígono andable + POIs.
@@ -185,6 +185,8 @@ export class IslandScene extends Phaser.Scene {
       aeropuerto: 'Aeropuerto (Binter)',
       'roque-nublo': 'Roque Nublo',
       dunas: 'Dunas de Maspalomas',
+      'las-palmas': 'Las Palmas (Triana · Vegueta · Catedral)',
+      isleta: 'La Isleta',
     };
     return nombres[poi.nombre] ?? poi.nombre;
   }

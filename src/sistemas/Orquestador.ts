@@ -40,6 +40,9 @@ export function iniciarOrquestador(game: Phaser.Game): void {
 
   game.events.on('npc-hablar', ({ npc }: { npc: string }) => {
     if (npc === 'pastor') hablarConPastor();
+    if (npc === 'comico') {
+      game.events.emit('dialogo', { clave: 'comico-chistera' });
+    }
   });
 
   game.events.on('escena-cambiada', (datos: { escena: string; islaId?: IslaId }) => {

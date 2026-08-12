@@ -1,0 +1,20 @@
+{
+  "id": "a7088506-7503-4d94-b957-ba13c6664637",
+  "request": {
+    "lower_description": "16-bit SNES Zelda style dark purple nightclub floor with subtle checkers, comedy club interior, high top-down RPG floor",
+    "upper_description": "16-bit SNES Zelda style wooden comedy stage floor planks, warm spotlight wood, high top-down RPG floor",
+    "transition_description": "edge of stage steps between club floor and wooden stage, pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 4402
+  }
+}

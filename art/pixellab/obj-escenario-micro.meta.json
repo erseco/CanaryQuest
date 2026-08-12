@@ -1,0 +1,16 @@
+{
+  "id": "cc5d1529-348d-4345-9e99-3b4d91f773cf",
+  "request": {
+    "description": "16-bit SNES Zelda style top-down wooden comedy stage with microphone stand and stool, spotlight, transparent background, map prop 64x48",
+    "image_size": {
+      "width": 64,
+      "height": 64
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 505
+  }
+}

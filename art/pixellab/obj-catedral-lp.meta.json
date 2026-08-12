@@ -1,0 +1,16 @@
+{
+  "id": "86d7484c-1582-4fb8-84c7-db41edc68494",
+  "request": {
+    "description": "16-bit SNES Zelda A Link to the Past style top-down Cathedral of Santa Ana Las Palmas Canary Islands, twin towers, yellow stone neo-classical facade, transparent background, map prop 96x96",
+    "image_size": {
+      "width": 96,
+      "height": 96
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 501
+  }
+}

@@ -27,4 +27,11 @@ export const DIALOGOS: Record<string, string[]> = {
     'Esta isla estará disponible próximamente.',
     'Vuelve a Gran Canaria, ¡que allí hay faena!',
   ],
+  'comico-chistera': [
+    '¡Buenas noches, La Isleta! ¿Cómo estamos?',
+    'Dicen que en Canarias hay ocho islas… y en el escenario, un solo chiste bueno cada media hora.',
+    '¿Viniste en Binter o en ferry? Da igual: el chiste del retraso es el mismo en los dos.',
+    'Si ves un pastor buscando cabras por las dunas… dile que aquí el único que se pierde soy yo entre mis chistes.',
+    '¡Gracias, La Chistera! Propina en aplausos, porfa.',
+  ],
 };

@@ -1,0 +1,20 @@
+{
+  "id": "b182d264-40eb-4c78-9fcf-c8f0735c4a80",
+  "request": {
+    "lower_description": "16-bit SNES Zelda style grey asphalt street of Las Palmas de Gran Canaria, clean road surface, high top-down RPG floor tile, soft pixel clusters",
+    "upper_description": "16-bit SNES Zelda style light beige pedestrian plaza tiles of Vegueta historic district, stone pavement, high top-down RPG floor",
+    "transition_description": "kerb edge between asphalt street and stone plaza, SNES pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 3301
+  }
+}

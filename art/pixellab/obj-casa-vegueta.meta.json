@@ -1,0 +1,16 @@
+{
+  "id": "de3efdd4-3427-4753-be63-2a3759f6b70c",
+  "request": {
+    "description": "16-bit SNES Zelda style top-down Canarian colonial house in Vegueta, white walls wooden balconies and flat roof, transparent background, map building prop 64x64",
+    "image_size": {
+      "width": 64,
+      "height": 64
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 502
+  }
+}

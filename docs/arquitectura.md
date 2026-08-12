@@ -31,7 +31,7 @@ activa, caja de diálogo, botón de mute y controles táctiles.
 | Preload | `scenes/PreloadScene.ts` | Carga de assets con barra y errores visibles; crea animaciones y texturas generadas (cabra, ferry, avión, tajo, símbolo) |
 | Title | `scenes/TitleScene.ts` | Fondo aéreo, Nueva partida/Continuar, arranca el Orquestador y la UI |
 | Island | `scenes/IslandScene.ts` | Overworld: ilustración + polígono andable + POIs. Sin NPCs ni monstruos. |
-| Detail | `scenes/DetailScene.ts` | Sitios jugables (pueblo, dunas, mazmorras…): tilemaps Tiled, NPCs, enemigos, fauna de misión; salida por el borde inferior |
+| Detail | `scenes/DetailScene.ts` | Sitios jugables (pueblo, dunas, Las Palmas, Isleta, Chistera…): tilemaps, NPCs, puertas entre Details, salida al padre o a la isla |
 | TravelMap | `scenes/TravelMapScene.ts` | Mapa del archipiélago; destinos según `destinosDesde()`; animación de viaje |
 | UI | `scenes/UIScene.ts` | HUD (corazones/misión), DialogueBox, mute, pad táctil + botón de ataque |
 

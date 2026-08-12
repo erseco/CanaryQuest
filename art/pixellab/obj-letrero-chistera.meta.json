@@ -1,0 +1,16 @@
+{
+  "id": "0676573c-2e62-443b-802d-7c78323beefd",
+  "request": {
+    "description": "16-bit SNES Zelda style top-down comedy club entrance storefront called La Chistera, neon purple hat sign, door, transparent background, map prop 64x64",
+    "image_size": {
+      "width": 64,
+      "height": 64
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 504
+  }
+}
