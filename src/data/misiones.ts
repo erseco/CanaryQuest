@@ -11,7 +11,7 @@ export interface Mision {
   isla: IslaId;
   titulo: string;
   pasos: PasoMision[];
-  /** Item que se entrega al completar (los símbolos abren el Teide). */
+  /** Al completar: `simbolo-<isla>` (abren el Teide) o `corazon` (+1 corazón máximo). */
   recompensa: string;
 }
 
@@ -38,6 +38,18 @@ export const MISIONES: Record<string, Mision> = {
       { tipo: 'hablar', npc: 'pastor', dialogo: 'pastor-gracias' },
     ],
     recompensa: 'simbolo-gran-canaria',
+  },
+  'alimanas-del-pinar': {
+    id: 'alimanas-del-pinar',
+    isla: 'gran-canaria',
+    titulo: 'Las culebras del pinar',
+    pasos: [
+      { tipo: 'hablar', npc: 'abuela', dialogo: 'abuela-encargo' },
+      { tipo: 'recoger', item: 'espada', cantidad: 1 },
+      { tipo: 'derrotar', enemigo: 'culebra', cantidad: 5 },
+      { tipo: 'hablar', npc: 'abuela', dialogo: 'abuela-gracias' },
+    ],
+    recompensa: 'corazon',
   },
   'agua-de-los-jameos': {
     id: 'agua-de-los-jameos',

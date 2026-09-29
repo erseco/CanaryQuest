@@ -15,9 +15,22 @@
 | Mapas Roque Nublo y casa-cueva | `public/assets/maps/roque-nublo.tmj`, `casa-cueva.tmj` | Generados por `scripts/generar-mapas-cumbre.py` | Propios |
 | Atlas del héroe "misa" | `public/assets/sprites/atlas.png/.json` | Tutorial oficial de Phaser 3 / plantilla phaser-rpg | Libre uso en juegos Phaser |
 | Sprite héroe RPG-Maker | `public/assets/sprites/hero.png` | Intento previo canarias-rpg (formato RPG Maker 3×4) | Verificar antes de publicar |
-| Cangrejo (alimaña) | `public/assets/sprites/crab.png` | [BrowserQuest](https://github.com/mozilla/BrowserQuest) (Mozilla / Little Workshop) | CC-BY-SA 3.0 |
+| Enemigos (cangrejo, culebra, rata, murciélago, goblin, esqueleto, espectro), NPCs, cofre, espada y humo | `public/assets/sprites/bq/` (imágenes a escala 2 + JSON de animación) | [BrowserQuest](https://github.com/mozilla/BrowserQuest) (Mozilla / Little Workshop) | CC-BY-SA 3.0 |
 | Música (título, mapa, isla) | `public/assets/audio/*.ogg` | BrowserQuest | CC-BY-SA 3.0 |
 | Efectos de sonido | `public/assets/audio/*.mp3` | BrowserQuest | CC-BY-SA 3.0 |
+
+## Recursos evaluados y no incluidos en el build
+
+- **TongaApp** (UCTICEE, Gobierno de Canarias): ~1.200 ilustraciones canarias
+  (flora, fauna, antiguos canarios, personajes, arquitectura…). Licencia
+  **CC BY-NC-SA**: la cláusula *no comercial* no es compatible con distribuir
+  el juego como software libre (GPLv3). `scripts/descargar-tongapp.sh` las baja
+  a `art/tongapp/` (ignorado por git) como referencia de estilo/contenido. Solo
+  podrían entrar en el juego con permiso expreso de sus autores para
+  relicenciarlas (p. ej. CC BY-SA).
+- **Liberated Pixel Cup** (32 px, CC-BY-SA 3.0 / GPL 3.0) y **Zelda-like
+  tilesets** de ArMM1998 (16 px, CC0): compatibles con GPL; candidatos para
+  terrenos (lava, roca volcánica, agua, bosque) y props.
 
 ## Pendiente de verificación antes de publicar
 

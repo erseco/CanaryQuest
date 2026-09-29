@@ -81,3 +81,23 @@ describe('QuestManager', () => {
     expect(qm2.progreso(ID)).toBe(1);
   });
 });
+
+describe('alimañas del pinar (espada)', () => {
+  const M = 'alimanas-del-pinar';
+
+  it('salta «recoger espada» si ya estaba en el inventario', () => {
+    const qm = new QuestManager({});
+    qm.activar(M);
+    qm.notificar({ tipo: 'hablar', objetivo: 'abuela' });
+    expect(qm.sincronizarInventario(['espada'])).toEqual([M]);
+    expect(qm.pasoActual(M)).toMatchObject({ tipo: 'derrotar', enemigo: 'culebra' });
+  });
+
+  it('no avanza sin el objeto', () => {
+    const qm = new QuestManager({});
+    qm.activar(M);
+    qm.notificar({ tipo: 'hablar', objetivo: 'abuela' });
+    expect(qm.sincronizarInventario([])).toEqual([]);
+    expect(qm.pasoActual(M)).toMatchObject({ tipo: 'recoger', item: 'espada' });
+  });
+});

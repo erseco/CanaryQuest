@@ -4,3 +4,6 @@ canaryquest.zip
 .DS_Store
 *.log
 .env
+
+# TongaApp (CC BY-NC-SA, no redistribuible con el juego GPL): scripts/descargar-tongapp.sh
+art/tongapp/

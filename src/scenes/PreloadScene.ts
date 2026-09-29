@@ -1,5 +1,12 @@
 import Phaser from 'phaser';
+import { NPCS_BQ, SPRITES_BQ } from '../data/enemigos';
 import { ISLAS } from '../data/islas';
+
+interface SpriteBq {
+  width: number;
+  height: number;
+  animations: Record<string, { row: number; length: number }>;
+}
 
 export class PreloadScene extends Phaser.Scene {
   constructor() {
@@ -60,10 +67,17 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.spritesheet('crab', 'assets/sprites/crab.png', {
-      frameWidth: 32,
-      frameHeight: 32,
-    });
+    // Sprites de BrowserQuest a escala 2: el JSON original trae tamaño de frame y animaciones
+    for (const s of [...SPRITES_BQ, ...NPCS_BQ, 'item-sword1', 'death']) {
+      this.load.json(`bqjson-${s}`, `assets/sprites/bq/${s}.json`);
+      this.load.once(`filecomplete-json-bqjson-${s}`, (_k: string, _t: string, d: SpriteBq) => {
+        this.load.spritesheet(`bq-${s}`, `assets/sprites/bq/${s}.png`, {
+          frameWidth: d.width * 2,
+          frameHeight: d.height * 2,
+        });
+      });
+    }
+    this.load.image('bq-chest', 'assets/sprites/bq/chest.png');
     // Decor PixelLab (props de mapa)
     this.load.image('decor-palmera', 'assets/sprites/pixellab-palmera.png');
     this.load.image('decor-roca-duna', 'assets/sprites/pixellab-roca-duna.png');
@@ -110,19 +124,20 @@ export class PreloadScene extends Phaser.Scene {
         repeat: -1,
       });
     }
-    // Cangrejo (BrowserQuest): hoja de 8 columnas; walk_down fila 8, walk_right fila 2, walk_up fila 6.
-    this.anims.create({
-      key: 'crab-walk',
-      frames: this.anims.generateFrameNumbers('crab', { start: 8 * 8, end: 8 * 8 + 5 }),
-      frameRate: 8,
-      repeat: -1,
-    });
-    this.anims.create({
-      key: 'crab-die',
-      frames: this.anims.generateFrameNumbers('crab', { start: 0, end: 7 }),
-      frameRate: 12,
-      repeat: 0,
-    });
+    // BrowserQuest: <sprite>-<animación> (walk_right, idle_down, death…); la izquierda es flipX
+    for (const s of [...SPRITES_BQ, ...NPCS_BQ, 'item-sword1', 'death']) {
+      const d = this.cache.json.get(`bqjson-${s}`) as SpriteBq;
+      const columnas = this.textures.get(`bq-${s}`).getSourceImage().width / (d.width * 2);
+      for (const [nombre, a] of Object.entries(d.animations)) {
+        const inicio = a.row * columnas;
+        this.anims.create({
+          key: `${s}-${nombre}`,
+          frames: this.anims.generateFrameNumbers(`bq-${s}`, { start: inicio, end: inicio + a.length - 1 }),
+          frameRate: nombre === 'death' ? 12 : 6,
+          repeat: nombre === 'death' ? 0 : -1,
+        });
+      }
+    }
   }
 
   /** Texturas simples generadas en runtime para lo que aún no tiene sprite. */
@@ -152,6 +167,12 @@ export class PreloadScene extends Phaser.Scene {
     g.fillStyle(0xffffff).fillRect(18, 2, 8, 28); // alas
     g.fillStyle(0x00a9a5).fillRect(0, 10, 6, 12); // cola turquesa
     g.generateTexture('avion', 48, 32);
+
+    // Corazón que sueltan los enemigos (Zelda)
+    g.clear();
+    g.fillStyle(0xe63946).fillCircle(4, 4, 4).fillCircle(10, 4, 4).fillTriangle(0, 5, 14, 5, 7, 13);
+    g.fillStyle(0xffffff).fillRect(3, 2, 2, 2);
+    g.generateTexture('corazon', 14, 14);
 
     // Tajo de espada (arco blanco)
     g.clear();

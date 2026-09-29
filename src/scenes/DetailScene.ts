@@ -5,6 +5,8 @@ import { Npc } from '../sistemas/Npc';
 import { Enemigo } from '../sistemas/Enemigo';
 import { Musica } from '../sistemas/Musica';
 import type { QuestManager } from '../sistemas/QuestManager';
+import type { Partida } from '../sistemas/SaveManager';
+import { ESPECIES } from '../data/enemigos';
 
 /** Salida al overworld de isla y, opcionalmente, al mapa Detail padre (interiores). */
 export interface RetornoDetalle {
@@ -48,11 +50,17 @@ export class DetailScene extends Phaser.Scene {
   private npcs: Npc[] = [];
   private enemigos: Enemigo[] = [];
   private cabras: Phaser.GameObjects.Sprite[] = [];
+  private corazones: Phaser.GameObjects.Image[] = [];
+  private cofres: Array<{ punto: PuntoMapa; sprite: Phaser.GameObjects.Image }> = [];
+  private hitos: PuntoMapa[] = [];
   private puertas: PuntoMapa[] = [];
   private puertaCercana: PuntoMapa | null = null;
+  private cofreCercano: (typeof this.cofres)[number] | null = null;
   private npcCercano: Npc | null = null;
   private aviso!: Phaser.GameObjects.Text;
   private altoMapa = 0;
+  private capaMundo!: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer;
+  private solidos: Phaser.GameObjects.Zone[] = [];
   private saliendo = false;
   private entrada = { x: 0, y: 0 };
 
@@ -65,6 +73,9 @@ export class DetailScene extends Phaser.Scene {
     this.npcs = [];
     this.enemigos = [];
     this.cabras = [];
+    this.corazones = [];
+    this.cofres = [];
+    this.hitos = [];
     this.puertas = [];
     this.puertaCercana = null;
     this.npcCercano = null;
@@ -76,6 +87,7 @@ export class DetailScene extends Phaser.Scene {
     const tilesets = this.cargarTilesets(mapa);
     mapa.createLayer('Below Player', tilesets, 0, 0);
     const mundo = mapa.createLayer('World', tilesets, 0, 0)!;
+    this.capaMundo = mundo;
     const encima = mapa.createLayer('Above Player', tilesets, 0, 0)!;
     mundo.setCollisionByProperty({ collides: true });
     encima.setDepth(30);
@@ -206,7 +218,8 @@ export class DetailScene extends Phaser.Scene {
 
     // Decor genérico (props PixelLab precargados como decor-<nombre>).
     // `solido`: bloquea en la base (tronco, fachada); `escala`: tamaño en pantalla.
-    const solidos: Phaser.GameObjects.Zone[] = [];
+    this.solidos = [];
+    const solidos = this.solidos;
     for (const o of objetos) {
       if (o.type !== 'decor') continue;
       const clave = `decor-${o.name}`;
@@ -254,9 +267,28 @@ export class DetailScene extends Phaser.Scene {
       this.npcs.push(pastor);
     }
 
+    // Enemigos (name = especie de data/enemigos.ts); reaparecen al volver a entrar, como en Zelda
+    for (const o of objetos) {
+      if (o.type === 'enemigo' && ESPECIES[o.name]) this.crearEnemigo(o.name, o.x ?? 0, o.y ?? 0);
+    }
+
+    // Cofres (propiedad `item`); abiertos si el objeto ya está en el inventario
+    const inventario = (this.registry.get('partida') as Partida).inventario;
+    for (const o of objetos) {
+      if (o.type !== 'cofre') continue;
+      const item = this.prop(o, 'item') ?? o.name;
+      const sprite = this.add.image(o.x ?? 0, o.y ?? 0, 'bq-chest').setDepth(profundidad(o.y ?? 0));
+      if (inventario.includes(item)) sprite.setTint(0x777777);
+      this.cofres.push({ punto: { nombre: item, tipo: 'cofre', x: o.x ?? 0, y: o.y ?? 0 }, sprite });
+    }
+
+    // Hitos: al pisarlos cuentan como «llegar» para las misiones
+    for (const o of objetos) {
+      if (o.type === 'hito') this.hitos.push({ nombre: o.name, tipo: 'hito', x: o.x ?? 0, y: o.y ?? 0 });
+    }
+
     if (this.datos.mapaId === 'dunas') {
       const cabrasTiled = objetos.filter((o) => o.name === 'cabra' || o.type === 'fauna');
-      const enemigosTiled = objetos.filter((o) => o.name === 'alimana' || o.type === 'enemigo');
       const posCabras: Array<[number, number]> =
         cabrasTiled.length > 0
           ? cabrasTiled.map((o) => [o.x ?? 200, o.y ?? 300])
@@ -277,11 +309,6 @@ export class DetailScene extends Phaser.Scene {
         });
         this.cabras.push(cabra);
       }
-      const posAlimana =
-        enemigosTiled.length > 0
-          ? { x: enemigosTiled[0].x ?? 480, y: enemigosTiled[0].y ?? 400 }
-          : { x: 480, y: 400 };
-      this.crearAlimana(posAlimana.x, posAlimana.y);
     }
   }
 
@@ -310,35 +337,81 @@ export class DetailScene extends Phaser.Scene {
       this.npcs.push(npc);
       return;
     }
+    // Propiedad `sprite`: NPC de BrowserQuest (villager, priest, lavanpc…)
+    const sprite = this.prop(o, 'sprite');
+    if (sprite !== undefined && this.textures.exists(`bq-${sprite}`)) {
+      const npc = new Npc(this, x, y, o.name, `bq-${sprite}`, 0);
+      npc.play(`${sprite}-idle_down`);
+      this.npcs.push(npc);
+      return;
+    }
     const npc = new Npc(this, x, y, o.name, 'hero', 1);
     npc.setDepth(10);
     this.npcs.push(npc);
   }
 
-  private crearAlimana(x: number, y: number): void {
-    const alimana = new Enemigo(this, x, y, 'alimana', 'crab');
-    alimana.setDepth(5);
-    this.enemigos.push(alimana);
+  private crearEnemigo(especie: string, x: number, y: number): void {
+    const enemigo = new Enemigo(this, x, y, especie);
+    this.physics.add.collider(enemigo, this.capaMundo);
+    this.physics.add.collider(enemigo, this.solidos);
+    this.enemigos.push(enemigo);
+  }
+
+  private tieneEspada(): boolean {
+    return (this.registry.get('partida') as Partida).inventario.includes('espada');
   }
 
   private atacar(): void {
     if (this.registry.get('dialogo-abierto') === true) return;
+    if (!this.tieneEspada()) {
+      this.avisoTemporal('Aún no tienes espada. Dicen que en Artenara guardan una…');
+      return;
+    }
     const golpe = this.jugador.atacar();
     if (golpe === null) return;
     for (const enemigo of this.enemigos) {
       if (
         !enemigo.estaMuerto &&
-        Phaser.Math.Distance.Between(golpe.x, golpe.y, enemigo.x, enemigo.y) < golpe.radio + 14
+        Phaser.Math.Distance.Between(golpe.x, golpe.y, enemigo.x, enemigo.y) < golpe.radio + 16
       ) {
-        enemigo.recibirGolpe(this.jugador.x, this.jugador.y);
-        this.game.events.emit('derrotado', { enemigo: enemigo.especie });
-        this.time.delayedCall(9000, () => {
-          if (this.scene.isActive() && this.datos.mapaId === 'dunas') {
-            this.crearAlimana(480, 400);
+        this.sound.play('sfx-hit', { volume: 0.5 });
+        if (enemigo.recibirGolpe(this.jugador.x, this.jugador.y)) {
+          this.game.events.emit('derrotado', { enemigo: enemigo.especie });
+          if (Math.random() < (ESPECIES[enemigo.especie]?.corazon ?? 0)) {
+            this.soltarCorazon(enemigo.x, enemigo.y);
           }
-        });
+        }
       }
     }
+  }
+
+  private soltarCorazon(x: number, y: number): void {
+    const c = this.add.image(x, y, 'corazon').setScale(1.5).setDepth(profundidad(y));
+    this.tweens.add({ targets: c, y: y - 6, duration: 400, yoyo: true, repeat: -1 });
+    this.corazones.push(c);
+  }
+
+  private avisoTemporal(texto: string): void {
+    this.aviso.setText(texto).setVisible(true);
+    this.npcCercano = null;
+    this.puertaCercana = null;
+    this.cofreCercano = null;
+    this.time.delayedCall(1800, () => this.aviso.setVisible(false));
+  }
+
+  private abrirCofre(cofre: (typeof this.cofres)[number]): void {
+    const partida = this.registry.get('partida') as Partida;
+    const item = cofre.punto.nombre;
+    if (partida.inventario.includes(item)) return;
+    cofre.sprite.setTint(0x777777);
+    this.sound.play('sfx-chest', { volume: 0.7 });
+    // Pose Zelda: el objeto sube sobre la cabeza del héroe
+    const icono = this.add
+      .sprite(this.jugador.x, this.jugador.y - 60, item === 'espada' ? 'bq-item-sword1' : 'corazon', 0)
+      .setDepth(50);
+    this.tweens.add({ targets: icono, y: icono.y - 16, duration: 400 });
+    this.game.events.emit('objeto-conseguido', { item });
+    this.game.events.emit('dialogo', { clave: `cofre-${item}`, alTerminar: () => icono.destroy() });
   }
 
   update(_time: number, delta: number): void {
@@ -349,7 +422,7 @@ export class DetailScene extends Phaser.Scene {
     this.jugador.actualizar(delta);
 
     for (const enemigo of this.enemigos) {
-      enemigo.actualizar(this.jugador.x, this.jugador.y);
+      enemigo.actualizar(this.jugador.x, this.jugador.y, this.time.now);
       if (
         !enemigo.estaMuerto &&
         !this.jugador.invulnerable &&
@@ -388,6 +461,22 @@ export class DetailScene extends Phaser.Scene {
       }
     }
 
+    for (const c of [...this.corazones]) {
+      if (Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y - 10, c.x, c.y) < 24) {
+        this.sound.play('sfx-loot', { volume: 0.6 });
+        this.corazones.splice(this.corazones.indexOf(c), 1);
+        c.destroy();
+        this.game.events.emit('curar', { cantidad: 2 });
+      }
+    }
+
+    for (const h of [...this.hitos]) {
+      if (this.cercaDe(h)) {
+        this.hitos.splice(this.hitos.indexOf(h), 1);
+        this.game.events.emit('llegar', { poi: h.nombre });
+      }
+    }
+
     if (this.jugador.y > this.altoMapa - 12) {
       this.salirMapa();
       return;
@@ -396,12 +485,18 @@ export class DetailScene extends Phaser.Scene {
     const puerta =
       this.puertas.find((p) => this.cercaDe(p)) ?? null;
     const npc = this.npcs.find((n) => n.estaCerca(this.jugador.x, this.jugador.y)) ?? null;
+    const inventario = (this.registry.get('partida') as Partida).inventario;
+    const cofre =
+      this.cofres.find((c) => this.cercaDe(c.punto) && !inventario.includes(c.punto.nombre)) ?? null;
 
-    if (npc !== this.npcCercano || puerta !== this.puertaCercana) {
+    if (npc !== this.npcCercano || puerta !== this.puertaCercana || cofre !== this.cofreCercano) {
       this.npcCercano = npc;
       this.puertaCercana = puerta;
+      this.cofreCercano = cofre;
       if (npc) {
         this.aviso.setText(`Hablar con ${this.nombreAmigable(npc.nombre)} — E`).setVisible(true);
+      } else if (cofre) {
+        this.aviso.setText('Abrir el cofre — E').setVisible(true);
       } else if (puerta) {
         this.aviso.setText(`${puerta.etiqueta ?? puerta.nombre} — E`).setVisible(true);
       } else {
@@ -417,12 +512,19 @@ export class DetailScene extends Phaser.Scene {
   private nombreAmigable(id: string): string {
     if (id === 'comico') return 'el cómico';
     if (id === 'pastor') return 'el pastor';
+    if (id === 'abuela') return 'la abuela';
     return id;
   }
 
   private interactuar(): void {
     if (this.npcCercano !== null) {
       this.hablarCon(this.npcCercano);
+      return;
+    }
+    if (this.cofreCercano !== null) {
+      this.abrirCofre(this.cofreCercano);
+      this.cofreCercano = null;
+      this.aviso.setVisible(false);
       return;
     }
     if (this.puertaCercana !== null) this.entrarPuerta(this.puertaCercana);

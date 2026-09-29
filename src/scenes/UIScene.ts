@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { DialogueBox } from '../sistemas/DialogueBox';
 import { DIALOGOS } from '../data/dialogos';
+import { ESPECIES } from '../data/enemigos';
+import type { QuestManager } from '../sistemas/QuestManager';
 import { MISIONES } from '../data/misiones';
 import type { Partida } from '../sistemas/SaveManager';
 
@@ -55,8 +57,11 @@ export class UIScene extends Phaser.Scene {
     const alDialogo = ({ clave, alTerminar }: { clave: string; alTerminar?: () => void }) =>
       this.abrirDialogo(clave, alTerminar);
     const alDano = () => this.recibirDano();
-    const alCurar = () => {
-      this.registry.set('vida', this.registry.get('vida-max'));
+    /** Sin cantidad cura del todo; los corazones que sueltan los enemigos curan 2 (uno entero). */
+    const alCurar = (datos?: { cantidad?: number }) => {
+      const max = this.registry.get('vida-max') as number;
+      const vida = this.registry.get('vida') as number;
+      this.registry.set('vida', Math.min(max, vida + (datos?.cantidad ?? max)));
       this.pintarCorazones();
     };
     const alMision = () => this.pintarMision();
@@ -155,7 +160,16 @@ export class UIScene extends Phaser.Scene {
       this.mision.setText(simbolos > 0 ? `Símbolos guanches: ${simbolos}/8` : '');
       return;
     }
-    this.mision.setText(`Misión: ${MISIONES[activa[0]].titulo}`);
+    // El QuestManager va por delante de la partida guardada: leer de él el paso y el progreso
+    const qm = this.registry.get('quest-manager') as QuestManager | undefined;
+    const paso = qm?.pasoActual(activa[0]);
+    let objetivo = '';
+    if (paso?.tipo === 'derrotar') {
+      objetivo = ` — ${ESPECIES[paso.enemigo]?.nombre ?? paso.enemigo} ${qm!.progreso(activa[0])}/${paso.cantidad}`;
+    } else if (paso?.tipo === 'recoger') {
+      objetivo = ` — Consigue: ${paso.item} ${qm!.progreso(activa[0])}/${paso.cantidad}`;
+    }
+    this.mision.setText(`Misión: ${MISIONES[activa[0]].titulo}${objetivo}`);
   }
 
   private crearBotonMute(): void {

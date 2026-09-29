@@ -78,6 +78,23 @@ export class QuestManager {
     return avanzadas;
   }
 
+  /**
+   * Avanza los pasos «recoger» de 1 unidad cuyo objeto ya está en el inventario
+   * (p. ej. si ya abriste el cofre de la espada antes de que te la pidieran).
+   */
+  sincronizarInventario(inventario: string[]): string[] {
+    const avanzadas: string[] = [];
+    for (const id of Object.keys(this.estado)) {
+      let paso = this.pasoActual(id);
+      while (paso?.tipo === 'recoger' && paso.cantidad === 1 && inventario.includes(paso.item)) {
+        this.notificar({ tipo: 'recoger', objetivo: paso.item });
+        avanzadas.push(id);
+        paso = this.pasoActual(id);
+      }
+    }
+    return avanzadas;
+  }
+
   exportar(): Record<string, EstadoMision> {
     return structuredClone(this.estado);
   }

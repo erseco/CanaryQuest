@@ -190,7 +190,8 @@ def cumbre() -> None:
             return False
         if min(dist_segmento(tx, ty, a, b) for a, b in segs) < 2.5:
             return False
-        claros = [(40, 44, 4), (14, 31, 4), (40, 18, 5), (56, 35, 3)]
+        claros = [(40, 44, 4), (14, 31, 4), (40, 18, 5), (56, 35, 3), (22, 12, 3), (58, 12, 3),
+                  (26, 40, 3), (60, 42, 3), (48, 20, 3), (68, 18, 3), (10, 38, 3), (52, 38, 3), (30, 20, 3)]
         return all(math.hypot(tx - cx, ty - cy) > r for cx, cy, r in claros)
 
     pinos: list[tuple[float, float]] = []
@@ -200,6 +201,13 @@ def cumbre() -> None:
             pinos.append((px, py))
     for px, py in pinos:
         objetos.append(obj(len(objetos) + 1, "pino-canario", "decor", px, py, {"solido": True}))
+
+    # Enemigos en claros del pinar (lejos de la entrada sur y de la casa-cueva)
+    culebras = [(22, 12), (58, 12), (26, 40), (60, 42), (48, 20), (68, 18), (10, 38)]
+    for tx, ty in culebras:
+        objetos.append(obj(len(objetos) + 1, "culebra", "enemigo", tx * T, ty * T))
+    for tx, ty in [(52, 38), (30, 20)]:
+        objetos.append(obj(len(objetos) + 1, "rata", "enemigo", tx * T, ty * T))
 
     tss = [
         tileset("cumbre-camino", 1, "hierba", "camino", None),
@@ -237,7 +245,11 @@ def casa_cueva() -> None:
         capa_tiles(2, "World", W, H, mundo),
         capa_tiles(3, "Above Player", W, H, [0] * (W * H)),
     ]
-    objetos = [obj(1, "Spawn Point", "", 15.5 * T, 14 * T)]
+    objetos = [
+        obj(1, "Spawn Point", "", 15.5 * T, 14 * T),
+        obj(2, "abuela", "npc", 12 * T, 7 * T, {"sprite": "priest"}),
+        obj(3, "espada", "cofre", 19 * T, 6 * T, {"item": "espada"}),
+    ]
     (MAPS / "casa-cueva.tmj").write_text(json.dumps(mapa(W, H, tss, capas, objetos)))
     print("casa-cueva.tmj", W, "x", H)
 
