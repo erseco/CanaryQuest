@@ -59,7 +59,7 @@ export class DetailScene extends Phaser.Scene {
   private npcCercano: Npc | null = null;
   private aviso!: Phaser.GameObjects.Text;
   private altoMapa = 0;
-  private capaMundo!: Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer;
+  private capasSolidas: Array<Phaser.Tilemaps.TilemapLayer | Phaser.Tilemaps.TilemapGPULayer> = [];
   private solidos: Phaser.GameObjects.Zone[] = [];
   private saliendo = false;
   private entrada = { x: 0, y: 0 };
@@ -85,12 +85,11 @@ export class DetailScene extends Phaser.Scene {
   create(): void {
     const mapa = this.make.tilemap({ key: `map-${this.datos.mapaId}` });
     const tilesets = this.cargarTilesets(mapa);
-    mapa.createLayer('Below Player', tilesets, 0, 0);
-    const mundo = mapa.createLayer('World', tilesets, 0, 0)!;
-    this.capaMundo = mundo;
-    const encima = mapa.createLayer('Above Player', tilesets, 0, 0)!;
-    mundo.setCollisionByProperty({ collides: true });
-    encima.setDepth(30);
+    // Todas las capas de tiles en orden; cualquiera puede bloquear (tiles con `collides`)
+    const capas = mapa.layers.map((l) => mapa.createLayer(l.name, tilesets, 0, 0)!);
+    for (const c of capas) c.setCollisionByProperty({ collides: true });
+    capas.find((c) => c.layer.name === 'Above Player')?.setDepth(30);
+    this.capasSolidas = capas;
     this.altoMapa = mapa.heightInPixels;
 
     const spawn = mapa.findObject('Objects', (o) => o.name === 'Spawn Point');
@@ -99,7 +98,7 @@ export class DetailScene extends Phaser.Scene {
       y: spawn?.y ?? 1216,
     };
     this.jugador = new Jugador(this, this.entrada.x, this.entrada.y);
-    this.physics.add.collider(this.jugador, mundo);
+    this.physics.add.collider(this.jugador, this.capasSolidas);
     this.jugador.setDepth(10);
 
     this.poblarContenido(mapa);
@@ -160,8 +159,28 @@ export class DetailScene extends Phaser.Scene {
       this.game.events.off('jugador-muerto', alMorir);
     });
 
+    // Tiled exporta las propiedades del mapa como array; Phaser deja {} si no hay ninguna
+    const props = mapa.properties as Array<{ name: string; value: unknown }> | object;
+    if (Array.isArray(props) && props.some((p) => p.name === 'niebla' && p.value === true)) {
+      this.crearNiebla();
+    }
+
     Musica.reproducir(this, 'musica-isla');
     this.game.events.emit('escena-cambiada', { escena: 'Detail', mapaId: this.datos.mapaId });
+  }
+
+  /** Niebla del alisio sobre la laurisilva: dos velos que se desplazan despacio. */
+  private crearNiebla(): void {
+    const { width, height } = this.scale;
+    for (const [alpha, dur] of [[0.14, 9000], [0.1, 13000]] as const) {
+      const velo = this.add
+        .rectangle(0, 0, width * 1.5, height, 0xe8f0f0, alpha)
+        .setOrigin(0)
+        .setScrollFactor(0)
+        .setDepth(35);
+      this.tweens.add({ targets: velo, x: -width * 0.5, duration: dur, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+      this.tweens.add({ targets: velo, alpha: alpha * 0.4, duration: dur * 0.7, yoyo: true, repeat: -1 });
+    }
   }
 
   private cargarTilesets(mapa: Phaser.Tilemaps.Tilemap): Phaser.Tilemaps.Tileset[] {
@@ -178,7 +197,8 @@ export class DetailScene extends Phaser.Scene {
     };
     const cargados: Phaser.Tilemaps.Tileset[] = [];
     for (const ts of mapa.tilesets) {
-      const clave = clavePorNombre[ts.name] ?? 'tiles-pueblo';
+      // Los tilesets LPC se cargan con su propio nombre como clave
+      const clave = this.textures.exists(ts.name) ? ts.name : (clavePorNombre[ts.name] ?? 'tiles-pueblo');
       const añadido = mapa.addTilesetImage(ts.name, clave);
       if (añadido) cargados.push(añadido);
     }
@@ -321,6 +341,10 @@ export class DetailScene extends Phaser.Scene {
       chistera: 'La Chistera',
       'roque-nublo': 'Roque Nublo',
       presa: 'Presa de los Hornos',
+      'crater-timanfaya': 'Cráter de Timanfaya',
+      'jameos-del-agua': 'Jameos del Agua',
+      'corazon-garajonay': 'Corazón de Garajonay',
+      betancuria: 'Betancuria',
     };
     return nombres[id] ?? id;
   }
@@ -352,7 +376,7 @@ export class DetailScene extends Phaser.Scene {
 
   private crearEnemigo(especie: string, x: number, y: number): void {
     const enemigo = new Enemigo(this, x, y, especie);
-    this.physics.add.collider(enemigo, this.capaMundo);
+    this.physics.add.collider(enemigo, this.capasSolidas);
     this.physics.add.collider(enemigo, this.solidos);
     this.enemigos.push(enemigo);
   }
@@ -421,7 +445,13 @@ export class DetailScene extends Phaser.Scene {
     this.jugador.padTactil.set(pad.x, pad.y);
     this.jugador.actualizar(delta);
 
+    // Con un diálogo abierto el mundo se congela (como en Zelda)
+    const pausa = this.jugador.bloqueado;
     for (const enemigo of this.enemigos) {
+      if (pausa) {
+        if (!enemigo.estaMuerto) enemigo.setVelocity(0, 0);
+        continue;
+      }
       enemigo.actualizar(this.jugador.x, this.jugador.y, this.time.now);
       if (
         !enemigo.estaMuerto &&
@@ -513,6 +543,10 @@ export class DetailScene extends Phaser.Scene {
     if (id === 'comico') return 'el cómico';
     if (id === 'pastor') return 'el pastor';
     if (id === 'abuela') return 'la abuela';
+    if (id === 'guardiana-jameos') return 'la guardiana';
+    if (id === 'maestra-silbo') return 'la maestra silbadora';
+    if (id === 'quesera') return 'la quesera';
+    if (id === 'testigo-dunas') return 'el cabrero';
     return id;
   }
 

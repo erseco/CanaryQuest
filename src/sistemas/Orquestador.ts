@@ -23,6 +23,14 @@ export function iniciarOrquestador(game: Phaser.Game): void {
 
   const avanzar = (avanzadas: string[]): void => {
     if (avanzadas.length === 0) return;
+    avanzadas.push(...qm.sincronizarInventario(partida().inventario));
+    // Misiones que terminan con «llegar» o «recoger» (sin NPC final): recompensa aquí
+    for (const id of new Set(avanzadas)) {
+      if (id !== ID && qm.estaCompletada(id)) {
+        darRecompensa(MISIONES[id].recompensa);
+        game.events.emit('dialogo', { clave: `${id}-fin` });
+      }
+    }
     guardar();
     game.events.emit('mision-cambiada');
   };
@@ -35,7 +43,7 @@ export function iniciarOrquestador(game: Phaser.Game): void {
   game.events.on('objeto-conseguido', ({ item }: { item: string }) => {
     const p = partida();
     if (!p.inventario.includes(item)) p.inventario.push(item);
-    qm.notificar({ tipo: 'recoger', objetivo: item });
+    avanzar(qm.notificar({ tipo: 'recoger', objetivo: item }));
     game.events.emit('mision-cambiada');
     guardar();
   });

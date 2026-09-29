@@ -51,6 +51,13 @@ export class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map-chistera', 'assets/maps/chistera.tmj');
     this.load.tilemapTiledJSON('map-roque-nublo', 'assets/maps/roque-nublo.tmj');
     this.load.tilemapTiledJSON('map-casa-cueva', 'assets/maps/casa-cueva.tmj');
+    for (const m of ['timanfaya', 'jameos', 'garajonay', 'betancuria']) {
+      this.load.tilemapTiledJSON(`map-${m}`, `assets/maps/${m}.tmj`);
+    }
+    // Terrenos LPC (scripts/lpc-a-wang.py): la clave es el nombre del tileset en el .tmj
+    for (const t of ['lava', 'picon', 'tierra-roja', 'arena', 'camino', 'agua', 'hierba', 'musgo']) {
+      this.load.image(`lpc-${t}`, `assets/tilesets/lpc-${t}-32.png`);
+    }
     this.load.image('tiles-pueblo', 'assets/tilesets/tuxemon-32px-extruido.png');
     this.load.image('tiles-dunas', 'assets/tilesets/pixellab-dunas-32.png');
     this.load.image('tiles-plaza', 'assets/tilesets/pixellab-pueblo-32.png');
@@ -89,6 +96,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('decor-escenario-micro', 'assets/sprites/pixellab-escenario-micro.png');
     this.load.image('decor-comico', 'assets/sprites/pixellab-comico.png');
     this.load.image('decor-pino-canario', 'assets/sprites/pixellab-pino-canario.png');
+    for (const p of ['laurel', 'arbusto', 'aguja-volcanica', 'aguja-ocre', 'roca-malpais']) {
+      this.load.image(`decor-${p}`, `assets/sprites/lpc-${p}.png`);
+    }
 
     // Audio
     this.load.audio('musica-titulo', 'assets/audio/title-music.ogg');

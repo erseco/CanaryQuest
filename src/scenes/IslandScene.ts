@@ -77,6 +77,9 @@ export class IslandScene extends Phaser.Scene {
       if (isla.aeropuerto !== null) {
         this.pois.push({ nombre: 'aeropuerto', tipo: 'transporte', ...isla.aeropuerto });
       }
+      for (const z of isla.zonas ?? []) {
+        this.pois.push({ nombre: z.mapa, tipo: 'entrada', x: z.x, y: z.y });
+      }
     }
 
     const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === 'spawn') ?? { x: 400, y: 900 };
@@ -92,7 +95,7 @@ export class IslandScene extends Phaser.Scene {
           ? poi.nombre === 'puerto'
             ? '⚓'
             : '✈'
-          : ENTRADAS_DETALLE.has(poi.nombre)
+          : ENTRADAS_DETALLE.has(poi.nombre) || poi.tipo === 'entrada'
             ? '★'
             : '◆';
       this.add
@@ -188,7 +191,8 @@ export class IslandScene extends Phaser.Scene {
       'las-palmas': 'Las Palmas (Triana · Vegueta · Catedral)',
       isleta: 'La Isleta',
     };
-    return nombres[poi.nombre] ?? poi.nombre;
+    const zona = ISLAS[this.islaId].zonas?.find((z) => z.mapa === poi.nombre);
+    return nombres[poi.nombre] ?? zona?.etiqueta ?? poi.nombre;
   }
 
   private activarPoi(): void {

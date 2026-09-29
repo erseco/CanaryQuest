@@ -24,6 +24,8 @@ export interface Isla {
   aeropuerto: Punto | null;
   /** Centro de la isla sobre mapa-mundo.jpg (2752×1536). */
   mapaMundo: Punto;
+  /** Zonas de detalle (mapa Tiled `mapa`) para islas sin .tmj propio de overworld. */
+  zonas?: Array<Punto & { mapa: string; etiqueta: string }>;
 }
 
 export const ISLAS: Record<IslaId, Isla> = {
@@ -50,6 +52,7 @@ export const ISLAS: Record<IslaId, Isla> = {
     puerto: { x: 1090, y: 790 },
     aeropuerto: { x: 700, y: 1030 },
     mapaMundo: { x: 812, y: 1115 },
+    zonas: [{ mapa: 'garajonay', etiqueta: 'Bosque de Garajonay', x: 630, y: 660 }],
   },
   tenerife: {
     id: 'tenerife',
@@ -74,6 +77,7 @@ export const ISLAS: Record<IslaId, Isla> = {
     puerto: { x: 220, y: 1120 },
     aeropuerto: { x: 890, y: 760 },
     mapaMundo: { x: 2435, y: 991 },
+    zonas: [{ mapa: 'betancuria', etiqueta: 'Betancuria y el malpaís', x: 560, y: 700 }],
   },
   lanzarote: {
     id: 'lanzarote',
@@ -82,6 +86,10 @@ export const ISLAS: Record<IslaId, Isla> = {
     puerto: { x: 830, y: 880 },
     aeropuerto: { x: 740, y: 950 },
     mapaMundo: { x: 2229, y: 399 },
+    zonas: [
+      { mapa: 'timanfaya', etiqueta: 'Montañas del Fuego (Timanfaya)', x: 560, y: 480 },
+      { mapa: 'jameos', etiqueta: 'Jameos del Agua', x: 900, y: 700 },
+    ],
   },
   'la-graciosa': {
     id: 'la-graciosa',

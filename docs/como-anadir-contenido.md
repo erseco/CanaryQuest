@@ -3,17 +3,39 @@
 ## Añadir una misión a una isla existente
 
 1. **Define la misión** en `src/data/misiones.ts`: id, isla, título, pasos
-   (`hablar | recoger | derrotar | llegar`) y recompensa.
-2. **Escribe los diálogos** en `src/data/dialogos.ts` (una clave por estado:
-   encargo, en curso, entrega, completada).
-3. **Coloca el NPC** en la escena correspondiente (`new Npc(...)` en
-   DetailScene o IslandScene) y añade su caso en el `npc-hablar` del
-   `Orquestador.ts` siguiendo el patrón de `hablarConPastor()`.
-4. **Coloca los objetos/enemigos** que pidan los pasos (mira cómo
-   IslandScene crea cabras y alimaña en `crearFauna()`; el pickup se
-   condiciona al paso activo con `qm.pasoActual(id)`).
+   (`hablar | recoger | derrotar | llegar`) y recompensa (`simbolo-<isla>` o
+   `corazon`).
+2. **Escribe los diálogos** en `src/data/dialogos.ts`: el `dialogo` de cada
+   paso `hablar`, más `<mision>-en-curso`, `<mision>-completada` y, si la
+   misión termina sin NPC (en un `llegar`/`recoger`), `<mision>-fin`.
+3. **No hace falta tocar el Orquestador**: cualquier NPC que aparezca en un
+   paso `hablar` activa y avanza su misión solo (`hablarConNpcDeMision`).
+4. **Coloca en el mapa (capa `Objects`)** lo que pidan los pasos:
+   - NPC: tipo `npc`, `name` = id del paso, propiedad `sprite` (villager,
+     villagegirl, priest, forestnpc, desertnpc, lavanpc, beachnpc).
+   - Enemigos: tipo `enemigo`, `name` = especie de `src/data/enemigos.ts`
+     (culebra, rata, murcielago, ladron, esqueleto, alimana). Reaparecen al
+     volver a entrar al mapa.
+   - Objetos: tipo `cofre` con propiedad `item` (la espada es `espada`).
+   - Lugares: tipo `hito` (cuenta como `llegar`) y tipo `zona` (cartel).
 5. **Test**: añade un caso en `tests/questManager.test.ts` recorriendo los
    pasos de la misión nueva.
+
+## Generar zonas con terrenos (paisajes de isla)
+
+Los mapas grandes se generan por código y siguen siendo editables en Tiled
+(llevan *wangsets* para el pincel de terrenos):
+
+- `scripts/generar-mapas-cumbre.py`: Roque Nublo y casa-cueva (tilesets PixelLab).
+- `scripts/lpc-a-wang.py`: convierte terrenos LPC de `art/lpc/` en hojas Wang
+  (lava, picón, tierra roja, arena, camino, agua, hierba, musgo) y props.
+- `scripts/generar-mapas-islas.py`: Timanfaya, Jameos, Garajonay, Betancuria.
+  Cada terreno es una capa; los tiles con `collides` (lava, agua) bloquean.
+  Propiedad de mapa `niebla: true` para la bruma de laurisilva.
+
+Para que una isla sin `.tmj` de overworld tenga entradas, añade `zonas` en
+`src/data/islas.ts` (mapa, etiqueta y posición sobre la ilustración).
+Regenerar un mapa **sobrescribe** los retoques hechos a mano en Tiled.
 
 ## Afinar las colisiones de una isla (quitar el rectángulo genérico)
 

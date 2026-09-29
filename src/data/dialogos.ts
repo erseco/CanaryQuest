@@ -46,6 +46,63 @@ export const DIALOGOS: Record<string, string[]> = {
     '¡Has conseguido la ESPADA DEL CABRERO!',
     'Pulsa ESPACIO (o el botón de ataque) para dar tajos.',
   ],
+  // Lanzarote — El agua de los Jameos
+  'guardiana-encargo': [
+    'Bienvenido a los Jameos del Agua, el tubo volcánico que César Manrique convirtió en arte.',
+    'En este lago vive el jameíto, un cangrejito ciego y blanco que no existe en ningún otro lugar del mundo.',
+    'Necesito que lleves un poco de su agua al cráter de Timanfaya. El volcán y el mar tienen que volver a saludarse.',
+    'Está en el cofre del fondo. ¡Y ni se te ocurra tirar monedas al lago, que los jameítos se mueren!',
+  ],
+  'agua-de-los-jameos-en-curso': [
+    'Lleva el agua al cráter de Timanfaya, en las Montañas del Fuego. Sigue la Ruta de los Volcanes.',
+    'Cuidado con la lava… y con los murciélagos.',
+  ],
+  'cofre-agua-jameos': ['¡Has conseguido AGUA DE LOS JAMEOS!', 'Huele a mar y a volcán.'],
+  'agua-de-los-jameos-fin': [
+    'Viertes el agua en el cráter… ¡FSSSSSHH! Sale un chorro de vapor, como un géiser.',
+    'En Timanfaya, a pocos metros del suelo, la tierra está a más de 400 grados.',
+    '¡Has conseguido el símbolo guanche de Lanzarote!',
+  ],
+  'agua-de-los-jameos-completada': ['Los jameítos y el volcán te dan las gracias.'],
+
+  // La Gomera — El silbo del bosque
+  'silbo-leccion-1': [
+    '¡Fiiiu-fiu! Así saludamos en La Gomera. Es el silbo gomero.',
+    'Es un idioma silbado: se usaba para hablar de barranco a barranco, a kilómetros de distancia.',
+    'La UNESCO lo declaró Patrimonio de la Humanidad. Háblame otra vez y te enseño la segunda lección.',
+  ],
+  'silbo-leccion-2': [
+    'Con los dedos en la boca, el silbo cambia el tono para imitar las vocales: agudo, grave…',
+    'Ahora ve al corazón de Garajonay, al norte, y silba. El bosque te responderá.',
+    'Garajonay es laurisilva: un bosque de laureles que cubría Europa hace millones de años.',
+  ],
+  'silbo-del-bosque-en-curso': ['Sigue el sendero hacia el norte, hasta el corazón del bosque. ¡Fiiiu!'],
+  'silbo-del-bosque-fin': [
+    'Silbas en el corazón de Garajonay… y la niebla te devuelve el silbido, barranco a barranco.',
+    'La humedad del alisio que se queda en las hojas es la que da vida a este bosque.',
+    '¡Has conseguido el símbolo guanche de La Gomera!',
+  ],
+  'silbo-del-bosque-completada': ['Ya silbas casi como un gomero. ¡Fiu-fiu!'],
+
+  // Fuerteventura — El queso majorero robado
+  'quesera-encargo': [
+    '¡Ay, mi niño! Me han robado los quesos majoreros que llevaba a Betancuria.',
+    'Queso de cabra majorera, con denominación de origen… ¡el mejor de Canarias!',
+    'Un cabrero de por el camino del este vio algo. Pregúntale.',
+  ],
+  'testigo-pista': [
+    'Sí, vi a unos tipos verdes corriendo con quesos hacia Betancuria, la villa del norte.',
+    'Betancuria fue la primera capital de Canarias, fundada en 1404. ¡Y ahora es guarida de ladrones!',
+  ],
+  'queso-majorero-en-curso': [
+    'Mis quesos… Ve a Betancuria, al norte, y dale un escarmiento a esos ladrones.',
+  ],
+  'quesera-gracias': [
+    '¡Mis quesos! Con su pimentón y su gofio, como Dios manda.',
+    'Toma, llévate el símbolo guanche de Fuerteventura. Te lo has ganado.',
+  ],
+  'queso-majorero-completada': ['¿Un trocito de queso majorero? ¡Invita la casa!'],
+
   'proximamente': [
     'Esta isla estará disponible próximamente.',
     'Vuelve a Gran Canaria, ¡que allí hay faena!',
