@@ -35,6 +35,9 @@ interface PuntoMapa {
 
 const RADIO_PUERTA = 40;
 
+/** Profundidad dentro de la banda 10–11: por encima del suelo, por debajo de «Above Player» (30). */
+const profundidad = (y: number): number => 10 + y / 10000;
+
 /**
  * Escena de detalle (pueblos, ciudades, dunas, locales, mazmorras) con tilemap Tiled 32 px.
  * Aquí viven NPCs, monstruos e items de misión. El overworld (Island) no los tiene.
@@ -156,6 +159,10 @@ export class DetailScene extends Phaser.Scene {
       'pixellab-pueblo': 'tiles-plaza',
       'pixellab-ciudad': 'tiles-ciudad',
       'pixellab-chistera': 'tiles-chistera',
+      'pixellab-cumbre-camino': 'tiles-cumbre-camino',
+      'pixellab-cumbre-risco': 'tiles-cumbre-risco',
+      'pixellab-cumbre-presa': 'tiles-cumbre-presa',
+      'pixellab-casa-cueva': 'tiles-casa-cueva',
     };
     const cargados: Phaser.Tilemaps.Tileset[] = [];
     for (const ts of mapa.tilesets) {
@@ -197,16 +204,27 @@ export class DetailScene extends Phaser.Scene {
         .setDepth(40);
     }
 
-    // Decor genérico (props PixelLab precargados como decor-<nombre>)
+    // Decor genérico (props PixelLab precargados como decor-<nombre>).
+    // `solido`: bloquea en la base (tronco, fachada); `escala`: tamaño en pantalla.
+    const solidos: Phaser.GameObjects.Zone[] = [];
     for (const o of objetos) {
       if (o.type !== 'decor') continue;
       const clave = `decor-${o.name}`;
       if (!this.textures.exists(clave)) continue;
-      this.add
-        .image(o.x ?? 0, o.y ?? 0, clave)
+      const x = o.x ?? 0;
+      const y = o.y ?? 0;
+      const img = this.add
+        .image(x, y, clave)
         .setOrigin(0.5, 0.85)
-        .setDepth(6);
+        .setScale(Number(this.prop(o, 'escala') ?? 1))
+        .setDepth(profundidad(y));
+      if (this.prop(o, 'solido') === 'true') {
+        const base = this.add.zone(x, y + 2, img.displayWidth * 0.35, 14);
+        this.physics.add.existing(base, true);
+        solidos.push(base);
+      }
     }
+    this.physics.add.collider(this.jugador, solidos);
 
     // Puertas a otros Details
     for (const o of objetos) {
@@ -221,7 +239,7 @@ export class DetailScene extends Phaser.Scene {
       this.add
         .text(o.x ?? 0, (o.y ?? 0) - 28, '🚪', { fontSize: '22px' })
         .setOrigin(0.5)
-        .setDepth(7);
+        .setDepth(12);
     }
 
     // NPCs desde Tiled (type npc) o por mapa
@@ -274,6 +292,8 @@ export class DetailScene extends Phaser.Scene {
       catedral: 'Catedral de Santa Ana',
       isleta: 'La Isleta',
       chistera: 'La Chistera',
+      'roque-nublo': 'Roque Nublo',
+      presa: 'Presa de los Hornos',
     };
     return nombres[id] ?? id;
   }
@@ -340,6 +360,11 @@ export class DetailScene extends Phaser.Scene {
       }
     }
     this.enemigos = this.enemigos.filter((e) => e.active);
+
+    // Orden por Y: quien está más abajo se dibuja delante (pinos, casas, personajes)
+    for (const s of [this.jugador, ...this.npcs, ...this.enemigos, ...this.cabras]) {
+      s.setDepth(profundidad(s.y));
+    }
 
     const qm = this.registry.get('quest-manager') as QuestManager | undefined;
     const paso = qm?.pasoActual('pastor-roque-nublo');

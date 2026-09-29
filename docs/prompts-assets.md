@@ -13,6 +13,15 @@ ilustraciones existentes.
 > pixel clusters, blue ocean background (#1a54c8), soft dithering on
 > coastlines with white foam edge, top-down slightly angled view.
 
+## 0. Props de la cumbre pendientes (lote `roque-nublo`, sin créditos)
+
+`scripts/pixellab-generate.py roque-nublo` generó los 4 tilesets y el pino y se
+quedó sin créditos en `roque-nublo`. Faltan: monolito del Roque Nublo
+(160×224), fachada de casa-cueva de Artenara (128×112), retama, cartel de
+madera y tinaja. Con créditos, comentar en `lote_roque_nublo` lo ya generado y
+relanzar; luego colocarlos en `scripts/generar-mapas-cumbre.py` (la casa-cueva
+usa de momento `casa-canaria` a escala 2 y el interior está vacío).
+
 ## 1. Ilustración de La Graciosa (la única isla que falta) — PRIORITARIA
 
 > [estilo base] Map of La Graciosa island (Canary Islands): small flat

@@ -1,0 +1,16 @@
+{
+  "id": "9fd25242-0969-4861-8480-25422bd619ef",
+  "request": {
+    "description": "16-bit SNES Zelda A Link to the Past style tall Canary Island pine tree (Pinus canariensis) with dense dark green layered needle canopy and thick reddish-brown trunk, transparent background, top-down RPG map prop",
+    "image_size": {
+      "width": 64,
+      "height": 96
+    },
+    "view": "high top-down",
+    "outline": "single color outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "text_guidance_scale": 8.0,
+    "seed": 4411
+  }
+}

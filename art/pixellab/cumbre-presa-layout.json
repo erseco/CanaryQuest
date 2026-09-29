@@ -1,0 +1,194 @@
+[
+  {
+    "local_id": 0,
+    "name": "wang_13",
+    "corners": {
+      "NW": "upper",
+      "NE": "upper",
+      "SW": "lower",
+      "SE": "upper"
+    },
+    "x": 0,
+    "y": 0
+  },
+  {
+    "local_id": 1,
+    "name": "wang_10",
+    "corners": {
+      "NW": "upper",
+      "NE": "lower",
+      "SW": "upper",
+      "SE": "lower"
+    },
+    "x": 32,
+    "y": 0
+  },
+  {
+    "local_id": 2,
+    "name": "wang_4",
+    "corners": {
+      "NW": "lower",
+      "NE": "upper",
+      "SW": "lower",
+      "SE": "lower"
+    },
+    "x": 64,
+    "y": 0
+  },
+  {
+    "local_id": 3,
+    "name": "wang_12",
+    "corners": {
+      "NW": "upper",
+      "NE": "upper",
+      "SW": "lower",
+      "SE": "lower"
+    },
+    "x": 96,
+    "y": 0
+  },
+  {
+    "local_id": 4,
+    "name": "wang_6",
+    "corners": {
+      "NW": "lower",
+      "NE": "upper",
+      "SW": "upper",
+      "SE": "lower"
+    },
+    "x": 0,
+    "y": 32
+  },
+  {
+    "local_id": 5,
+    "name": "wang_8",
+    "corners": {
+      "NW": "upper",
+      "NE": "lower",
+      "SW": "lower",
+      "SE": "lower"
+    },
+    "x": 32,
+    "y": 32
+  },
+  {
+    "local_id": 6,
+    "name": "wang_0",
+    "corners": {
+      "NW": "lower",
+      "NE": "lower",
+      "SW": "lower",
+      "SE": "lower"
+    },
+    "x": 64,
+    "y": 32
+  },
+  {
+    "local_id": 7,
+    "name": "wang_1",
+    "corners": {
+      "NW": "lower",
+      "NE": "lower",
+      "SW": "lower",
+      "SE": "upper"
+    },
+    "x": 96,
+    "y": 32
+  },
+  {
+    "local_id": 8,
+    "name": "wang_11",
+    "corners": {
+      "NW": "upper",
+      "NE": "lower",
+      "SW": "upper",
+      "SE": "upper"
+    },
+    "x": 0,
+    "y": 64
+  },
+  {
+    "local_id": 9,
+    "name": "wang_3",
+    "corners": {
+      "NW": "lower",
+      "NE": "lower",
+      "SW": "upper",
+      "SE": "upper"
+    },
+    "x": 32,
+    "y": 64
+  },
+  {
+    "local_id": 10,
+    "name": "wang_2",
+    "corners": {
+      "NW": "lower",
+      "NE": "lower",
+      "SW": "upper",
+      "SE": "lower"
+    },
+    "x": 64,
+    "y": 64
+  },
+  {
+    "local_id": 11,
+    "name": "wang_5",
+    "corners": {
+      "NW": "lower",
+      "NE": "upper",
+      "SW": "lower",
+      "SE": "upper"
+    },
+    "x": 96,
+    "y": 64
+  },
+  {
+    "local_id": 12,
+    "name": "wang_15",
+    "corners": {
+      "NW": "upper",
+      "NE": "upper",
+      "SW": "upper",
+      "SE": "upper"
+    },
+    "x": 0,
+    "y": 96
+  },
+  {
+    "local_id": 13,
+    "name": "wang_14",
+    "corners": {
+      "NW": "upper",
+      "NE": "upper",
+      "SW": "upper",
+      "SE": "lower"
+    },
+    "x": 32,
+    "y": 96
+  },
+  {
+    "local_id": 14,
+    "name": "wang_9",
+    "corners": {
+      "NW": "upper",
+      "NE": "lower",
+      "SW": "lower",
+      "SE": "upper"
+    },
+    "x": 64,
+    "y": 96
+  },
+  {
+    "local_id": 15,
+    "name": "wang_7",
+    "corners": {
+      "NW": "lower",
+      "NE": "upper",
+      "SW": "upper",
+      "SE": "upper"
+    },
+    "x": 96,
+    "y": 96
+  }
+]

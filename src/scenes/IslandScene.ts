@@ -13,7 +13,7 @@ interface Poi {
 const RADIO_POI = 48;
 
 /** POIs del overworld que abren un mapa de detalle (pueblo, dunas, ciudades…). */
-const ENTRADAS_DETALLE = new Set(['pueblo', 'dunas', 'las-palmas', 'isleta']);
+const ENTRADAS_DETALLE = new Set(['pueblo', 'dunas', 'las-palmas', 'isleta', 'roque-nublo']);
 
 /**
  * Overworld de isla: ilustración + polígono andable + POIs.

@@ -1,0 +1,20 @@
+{
+  "id": "dd633eb5-0b21-4798-9a99-8983ec2dbeab",
+  "request": {
+    "lower_description": "16-bit SNES Zelda A Link to the Past style lush green mountain grass of the Canary pine forest floor, high top-down RPG floor tile",
+    "upper_description": "16-bit SNES Zelda A Link to the Past style raised brown-grey volcanic basalt rock plateau of Gran Canaria summit, cracked rocky cliff top seen from above, high top-down RPG tile",
+    "transition_description": "steep dark rocky cliff edge with shadow dropping down to the grass, pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 4402
+  }
+}

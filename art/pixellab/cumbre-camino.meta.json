@@ -1,0 +1,20 @@
+{
+  "id": "3c768245-33c3-4d06-bc1e-82da571c718f",
+  "request": {
+    "lower_description": "16-bit SNES Zelda A Link to the Past style lush green mountain grass of the Canary pine forest floor with scattered fallen pine needles, high top-down RPG floor tile",
+    "upper_description": "16-bit SNES Zelda A Link to the Past style reddish-brown volcanic dirt hiking trail, packed earth with tiny pebbles, high top-down RPG tile",
+    "transition_description": "grass edge fading into dirt trail with small tufts, pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 4401
+  }
+}

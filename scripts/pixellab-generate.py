@@ -3,7 +3,7 @@
 
 Uso:
   # Opción A: secret en .env (recomendado; no se pushea)
-  python3 scripts/pixellab-generate.py
+  python3 scripts/pixellab-generate.py [lote]   # lotes: dunas (defecto), roque-nublo
 
   # Opción B: variable de entorno
   export PIXELLAB_API_KEY='…'
@@ -115,6 +115,7 @@ def download_url(url: str, dest: Path) -> Image.Image:
 
 
 def pack_tiles(tiles: list, out_png: Path, tile_w: int = 32, cols: int = 4) -> list:
+    """Empaqueta los tiles Wang en una hoja y guarda <nombre>-layout.json con sus esquinas."""
     rows = (len(tiles) + cols - 1) // cols
     sheet = Image.new("RGBA", (cols * tile_w, rows * tile_w), (0, 0, 0, 0))
     layout = []
@@ -134,11 +135,26 @@ def pack_tiles(tiles: list, out_png: Path, tile_w: int = 32, cols: int = 4) -> l
             }
         )
     sheet.save(out_png)
+    (out_png.parent / out_png.name.replace("-sheet.png", "-layout.json")).write_text(
+        json.dumps(layout, indent=2)
+    )
     print("wrote", out_png, sheet.size)
     return layout
 
 
-def create_tileset(name: str, lower: str, upper: str, transition: str = "", seed: int = 1):
+def tile_puro(tiles: list, terreno: str) -> dict:
+    """Base64 del tile con las 4 esquinas en `terreno` ('lower'/'upper'), para usar de referencia."""
+    for t in tiles:
+        if set((t.get("corners") or {}).values()) == {terreno}:
+            img = t.get("image") or t.get("image_data")
+            b64 = str(img.get("base64") if isinstance(img, dict) else img)
+            return {"type": "base64", "base64": b64.split(",", 1)[-1]}
+    raise KeyError(terreno)
+
+
+def create_tileset(
+    name: str, lower: str, upper: str, transition: str = "", seed: int = 1, lower_ref: dict | None = None
+):
     body = {
         "lower_description": lower,
         "upper_description": upper,
@@ -153,6 +169,8 @@ def create_tileset(name: str, lower: str, upper: str, transition: str = "", seed
         "text_guidance_scale": 8.0,
         "seed": seed,
     }
+    if lower_ref is not None:
+        body["lower_reference_image"] = lower_ref
     print(f"\n=== Tileset {name} ===")
     _, data = api("POST", "/create-tileset", body)
     tileset_id = data["tileset_id"]
@@ -163,18 +181,22 @@ def create_tileset(name: str, lower: str, upper: str, transition: str = "", seed
         tileset = ts.get("tileset") or ts
         tiles = tileset.get("tiles") if isinstance(tileset, dict) else None
         if tiles and (tiles[0].get("image") or tiles[0].get("image_data")):
+            meta = {k: v for k, v in body.items() if not k.endswith("reference_image")}
             (OUT / f"{name}.meta.json").write_text(
-                json.dumps({"id": tileset_id, "request": body}, indent=2)
+                json.dumps({"id": tileset_id, "request": meta}, indent=2)
             )
             return tiles
         time.sleep(3)
     raise RuntimeError(tileset_id)
 
 
-def create_map_object(name: str, description: str, size: int = 64, seed: int | None = None):
+def create_map_object(
+    name: str, description: str, size: int | tuple[int, int] = 64, seed: int | None = None
+):
+    w, h = (size, size) if isinstance(size, int) else size
     body = {
         "description": description,
-        "image_size": {"width": size, "height": size},
+        "image_size": {"width": w, "height": h},
         "view": "high top-down",
         "outline": "single color outline",
         "shading": "medium shading",
@@ -203,12 +225,91 @@ def create_map_object(name: str, description: str, size: int = 64, seed: int | N
     raise RuntimeError(name)
 
 
-def main() -> None:
-    load_dotenv()
-    OUT.mkdir(parents=True, exist_ok=True)
-    PUBLIC_TS.mkdir(parents=True, exist_ok=True)
-    PUBLIC_SP.mkdir(parents=True, exist_ok=True)
+def tileset_publico(name: str, tiles: list, public_name: str) -> None:
+    pack_tiles(tiles, OUT / f"{name}-sheet.png")
+    Image.open(OUT / f"{name}-sheet.png").save(PUBLIC_TS / f"pixellab-{public_name}-32.png")
 
+
+ESTILO = "16-bit SNES Zelda A Link to the Past style"
+
+
+def lote_roque_nublo() -> None:
+    """Cumbre de Gran Canaria: pinar, camino, riscos, presa y casa-cueva de Artenara."""
+    pinar = create_tileset(
+        "cumbre-camino",
+        lower=f"{ESTILO} lush green mountain grass of the Canary pine forest floor with scattered fallen pine needles, high top-down RPG floor tile",
+        upper=f"{ESTILO} reddish-brown volcanic dirt hiking trail, packed earth with tiny pebbles, high top-down RPG tile",
+        transition="grass edge fading into dirt trail with small tufts, pixel art",
+        seed=4401,
+    )
+    tileset_publico("cumbre-camino", pinar, "cumbre-camino")
+    hierba = tile_puro(pinar, "lower")
+    riscos = create_tileset(
+        "cumbre-risco",
+        lower=f"{ESTILO} lush green mountain grass of the Canary pine forest floor, high top-down RPG floor tile",
+        upper=f"{ESTILO} raised brown-grey volcanic basalt rock plateau of Gran Canaria summit, cracked rocky cliff top seen from above, high top-down RPG tile",
+        transition="steep dark rocky cliff edge with shadow dropping down to the grass, pixel art",
+        seed=4402,
+        lower_ref=hierba,
+    )
+    tileset_publico("cumbre-risco", riscos, "cumbre-risco")
+    presa = create_tileset(
+        "cumbre-presa",
+        lower=f"{ESTILO} lush green mountain grass of the Canary pine forest floor, high top-down RPG floor tile",
+        upper=f"{ESTILO} calm deep blue-green reservoir water of a Gran Canaria mountain dam, gentle ripples, high top-down RPG tile",
+        transition="muddy stony shoreline between grass and water, pixel art",
+        seed=4403,
+        lower_ref=hierba,
+    )
+    tileset_publico("cumbre-presa", presa, "cumbre-presa")
+    cueva = create_tileset(
+        "casa-cueva",
+        lower=f"{ESTILO} interior floor of a Canarian cave house, smooth packed reddish earth with woven palm mats, warm lamp light, high top-down RPG floor tile",
+        upper=f"{ESTILO} thick whitewashed volcanic tuff cave wall seen from above, rounded rough rock, high top-down RPG wall tile",
+        transition="dark shadowed base of the white cave wall meeting the floor, pixel art",
+        seed=4404,
+    )
+    tileset_publico("casa-cueva", cueva, "casa-cueva")
+
+    create_map_object(
+        "pino-canario",
+        f"{ESTILO} tall Canary Island pine tree (Pinus canariensis) with dense dark green layered needle canopy and thick reddish-brown trunk, transparent background, top-down RPG map prop",
+        (64, 96),
+        4411,
+    )
+    create_map_object(
+        "roque-nublo",
+        f"{ESTILO} Roque Nublo, a huge tall natural volcanic rock monolith pillar of Gran Canaria, ochre and brown basalt with vertical cracks, standing on a rocky base, transparent background, top-down RPG landmark",
+        (160, 224),
+        4412,
+    )
+    create_map_object(
+        "casa-cueva",
+        f"{ESTILO} entrance of a traditional Canarian cave house of Artenara carved into an ochre volcanic rock cliff, whitewashed facade, green wooden door, small window with flower pot, transparent background, top-down RPG map prop",
+        (128, 112),
+        4413,
+    )
+    create_map_object(
+        "retama",
+        f"{ESTILO} small round Canarian summit broom bush (retama) covered in bright yellow flowers, transparent background, top-down RPG map prop",
+        48,
+        4414,
+    )
+    create_map_object(
+        "cartel-madera",
+        f"{ESTILO} small wooden hiking trail sign post with a carved plank, rustic brown wood, transparent background, top-down RPG map prop",
+        48,
+        4415,
+    )
+    create_map_object(
+        "tinaja",
+        f"{ESTILO} traditional Canarian clay water jar (tinaja) and a small wooden stool, terracotta orange, transparent background, top-down RPG interior prop",
+        48,
+        4416,
+    )
+
+
+def lote_dunas() -> None:
     dunes = create_tileset(
         "dunas-sand",
         lower="16-bit SNES Zelda A Link to the Past style golden fine sand dunes of Maspalomas Canary Islands, soft pixel clusters, warm ochre and pale gold sand, high top-down RPG floor tile",
@@ -247,6 +348,17 @@ def main() -> None:
         48,
         303,
     )
+
+
+LOTES = {"dunas": lote_dunas, "roque-nublo": lote_roque_nublo}
+
+
+def main() -> None:
+    load_dotenv()
+    OUT.mkdir(parents=True, exist_ok=True)
+    PUBLIC_TS.mkdir(parents=True, exist_ok=True)
+    PUBLIC_SP.mkdir(parents=True, exist_ok=True)
+    LOTES[sys.argv[1] if len(sys.argv) > 1 else "dunas"]()
     print("\nListo. Revisa art/pixellab/ y public/assets/")
 
 

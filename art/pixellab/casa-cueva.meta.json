@@ -1,0 +1,20 @@
+{
+  "id": "03f2ff2e-6b4d-46ed-aac9-7e5b9a7b7745",
+  "request": {
+    "lower_description": "16-bit SNES Zelda A Link to the Past style interior floor of a Canarian cave house, smooth packed reddish earth with woven palm mats, warm lamp light, high top-down RPG floor tile",
+    "upper_description": "16-bit SNES Zelda A Link to the Past style thick whitewashed volcanic tuff cave wall seen from above, rounded rough rock, high top-down RPG wall tile",
+    "transition_description": "dark shadowed base of the white cave wall meeting the floor, pixel art",
+    "tile_size": {
+      "width": 32,
+      "height": 32
+    },
+    "mode": "standard",
+    "view": "high top-down",
+    "outline": "single color black outline",
+    "shading": "medium shading",
+    "detail": "medium detail",
+    "transition_size": 0.25,
+    "text_guidance_scale": 8.0,
+    "seed": 4404
+  }
+}
