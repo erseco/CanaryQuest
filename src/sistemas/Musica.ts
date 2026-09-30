@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { AjustesStore } from './Ajustes';
 
 const CLAVE_MUTE = 'canaryquest-mute';
 
@@ -14,7 +15,9 @@ export const Musica = {
     if (sonando?.key === clave && sonando.isPlaying) return;
     sonando?.stop();
     escena.game.sound.mute = localStorage.getItem(CLAVE_MUTE) === '1';
-    const pista = escena.game.sound.add(clave, { loop: true, volume: 0.5 });
+    const ajustes = AjustesStore.cargar();
+    escena.game.sound.volume = ajustes.volumen;
+    const pista = escena.game.sound.add(clave, { loop: true, volume: ajustes.musica });
     // Los navegadores bloquean el audio hasta el primer gesto del usuario.
     if (escena.game.sound.locked) {
       escena.game.sound.once(Phaser.Sound.Events.UNLOCKED, () => pista.play());
@@ -22,6 +25,14 @@ export const Musica = {
       pista.play();
     }
     escena.registry.set('musica-actual', pista);
+  },
+
+  /** Aplica los ajustes guardados al audio que ya está sonando. */
+  aplicarAjustes(game: Phaser.Game): void {
+    const ajustes = AjustesStore.cargar();
+    game.sound.volume = ajustes.volumen;
+    const pista = game.registry.get('musica-actual') as Phaser.Sound.WebAudioSound | undefined;
+    pista?.setVolume(ajustes.musica);
   },
 
   crearBotonMute(escena: Phaser.Scene): void {

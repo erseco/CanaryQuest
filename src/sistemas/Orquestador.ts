@@ -63,6 +63,8 @@ export function iniciarOrquestador(game: Phaser.Game): void {
     else hablarConNpcDeMision(npc);
   });
 
+  game.events.on('guardar-partida', () => guardar());
+
   game.events.on('escena-cambiada', (datos: { escena: string; islaId?: IslaId }) => {
     if (datos.islaId !== undefined) {
       partida().islaActual = datos.islaId;

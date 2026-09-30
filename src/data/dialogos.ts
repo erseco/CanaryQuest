@@ -115,3 +115,20 @@ export const DIALOGOS: Record<string, string[]> = {
     '¡Gracias, La Chistera! Propina en aplausos, porfa.',
   ],
 };
+
+/** Pantalla de ayuda del menú de pausa (ESC). */
+export const AYUDA: string[] = [
+  'CONTROLES',
+  '',
+  'Mover ............ Flechas / WASD, o toca/clic donde ir',
+  'Atacar ........... ESPACIO (botón ⚔ en móvil)',
+  'Hablar / abrir ... E o ENTER (o toca al personaje)',
+  'Avanzar diálogo .. ESPACIO / ENTER',
+  'Menú ............. ESC (botón ☰)',
+  '',
+  'CONSEJOS',
+  '• Arriba a la izquierda verás tu misión y lo que te falta.',
+  '• Las ★ del mapa de cada isla son zonas que puedes explorar.',
+  '• Viaja entre islas en barco (⚓) o en avión (✈).',
+  '• Los enemigos a veces sueltan corazones. ¡Reúne los 8 símbolos guanches!',
+];

@@ -3,6 +3,7 @@ import { DialogueBox } from '../sistemas/DialogueBox';
 import { DIALOGOS } from '../data/dialogos';
 import { ESPECIES } from '../data/enemigos';
 import type { QuestManager } from '../sistemas/QuestManager';
+import type { PausaScene } from './PausaScene';
 import { MISIONES } from '../data/misiones';
 import type { Partida } from '../sistemas/SaveManager';
 
@@ -50,6 +51,7 @@ export class UIScene extends Phaser.Scene {
 
     this.dialogo = new DialogueBox(this);
     this.crearBotonMute();
+    this.crearBotonMenu();
     if (this.sys.game.device.input.touch) this.crearControlesTactiles();
 
     // Eventos globales del juego
@@ -78,6 +80,9 @@ export class UIScene extends Phaser.Scene {
       eventos.off('mision-cambiada', alMision);
       eventos.off('simbolo-conseguido', alSimbolo);
     });
+
+    // ESC abre/cierra el menú de pausa (solo aquí, para no procesarlo dos veces)
+    this.input.keyboard?.on('keydown-ESC', () => this.alternarPausa());
 
     this.input.keyboard?.on('keydown-SPACE', () => {
       if (this.dialogo.enCurso) this.dialogo.avanzar();
@@ -170,6 +175,39 @@ export class UIScene extends Phaser.Scene {
       objetivo = ` — Consigue: ${paso.item} ${qm!.progreso(activa[0])}/${paso.cantidad}`;
     }
     this.mision.setText(`Misión: ${MISIONES[activa[0]].titulo}${objetivo}`);
+  }
+
+  private alternarPausa(): void {
+    if (this.scene.isActive('Pausa')) {
+      (this.scene.get('Pausa') as PausaScene).atras();
+      return;
+    }
+    const pausadas = ['Island', 'Detail', 'TravelMap'].filter((k) => this.scene.isActive(k));
+    if (pausadas.length === 0) return;
+    for (const k of pausadas) this.scene.pause(k);
+    this.scene.launch('Pausa', { pausadas });
+    this.scene.bringToTop('Pausa');
+  }
+
+  private crearBotonMenu(): void {
+    const boton = this.add
+      .text(this.scale.width - 56, 12, '☰', {
+        fontFamily: 'monospace',
+        fontSize: '28px',
+        color: '#ffffff',
+        stroke: '#0a1a3a',
+        strokeThickness: 4,
+      })
+      .setOrigin(1, 0)
+      .setDepth(300)
+      .setInteractive({ useHandCursor: true });
+    boton.on(
+      'pointerdown',
+      (_p: Phaser.Input.Pointer, _x: number, _y: number, event: Phaser.Types.Input.EventData) => {
+        event.stopPropagation();
+        this.alternarPausa();
+      },
+    );
   }
 
   private crearBotonMute(): void {

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { SaveManager, type Partida } from '../src/sistemas/SaveManager';
+import { AjustesStore } from '../src/sistemas/Ajustes';
 
 // Stub mínimo de localStorage para entorno Node.
 const almacen = new Map<string, string>();
@@ -50,5 +51,20 @@ describe('SaveManager', () => {
     SaveManager.guardar(SaveManager.nueva());
     SaveManager.borrar();
     expect(SaveManager.cargar()).toBeNull();
+  });
+});
+
+describe('AjustesStore', () => {
+  it('sin ajustes guardados usa los valores por defecto', () => {
+    expect(AjustesStore.cargar()).toEqual({ volumen: 1, musica: 0.5 });
+  });
+
+  it('guarda y recorta valores fuera de rango o corruptos', () => {
+    AjustesStore.guardar({ volumen: 0.3, musica: 0.8 });
+    expect(AjustesStore.cargar()).toEqual({ volumen: 0.3, musica: 0.8 });
+    localStorage.setItem('canaryquest-ajustes', '{"volumen": 7, "musica": "alto"}');
+    expect(AjustesStore.cargar()).toEqual({ volumen: 1, musica: 0.5 });
+    localStorage.setItem('canaryquest-ajustes', 'no es json');
+    expect(AjustesStore.cargar()).toEqual({ volumen: 1, musica: 0.5 });
   });
 });

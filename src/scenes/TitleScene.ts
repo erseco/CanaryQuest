@@ -62,6 +62,16 @@ export class TitleScene extends Phaser.Scene {
     );
     this.seleccionar(0);
 
+    this.add
+      .text(width / 2, height - 40, 'Flechas/WASD: mover · ESPACIO: atacar · E: hablar · ESC: menú y ayuda', {
+        fontFamily: 'monospace',
+        fontSize: '15px',
+        color: '#ffffff',
+        stroke: '#0a1a3a',
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5);
+
     Musica.reproducir(this, 'musica-titulo');
     Musica.crearBotonMute(this);
 
