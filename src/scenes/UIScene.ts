@@ -182,7 +182,9 @@ export class UIScene extends Phaser.Scene {
       (this.scene.get('Pausa') as PausaScene).atras();
       return;
     }
-    const pausadas = ['Island', 'Detail', 'TravelMap'].filter((k) => this.scene.isActive(k));
+    // En el mapa de viaje ESC ya significa «volver»; ahí no se abre el menú
+    if (this.scene.isActive('TravelMap')) return;
+    const pausadas = ['Island', 'Detail'].filter((k) => this.scene.isActive(k));
     if (pausadas.length === 0) return;
     for (const k of pausadas) this.scene.pause(k);
     this.scene.launch('Pausa', { pausadas });

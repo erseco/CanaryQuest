@@ -33,6 +33,15 @@ Los mapas grandes se generan por código y siguen siendo editables en Tiled
   Cada terreno es una capa; los tiles con `collides` (lava, agua) bloquean.
   Propiedad de mapa `niebla: true` para la bruma de laurisilva.
 
+## Puertos, aeropuertos y líneas
+
+Cada isla declara sus `terminales` reales en `src/data/islas.ts` (id, nombre,
+tipo `puerto`/`aeropuerto`, posición en la ilustración y `mapa` = posición sobre
+`mapa-mundo.jpg`). Las líneas de ferry van puerto a puerto en `RUTAS_BARCO`
+con su naviera; en avión, Binter une todos los aeropuertos. El test
+`tests/viajes.test.ts` falla si una terminal o zona queda fuera de la zona
+andable (así se detectó el antiguo puerto de Mogán, inalcanzable).
+
 Para que una isla sin `.tmj` de overworld tenga entradas, añade `zonas` en
 `src/data/islas.ts` (mapa, etiqueta y posición sobre la ilustración).
 Regenerar un mapa **sobrescribe** los retoques hechos a mano en Tiled.

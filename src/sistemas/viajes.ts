@@ -1,23 +1,39 @@
-import { ISLAS, RUTAS_BARCO, type IslaId } from '../data/islas';
+import { ISLAS, RUTAS_BARCO, buscarTerminal, type IslaId, type Terminal } from '../data/islas';
 
 export type MedioTransporte = 'barco' | 'avion';
 
+export interface Destino {
+  isla: IslaId;
+  terminal: Terminal;
+  /** Naviera del ferry, o Binter en avión. */
+  compania: string;
+}
+
+export function medioDe(terminal: Terminal): MedioTransporte {
+  return terminal.tipo === 'puerto' ? 'barco' : 'avion';
+}
+
 /**
- * Islas alcanzables desde `islaId` con el medio dado.
- * Avión: todas las islas con aeropuerto entre sí (red de Binter).
- * Barco: rutas de ferry definidas en RUTAS_BARCO (simétricas).
+ * Destinos desde una terminal.
+ * Puerto: las líneas de RUTAS_BARCO que salen de ese puerto (simétricas).
+ * Aeropuerto: el primer aeropuerto de cada otra isla (red interinsular de Binter).
  */
-export function destinosDesde(islaId: IslaId, medio: MedioTransporte): IslaId[] {
-  if (medio === 'avion') {
-    if (ISLAS[islaId].aeropuerto === null) return [];
+export function destinosDesde(terminalId: string): Destino[] {
+  const origen = buscarTerminal(terminalId);
+  if (origen === null) return [];
+  if (origen.terminal.tipo === 'aeropuerto') {
     return Object.values(ISLAS)
-      .filter((i) => i.id !== islaId && i.aeropuerto !== null)
-      .map((i) => i.id);
+      .filter((i) => i.id !== origen.isla.id)
+      .flatMap((i) => {
+        const aeropuerto = i.terminales.find((t) => t.tipo === 'aeropuerto');
+        return aeropuerto ? [{ isla: i.id, terminal: aeropuerto, compania: 'Binter' }] : [];
+      });
   }
-  const destinos: IslaId[] = [];
-  for (const [a, b] of RUTAS_BARCO) {
-    if (a === islaId) destinos.push(b);
-    if (b === islaId) destinos.push(a);
+  const destinos: Destino[] = [];
+  for (const { a, b, naviera } of RUTAS_BARCO) {
+    const otro = a === terminalId ? b : b === terminalId ? a : null;
+    const destino = otro === null ? null : buscarTerminal(otro);
+    if (destino) destinos.push({ isla: destino.isla.id, terminal: destino.terminal, compania: naviera });
   }
   return destinos;
 }

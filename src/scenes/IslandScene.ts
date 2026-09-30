@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { ISLAS, type IslaId } from '../data/islas';
+import { ISLAS, buscarTerminal, type IslaId } from '../data/islas';
 import { Jugador } from '../sistemas/Jugador';
 import { Musica } from '../sistemas/Musica';
 
@@ -70,16 +70,15 @@ export class IslandScene extends Phaser.Scene {
         new Phaser.Math.Vector2(margen, fondo.height - margen),
       ]);
       this.pois = [];
-      if (isla.puerto !== null) {
-        this.pois.push({ nombre: 'puerto', tipo: 'transporte', ...isla.puerto });
-        this.pois.push({ nombre: 'spawn', tipo: 'spawn', x: isla.puerto.x, y: isla.puerto.y - 60 });
-      }
-      if (isla.aeropuerto !== null) {
-        this.pois.push({ nombre: 'aeropuerto', tipo: 'transporte', ...isla.aeropuerto });
-      }
+      const puerto = isla.terminales.find((t) => t.tipo === 'puerto');
+      if (puerto) this.pois.push({ nombre: 'spawn', tipo: 'spawn', x: puerto.x, y: puerto.y - 60 });
       for (const z of isla.zonas ?? []) {
         this.pois.push({ nombre: z.mapa, tipo: 'entrada', x: z.x, y: z.y });
       }
+    }
+    // Puertos y aeropuertos reales, en todas las islas (datos en islas.ts)
+    for (const t of isla.terminales) {
+      this.pois.push({ nombre: t.id, tipo: 'transporte', x: t.x, y: t.y });
     }
 
     const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === 'spawn') ?? { x: 400, y: 900 };
@@ -92,7 +91,7 @@ export class IslandScene extends Phaser.Scene {
       if (poi.tipo === 'spawn') continue;
       const icono =
         poi.tipo === 'transporte'
-          ? poi.nombre === 'puerto'
+          ? buscarTerminal(poi.nombre)?.terminal.tipo === 'puerto'
             ? '⚓'
             : '✈'
           : ENTRADAS_DETALLE.has(poi.nombre) || poi.tipo === 'entrada'
@@ -183,15 +182,15 @@ export class IslandScene extends Phaser.Scene {
 
   private etiquetaPoi(poi: Poi): string {
     const nombres: Record<string, string> = {
-      pueblo: 'Entrar en el pueblo',
-      puerto: 'Puerto (ferry)',
-      aeropuerto: 'Aeropuerto (Binter)',
+      pueblo: 'Puerto de Mogán (pueblo)',
       'roque-nublo': 'Roque Nublo',
       dunas: 'Dunas de Maspalomas',
       'las-palmas': 'Las Palmas (Triana · Vegueta · Catedral)',
       isleta: 'La Isleta',
     };
     const zona = ISLAS[this.islaId].zonas?.find((z) => z.mapa === poi.nombre);
+    const terminal = buscarTerminal(poi.nombre)?.terminal;
+    if (terminal) return `${terminal.nombre} (${terminal.tipo === 'puerto' ? 'ferry' : 'Binter'})`;
     return nombres[poi.nombre] ?? zona?.etiqueta ?? poi.nombre;
   }
 
@@ -208,10 +207,7 @@ export class IslandScene extends Phaser.Scene {
         });
       });
     } else if (poi.tipo === 'transporte') {
-      this.scene.start('TravelMap', {
-        origen: this.islaId,
-        medio: poi.nombre === 'puerto' ? 'barco' : 'avion',
-      });
+      this.scene.start('TravelMap', { origen: this.islaId, terminal: poi.nombre });
     } else if (poi.tipo === 'hito') {
       this.game.events.emit('llegar', { poi: poi.nombre });
     }

@@ -137,26 +137,6 @@
           "rotation": 0
         },
         {
-          "id": 12,
-          "name": "puerto",
-          "type": "transporte",
-          "point": true,
-          "x": 215,
-          "y": 1000,
-          "visible": true,
-          "rotation": 0
-        },
-        {
-          "id": 13,
-          "name": "aeropuerto",
-          "type": "transporte",
-          "point": true,
-          "x": 1060,
-          "y": 700,
-          "visible": true,
-          "rotation": 0
-        },
-        {
           "id": 14,
           "name": "roque-nublo",
           "type": "hito",
@@ -181,8 +161,8 @@
           "name": "las-palmas",
           "type": "entrada",
           "point": true,
-          "x": 480,
-          "y": 820,
+          "x": 900,
+          "y": 300,
           "visible": true,
           "rotation": 0
         },
@@ -191,8 +171,8 @@
           "name": "isleta",
           "type": "entrada",
           "point": true,
-          "x": 520,
-          "y": 760,
+          "x": 985,
+          "y": 235,
           "visible": true,
           "rotation": 0
         }
