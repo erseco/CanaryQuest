@@ -210,6 +210,9 @@ export class IslandScene extends Phaser.Scene {
           retorno: { islaId: this.islaId, x: poi.x, y: poi.y + 50 },
         });
       });
+    } else if (poi.nombre === 'gc-agaete') {
+      this.saliendo = true;
+      this.scene.start('Puerto', { pueblo: 'agaete', entrada: { x: poi.x, y: poi.y } });
     } else if (poi.tipo === 'transporte') {
       this.scene.start('TravelMap', { origen: this.islaId, terminal: poi.nombre });
     } else if (poi.tipo === 'hito') {

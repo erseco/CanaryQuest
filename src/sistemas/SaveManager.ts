@@ -10,6 +10,7 @@ export interface EstadoMision {
 export interface Partida {
   version: 1;
   islaActual: IslaId;
+  pueblo?: 'mogan' | 'agaete';
   simbolos: IslaId[];
   misiones: Record<string, EstadoMision>;
   inventario: string[];
@@ -37,6 +38,7 @@ export const SaveManager = {
     return {
       version: 1,
       islaActual: 'gran-canaria',
+      pueblo: 'mogan',
       simbolos: [],
       misiones: {},
       inventario: [],

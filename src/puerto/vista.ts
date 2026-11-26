@@ -2,26 +2,46 @@ import * as T from 'three';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { cargarRecursos } from './recursos';
 import { crearMaqueta } from './maqueta';
-import { alturaPaseo, PASTOR, rutaPuerto, transitable, type PuntoPuerto } from './paseo';
-import { PUERTO as t } from '../data/dialogos';
+import {
+  alturaPaseo,
+  PASTOR,
+  CAMINO,
+  MUELLE,
+  umbral,
+  rutaPuerto,
+  transitable,
+  type PuntoPuerto,
+} from './paseo';
+import { PUERTO as t, PASEO as guia } from '../data/dialogos';
+import { PUEBLOS, otroPueblo, type Pueblo, type CasaPuerto } from '../data/pueblos';
+import { crearInterior, sueloInterior } from './interior';
 import './puerto.css';
 
-export async function abrirPuerto(hablar: () => void, salir: () => void, objetivo: () => string) {
-  const recursos = await cargarRecursos();
+export async function abrirPuerto(
+  hablar: () => void,
+  salir: () => void,
+  objetivo: () => string,
+  pueblo: Pueblo,
+  viajar: (destino: Pueblo | 'ferry', porMar?: boolean) => void,
+  llegada?: PuntoPuerto,
+) {
+  const barrio = PUEBLOS[pueblo];
+  const recursos = await cargarRecursos(pueblo);
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
   root.className = 'puerto';
   root.innerHTML = `<header><div class="marca"><span class="rosa" aria-hidden="true">✥</span>${t.marca}</div>
     <div class="acciones"><button data-accion="luz" aria-label="${t.luz}">☀ ${t.dia}</button><button data-accion="mapa">${t.mapa} ↗</button>
     <details><summary aria-label="${t.controles}">?</summary><p>${t.ayuda}</p></details></div></header>
-    <aside><small>${t.lugar}</small><h1>${t.titulo}</h1></aside>
+    <aside><small>${t.lugar}</small><h1>${barrio.nombre}</h1></aside>
+    <select class="destinos" aria-label="${guia.lugares}"><option value="">${guia.lugares}</option></select>
     <footer><article aria-live="polite"><small>${t.jornada}</small><h2>${t.encargo}</h2><p></p><button data-accion="accion"></button></article>
     <div class="camara"><button aria-label="${t.izquierda}" data-accion="izq">↶</button><button aria-label="${t.derecha}" data-accion="der">↷</button>
     <button aria-label="${t.lejos}" data-accion="menos">−</button><button aria-label="${t.cerca}" data-accion="mas">+</button></div></footer>`;
   root.prepend(renderer.domElement);
   document.body.append(root);
   const canvas = renderer.domElement;
-  canvas.setAttribute('aria-label', t.escena);
+  canvas.setAttribute('aria-label', barrio.nombre);
   const escena = new T.Scene(),
     camara = new T.PerspectiveCamera(37, 1, 0.15, 175);
   const tinteNoche = new T.Color(0x43567d);
@@ -40,18 +60,25 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = T.PCFShadowMap;
   escena.add(ambiente, sol);
+  const exterior = new T.Group();
+  escena.add(exterior);
+  const habitacion = crearInterior();
+  escena.add(habitacion.grupo);
   const paisaje = new T.MeshBasicMaterial({ map: recursos.horizonte, side: T.BackSide, fog: false });
   const horizonte = new T.Mesh(new T.CylinderGeometry(50, 50, 44, 96, 1, true), paisaje);
   horizonte.position.y = 15;
   horizonte.rotation.y = -0.82;
-  escena.add(horizonte);
+  exterior.add(horizonte);
   const luces = [-8.5, -3, 3, 8.5].map((x) => {
     const luz = new T.PointLight(0xffab52, 0, 6, 1.7);
     luz.position.set(x, 1.96, 3.35);
     escena.add(luz);
     return luz;
   });
-  const { jugador, pastor, barcos, cristal } = crearMaqueta(escena, recursos);
+  const { jugador, pastor, barcos, cristal, fachadas } = crearMaqueta(exterior, recursos, pueblo);
+  escena.add(jugador);
+  if (llegada) jugador.position.set(llegada.x, 0, llegada.z);
+  pastor.visible = pueblo === 'mogan';
   const mar = new Reflector(new T.PlaneGeometry(240, 240), {
     textureWidth: 512,
     textureHeight: 512,
@@ -90,11 +117,12 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
   const aguaMaterial = mar.material as T.ShaderMaterial;
   mar.rotation.x = -Math.PI / 2;
   mar.position.y = -0.84;
-  escena.add(mar);
+  exterior.add(mar);
   // Una señal suspendida distingue al personaje con el que se puede hablar.
   const marca = new T.Mesh(new T.OctahedronGeometry(0.16), new T.MeshBasicMaterial({ color: 0xffd17c }));
   marca.position.copy(pastor.position);
-  escena.add(marca);
+  exterior.add(marca);
+  marca.visible = pastor.visible;
   const abort = new AbortController(),
     opts = { signal: abort.signal };
   const teclas = new Set<string>();
@@ -106,30 +134,147 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
     previo = performance.now(),
     tiempo = 0;
   let ruta: PuntoPuerto[] = [],
-    hablarAlLlegar = false,
+    alLlegar: (() => void) | undefined,
     dialogo: string[] = [],
     finDialogo: (() => void) | undefined;
   const centro = new T.Vector3(0, 2.2, -1.9);
   const accion = root.querySelector<HTMLButtonElement>('[data-accion="accion"]')!;
   const parrafo = root.querySelector('article p')!,
     titulo = root.querySelector('h2')!;
-  const cerca = () => Math.hypot(jugador.position.x - PASTOR.x, jugador.position.z - PASTOR.z) < 1.45;
+  let casaActual: CasaPuerto | undefined,
+    puntoRetorno: PuntoPuerto = { x: 0, z: 0 };
+  const nombre = root.querySelector('h1')!,
+    selector = root.querySelector('select')!;
+  const pos = jugador.position;
+  const lugares: { nombre: string; punto: PuntoPuerto; activar: () => void }[] = [];
+  let anguloCalle=angulo;
+  function entrar(c: CasaPuerto) {
+    anguloCalle=angulo;angulo=-0.18;
+    puntoRetorno = umbral(c);
+    casaActual = c;
+    habitacion.decorar(c);
+    habitacion.grupo.visible = true;
+    exterior.visible = false;
+    selector.hidden = true;
+    root.querySelector<HTMLButtonElement>('[data-accion="luz"]')!.hidden=true;
+    pos.set(0, 0, 2.25);
+    nombre.textContent = c.nombre;
+    teclas.clear();
+    ruta = [];
+    alLlegar = undefined;
+    refrescar();
+  }
+  function volverCalle() {
+    angulo=anguloCalle;
+    casaActual = undefined;
+    habitacion.grupo.visible = false;
+    exterior.visible = true;
+    selector.hidden = false;
+    root.querySelector<HTMLButtonElement>('[data-accion="luz"]')!.hidden=false;
+    pos.set(puntoRetorno.x, 0, puntoRetorno.z);
+    nombre.textContent = barrio.nombre;
+    ruta = [];
+    alLlegar = undefined;
+    refrescar();
+  }
+  barrio.casas.forEach((c) =>
+    lugares.push({ nombre: guia.entrar + ' ' + c.nombre, punto: umbral(c), activar: () => entrar(c) }),
+  );
+  const indiceBarco = lugares.length;
+  lugares.push({
+    nombre: pueblo === 'mogan' ? guia.lancha : guia.ferry,
+    punto: MUELLE,
+    activar: () => viajar(pueblo === 'mogan' ? 'agaete' : 'ferry', true),
+  });
+  lugares.push({
+    nombre: guia.ir + ' ' + PUEBLOS[otroPueblo(pueblo)].nombre,
+    punto: CAMINO,
+    activar: () => viajar(otroPueblo(pueblo)),
+  });
+  if (pastor.visible)
+    lugares.push({ nombre: t.hablar, punto: { x: PASTOR.x - 0.75, z: PASTOR.z }, activar: hablar });
+  const senales = [indiceBarco, indiceBarco + 1].map((i) => {
+    const l = lugares[i],
+      lienzo = document.createElement('canvas');
+    lienzo.width = 512;
+    lienzo.height = 92;
+    const ctx = lienzo.getContext('2d')!;
+    ctx.fillStyle = '#204f50';
+    ctx.fillRect(0, 0, 512, 92);
+    ctx.strokeStyle = '#e0c493';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(4, 4, 504, 84);
+    ctx.fillStyle = '#fff0ce';
+    ctx.font = '600 32px Georgia';
+    ctx.textAlign = 'center';
+    ctx.fillText(
+      i === indiceBarco
+        ? pueblo === 'agaete'
+          ? guia.ferry
+          : guia.lancha
+        : PUEBLOS[otroPueblo(pueblo)].nombre + ' →',
+      256,
+      57,
+      472,
+    );
+    const mapa = new T.CanvasTexture(lienzo);
+    mapa.colorSpace = T.SRGBColorSpace;
+    const cartel = new T.Sprite(new T.SpriteMaterial({ map: mapa }));
+    cartel.position.set(l.punto.x, 1.45, l.punto.z);
+    cartel.scale.set(3, 0.54, 1);
+    exterior.add(cartel);
+    return cartel;
+  });
+  lugares.forEach((l, i) => selector.add(new Option(l.nombre, String(i))));
+  selector.addEventListener(
+    'change',
+    () => {
+      if (selector.value !== '') visitar(Number(selector.value));
+      selector.value = '';
+    },
+    opts,
+  );
+  const cercano = () =>
+    lugares.reduce((mejor, l, i) => {
+      const dist = Math.hypot(pos.x - l.punto.x, pos.z - l.punto.z);
+      return dist < 1.12 &&
+        (mejor < 0 || dist < Math.hypot(pos.x - lugares[mejor].punto.x, pos.z - lugares[mejor].punto.z))
+        ? i
+        : mejor;
+    }, -1);
   function refrescar() {
-    titulo.textContent = dialogo.length ? t.pastor : t.encargo;
-    parrafo.textContent = dialogo[0] ?? (objetivo() || t.buscar);
+    const i = cercano();
+    titulo.textContent = dialogo.length
+      ? t.pastor
+      : casaActual
+        ? casaActual.nombre
+        : pastor.visible
+          ? t.encargo
+          : guia.muelle;
+    parrafo.textContent =
+      dialogo[0] ?? (casaActual ? guia.enCasa : pastor.visible ? objetivo() || t.buscar : guia.explorar);
     accion.textContent = dialogo.length
       ? dialogo.length === 1
         ? t.cerrar
         : t.seguir
-      : cerca()
-        ? t.hablar
-        : objetivo()
-          ? t.salir
-          : t.acercar;
+      : casaActual
+        ? guia.puerta
+        : i >= 0
+          ? lugares[i].nombre
+          : pastor.visible && !objetivo()
+            ? t.acercar
+            : guia.lugares;
+    selector.disabled = !!dialogo.length;
   }
-  function ir(p: PuntoPuerto, conversar = false) {
-    ruta = rutaPuerto(jugador.position, p);
-    hablarAlLlegar = conversar && ruta.length > 0;
+  function ir(p: PuntoPuerto, luego?: () => void) {
+    ruta = rutaPuerto(pos, p, pueblo);
+    alLlegar = ruta.length ? luego : undefined;
+  }
+  function visitar(i: number) {
+    if (dialogo.length || casaActual) return;
+    const l = lugares[i];
+    if (cercano() === i) l.activar();
+    else ir(l.punto, l.activar);
   }
   function interactuar() {
     if (dialogo.length) {
@@ -139,9 +284,23 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
         finDialogo = undefined;
       }
       refrescar();
-    } else if (cerca()) hablar();
-    else if (objetivo()) salir();
-    else ir({ x: PASTOR.x - 0.8, z: PASTOR.z }, true);
+      return;
+    }
+    if (casaActual) {
+      volverCalle();
+      return;
+    }
+    const i = cercano();
+    if (i >= 0) lugares[i].activar();
+    else if (pastor.visible && !objetivo()) visitar(lugares.length - 1);
+    else {
+      selector.focus();
+      try {
+        selector.showPicker();
+      } catch {
+        /* El select conserva su control nativo. */
+      }
+    }
   }
   root.addEventListener(
     'click',
@@ -224,26 +383,53 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
         camara,
       );
       const punto = ray.ray.intersectPlane(suelo, new T.Vector3());
-      if (
-        ray.intersectObject(pastor, true).length ||
-        (punto && Math.hypot(punto.x - PASTOR.x, punto.z - PASTOR.z) < 0.85)
-      ) {
-        if (cerca()) hablar();
-        else ir({ x: PASTOR.x - 0.8, z: PASTOR.z }, true);
-      } else if (punto && transitable(punto.x, punto.z)) ir(punto);
+      if (casaActual) {
+        if (punto && sueloInterior(punto.x, punto.z)) {
+          ruta = [{ x: 0, z: pos.z }, { x: 0, z: punto.z }, punto];
+          alLlegar = undefined;
+          if (Math.abs(punto.x) < 0.85 && punto.z > 2.45) alLlegar = volverCalle;
+        }
+        return;
+      }
+      const elegido = ray.intersectObjects(
+        [...fachadas, barcos[0], ...senales, ...(pastor.visible ? [pastor] : [])],
+        true,
+      )[0];
+      if (elegido) {
+        let obj: T.Object3D | null = elegido.object;
+        while (obj) {
+          const i = fachadas.indexOf(obj as T.Mesh);
+          if (i >= 0) {
+            visitar(i);
+            return;
+          }
+          if (senales.includes(obj as T.Sprite)) {
+            visitar(indiceBarco + senales.indexOf(obj as T.Sprite));
+            return;
+          }
+          if (obj === barcos[0]) {
+            visitar(indiceBarco);
+            return;
+          }
+          if (obj === pastor) {
+            visitar(lugares.length - 1);
+            return;
+          }
+          obj = obj.parent;
+        }
+      }
+      if (punto && transitable(punto.x, punto.z, pueblo)) ir(punto);
     },
     opts,
   );
   window.addEventListener(
     'keydown',
     (e) => {
+      if (e.target === selector) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
       teclas.add(e.code);
-      if (!e.repeat && e.code === 'KeyE' && (dialogo.length || cerca())) {
-        if (dialogo.length) interactuar();
-        else hablar();
-      }
+      if (!e.repeat && e.code === 'KeyE') interactuar();
     },
     opts,
   );
@@ -265,7 +451,7 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
     const dt = Math.min(0.06, (ahora - previo) / 1000);
     previo = ahora;
     tiempo += dt;
-    const antes = cerca(),
+    const antes = cercano(),
       pos = jugador.position;
     let dx = 0,
       dz = 0;
@@ -275,13 +461,14 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
       angulo += (pulsada('KeyR') - pulsada('KeyQ')) * dt * 1.4;
       if (h || v) {
         ruta = [];
-        hablarAlLlegar = false;
-        dx = h * Math.cos(angulo) + v * Math.sin(angulo);
-        dz = -h * Math.sin(angulo) + v * Math.cos(angulo);
+        alLlegar = undefined;
+        const giro = angulo;
+        dx = h * Math.cos(giro) + v * Math.sin(giro);
+        dz = -h * Math.sin(giro) + v * Math.cos(giro);
       } else if (ruta.length) {
         dx = ruta[0].x - pos.x;
         dz = ruta[0].z - pos.z;
-        if (Math.hypot(dx, dz) < 0.06) {
+        if (Math.hypot(dx, dz) < 0.008) {
           ruta.shift();
           dx = dz = 0;
         }
@@ -291,17 +478,22 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
         const paso = Math.min(largo, dt * 3.8);
         const nx = pos.x + (dx / largo) * paso,
           nz = pos.z + (dz / largo) * paso;
-        if (transitable(nx, pos.z)) pos.x = nx;
-        if (transitable(pos.x, nz)) pos.z = nz;
+        const libre = (x: number, z: number) =>
+          casaActual ? sueloInterior(x, z) : transitable(x, z, pueblo);
+        if (libre(nx, pos.z)) pos.x = nx;
+        if (libre(pos.x, nz)) pos.z = nz;
         jugador.rotation.y = Math.atan2(dx, dz);
       }
-      if (hablarAlLlegar && !ruta.length) {
-        hablarAlLlegar = false;
-        if (cerca()) hablar();
+      if (alLlegar && !ruta.length) {
+        const activar = alLlegar;
+        alLlegar = undefined;
+        activar();
       }
     }
-    if (antes !== cerca()) refrescar();
-    pos.y = alturaPaseo(pos.x, pos.z) + (dx || dz ? Math.abs(Math.sin(tiempo * 11)) * 0.055 : 0);
+    if (antes !== cercano()) refrescar();
+    pos.y =
+      (casaActual ? 0 : alturaPaseo(pos.x, pos.z)) +
+      (dx || dz ? Math.abs(Math.sin(tiempo * 11)) * 0.055 : 0);
     marca.position.y = 1.83 + Math.sin(tiempo * 2.4) * 0.07;
     marca.rotation.y = tiempo;
     barcos.forEach((b, i) => {
@@ -309,7 +501,7 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
       b.rotation.z = 0.035 * Math.sin(tiempo + i);
       b.rotation.y = 1.15 + i * 0.55;
     });
-    luz = T.MathUtils.damp(luz, destinoLuz, 2.8, dt);
+    luz = T.MathUtils.damp(luz, casaActual ? 0 : destinoLuz, 2.8, dt);
     paisaje.color.setRGB(1, 1, 1).lerp(tinteNoche, luz);
     for (const farol of luces) farol.intensity = luz * 11;
     cristal.emissiveIntensity = 0.2 + luz * 2.2;
@@ -319,12 +511,24 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
     (escena.fog as T.Fog).color.copy(cielo);
     aguaMaterial.uniforms.tiempo.value = tiempo;
     aguaMaterial.uniforms.oscuridad.value = luz;
-    const radio = distancia * (camara.aspect < 1 ? 1.13 : 1);
-    centro.x = T.MathUtils.damp(centro.x, pos.x * (camara.aspect < 1 ? 0.6 : 0.18), 3, dt);
+    if(casaActual)angulo=T.MathUtils.clamp(angulo,-0.85,0.85);
+    const radio = (casaActual ? distancia/3 : distancia) * (camara.aspect < 1 ? 1.13 : 1);
+    centro.x = T.MathUtils.damp(
+      centro.x,
+      casaActual ? pos.x * 0.2 : pos.x * (camara.aspect < 1 ? 0.78 : 0.5),
+      5,
+      dt,
+    );
+    centro.z = T.MathUtils.damp(centro.z, casaActual ? 0 : pos.z * 0.55 - 2.5, 5, dt);
+    centro.y = casaActual ? 0.75 : 2.2;
+    const giro = angulo;
+    const elevacion = casaActual
+      ? 0.77
+      : 0.32 + Math.max(0, -Math.cos(giro)) * 0.58 + Math.max(0, -pos.z) * 0.09;
     camara.position.set(
-      centro.x + Math.sin(angulo) * radio,
-      centro.y + radio * (0.32 + Math.max(0, -Math.cos(angulo)) * 0.58),
-      centro.z + Math.cos(angulo) * radio,
+      centro.x + Math.sin(giro) * radio,
+      centro.y + radio * elevacion,
+      centro.z + Math.cos(giro) * radio,
     );
     camara.lookAt(centro);
     renderer.render(escena, camara);
@@ -334,7 +538,7 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
   return {
     mostrar(lineas: string[], alTerminar?: () => void) {
       ruta = [];
-      hablarAlLlegar = false;
+      alLlegar = undefined;
       dialogo = [...lineas];
       finDialogo = alTerminar;
       refrescar();
@@ -353,6 +557,10 @@ export async function abrirPuerto(hablar: () => void, salir: () => void, objetiv
         if (m instanceof T.MeshStandardMaterial) m.map?.dispose();
         m.dispose();
       });
+      for (const cartel of senales) {
+        cartel.material.map?.dispose();
+        cartel.material.dispose();
+      }
       recursos.horizonte.dispose();
       mar.getRenderTarget().dispose();
       sol.shadow.dispose();

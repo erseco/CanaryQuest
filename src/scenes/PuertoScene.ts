@@ -2,16 +2,24 @@ import Phaser from 'phaser';
 import { DIALOGOS, PUERTO } from '../data/dialogos';
 import type { QuestManager } from '../sistemas/QuestManager';
 import type { abrirPuerto } from '../puerto/vista';
-import type { Punto } from '../data/islas';
+import type { Partida } from '../sistemas/SaveManager';
+import type { Pueblo } from '../data/pueblos';
+import { CAMINO, MUELLE, type PuntoPuerto } from '../puerto/paseo';
+import { buscarTerminal, type Punto } from '../data/islas';
 
 export class PuertoScene extends Phaser.Scene {
   constructor() {
     super('Puerto');
   }
 
-  async create(datos: { entrada?: Punto }): Promise<void> {
+  async create(datos: { entrada?: Punto; pueblo?: Pueblo; llegada?: PuntoPuerto }): Promise<void> {
     const islaId = 'gran-canaria';
     const qm = this.registry.get('quest-manager') as QuestManager;
+    const pueblo = datos.pueblo ?? 'mogan';
+    const partida = this.registry.get('partida') as Partida;
+    partida.pueblo = pueblo;
+    partida.islaActual = islaId;
+    this.game.events.emit('guardar-partida');
     const mision = 'pastor-roque-nublo';
     if (this.scene.isActive('UI')) this.scene.sleep('UI');
 
@@ -21,7 +29,12 @@ export class PuertoScene extends Phaser.Scene {
     };
     const salir = () => {
       iniciarUI();
-      this.scene.start('Island', { islaId, entrada: datos.entrada });
+      this.game.events.emit('mision-cambiada');
+      this.scene.start('Island', {
+        islaId,
+        entrada:
+          datos.entrada ?? (pueblo === 'agaete' ? buscarTerminal('gc-agaete')?.terminal : undefined),
+      });
     };
     const objetivo = () => {
       if (qm.estaCompletada(mision)) return PUERTO.completada;
@@ -38,15 +51,30 @@ export class PuertoScene extends Phaser.Scene {
         () => this.game.events.emit('npc-hablar', { npc: 'pastor' }),
         salir,
         objetivo,
+        pueblo,
+        (destino, porMar = false) => {
+          if (destino === 'ferry') {
+            iniciarUI();
+            this.scene.start('TravelMap', { origen: islaId, terminal: 'gc-agaete', desdePueblo: true });
+            return;
+          }
+          this.scene.restart({ pueblo: destino, llegada: porMar ? MUELLE : CAMINO });
+        },
+        datos.llegada,
       );
     } catch (error) {
       console.warn('Puerto de Mogán utilizará su mapa de detalle.', error);
+      if (pueblo === 'agaete') {
+        iniciarUI();
+        this.scene.start('TravelMap', { origen: islaId, terminal: 'gc-agaete' });
+        return;
+      }
       iniciarUI();
-      const pueblo = this.make
+      const puntoPueblo = this.make
         .tilemap({ key: 'map-gran-canaria' })
         .getObjectLayer('pois')
         ?.objects.find((o) => o.name === 'pueblo');
-      const entrada = datos.entrada ?? { x: pueblo?.x ?? 250, y: (pueblo?.y ?? 940) + 50 };
+      const entrada = datos.entrada ?? { x: puntoPueblo?.x ?? 250, y: (puntoPueblo?.y ?? 940) + 50 };
       this.scene.start('Detail', { mapaId: 'pueblo', retorno: { islaId, ...entrada } });
       return;
     }

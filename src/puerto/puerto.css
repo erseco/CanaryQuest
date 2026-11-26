@@ -233,3 +233,5 @@
     margin-bottom: 5px;
   }
 }
+.puerto .destinos {position:absolute;z-index:2;right:clamp(16px,3.7vw,62px);top:76px;background:#173e42ea;color:#fff5da;border:1px solid #f8efd25e;border-radius:18px;padding:8px 12px;font:inherit;max-width:min(55vw,220px)}
+@media(max-width:640px){.puerto .destinos{top:63px;right:16px;max-width:49vw;font-size:13px}}

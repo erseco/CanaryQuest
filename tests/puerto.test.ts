@@ -21,3 +21,36 @@ describe('paseo de Mogán', () => {
     expect(rutaPuerto(INICIO, { x: 0, z: 3 })).toEqual([]);
   });
 });
+
+import { PUEBLOS } from '../src/data/pueblos';
+import { CAMINO, MUELLE, umbral } from '../src/puerto/paseo';
+import { destinosDesde } from '../src/sistemas/viajes';
+import { sueloInterior } from '../src/puerto/interior';
+for (const pueblo of ['mogan', 'agaete'] as const) {
+  it('comunica todas las puertas, el camino y el embarcadero de ' + pueblo, () => {
+    const destinos = [...PUEBLOS[pueblo].casas.map(umbral), CAMINO, MUELLE];
+    let origen = INICIO;
+    for (const destino of destinos) {
+      const ruta = rutaPuerto(origen, destino, pueblo);
+      expect(ruta.at(-1)).toEqual(destino);
+      for (const p of ruta) {
+        for (let i = 0; i <= 100; i++)
+          expect(
+            transitable(
+              origen.x + ((p.x - origen.x) * i) / 100,
+              origen.z + ((p.z - origen.z) * i) / 100,
+              pueblo,
+            ),
+          ).toBe(true);
+        origen = p;
+      }
+    }
+    expect(PUEBLOS[pueblo].casas.every((c) => !transitable(c.x, c.z, pueblo))).toBe(true);
+  });
+}
+it('da acceso a la salida de la habitación y al ferry de regreso', () => {
+  expect(sueloInterior(0, 2.7)).toBe(true);
+  expect(sueloInterior(2.7, -0.6)).toBe(false);
+  expect(destinosDesde('gc-agaete').some((d) => d.terminal.id === 'tf-santa-cruz')).toBe(true);
+  expect(destinosDesde('tf-santa-cruz').some((d) => d.terminal.id === 'gc-agaete')).toBe(true);
+});

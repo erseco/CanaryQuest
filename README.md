@@ -97,3 +97,9 @@ pastor para aceptar su encargo y abre **Mapa de la isla** para seguirlo hasta
 las dunas. Desde Gran Canaria puedes regresar por la estrella de Puerto de
 Mogán. Los botones del puerto permiten acercar la vista y cambiar entre día
 y noche.
+
+En **Lugares del pueblo** puedes elegir una casa, el camino de la costa o el
+embarcadero. El personaje camina hasta allí. También puedes tocar una fachada
+para entrar, o acercarte a la puerta con el teclado y pulsar **E**. El camino
+enlaza Mogán y el Puerto de las Nieves en ambos sentidos. La lancha de Mogán
+te deja en Agaete, donde puedes embarcar en el ferry a Santa Cruz de Tenerife.

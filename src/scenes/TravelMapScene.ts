@@ -1,6 +1,8 @@
 import Phaser from 'phaser';
 import { ISLAS, buscarTerminal, type IslaId, type Punto, type Terminal } from '../data/islas';
 import { destinosDesde, medioDe, type Destino, type MedioTransporte } from '../sistemas/viajes';
+import { MUELLE } from '../puerto/paseo';
+import { PASEO } from '../data/dialogos';
 import { Musica } from '../sistemas/Musica';
 import type { Partida } from '../sistemas/SaveManager';
 
@@ -8,6 +10,7 @@ interface DatosViaje {
   origen: IslaId;
   /** Id de la terminal (puerto o aeropuerto) desde la que se sale. */
   terminal: string;
+  desdePueblo?: boolean;
 }
 
 /**
@@ -121,6 +124,11 @@ export class TravelMapScene extends Phaser.Scene {
       .setOrigin(0.5, 1)
       .setDepth(100);
 
+    if (this.datos.desdePueblo) {
+      this.add.text(width - 12, 60, PASEO.volverMuelle, {
+        fontFamily: 'monospace', fontSize: '16px', backgroundColor: '#173e42', padding: { x: 10, y: 8 },
+      }).setOrigin(1, 0).setDepth(100).setInteractive({ useHandCursor: true }).on('pointerdown', () => this.volver());
+    }
     this.resaltarSeleccion();
 
     this.input.keyboard?.on('keydown-LEFT', () => this.mover(-1));
@@ -155,6 +163,10 @@ export class TravelMapScene extends Phaser.Scene {
 
   private volver(): void {
     if (this.viajando) return;
+    if (this.datos.desdePueblo) {
+      this.scene.start('Puerto', { pueblo: 'agaete', llegada: MUELLE });
+      return;
+    }
     this.scene.start('Island', { islaId: this.datos.origen, entrada: { x: this.origen.x, y: this.origen.y } });
   }
 
@@ -192,6 +204,10 @@ export class TravelMapScene extends Phaser.Scene {
         this.cameras.main.once('camerafadeoutcomplete', () => {
           const partida = this.registry.get('partida') as Partida;
           partida.islaActual = destino.isla;
+          if (destino.terminal.id === 'gc-agaete') {
+            this.scene.start('Puerto', { pueblo: 'agaete', llegada: MUELLE });
+            return;
+          }
           // Se desembarca en la terminal de llegada
           this.scene.start('Island', {
             islaId: destino.isla,

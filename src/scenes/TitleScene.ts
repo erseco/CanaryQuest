@@ -109,8 +109,8 @@ export class TitleScene extends Phaser.Scene {
     iniciarOrquestador(this.game);
     this.cameras.main.fadeOut(300);
     this.cameras.main.once('camerafadeoutcomplete', () => {
-      if (partida.islaActual === 'gran-canaria') {
-        this.scene.start('Puerto');
+      if (partida.islaActual === 'gran-canaria' && (partida.pueblo === 'mogan' || partida.pueblo === 'agaete')) {
+        this.scene.start('Puerto', { pueblo: partida.pueblo });
         return;
       }
       this.scene.launch('UI');

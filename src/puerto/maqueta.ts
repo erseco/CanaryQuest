@@ -1,10 +1,15 @@
 import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { cargarRecursos } from './recursos';
+import { PUEBLOS, type Pueblo } from '../data/pueblos';
 import { INICIO, PASTOR, alturaPaseo } from './paseo';
 
 // La maqueta se hornea en mallas con color por vértice para dibujar el pueblo en pocas llamadas.
-export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeof cargarRecursos>>) {
+export function crearMaqueta(
+  escena: T.Group,
+  recursos: Awaited<ReturnType<typeof cargarRecursos>>,
+  pueblo: Pueblo,
+) {
   const mate = new T.MeshStandardMaterial({
     vertexColors: true,
     flatShading: true,
@@ -89,11 +94,11 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
     m.position.set(x, y, z);
     m.castShadow = m.receiveShadow = true;
     escena.add(m);
+    return m;
   }
   const blanco = '#fff1d0',
     madera = '#77513b',
-    piedra = '#c9a685',
-    azul = '#16697a';
+    piedra = '#c9a685';
   // Relieve de barranco, con laderas trianguladas y estratos de basalto y almagre.
   for (let fila = 0; fila < 3; fila++) {
     const vertices: number[] = [];
@@ -124,12 +129,12 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
   }
   // Dos orillas de mampostería y un paseo de losas.
   for (const lado of [-1, 1]) {
-    const x = lado * 6;
-    pieza(caja, '#977860', x, -0.76, -4.2, 8.8, 1.35, 15.8);
-    superficie(caja, adoquin, x, -0.09, -4.2, 8.8, 0.18, 15.8, 3.4);
-    for (let i = 0; i < 11; i++) {
-      pieza(caja, i % 2 ? '#c9ac8c' : '#b79b80', x - 4 + i * 0.8, -0.38, 3.73, 0.76, 0.49, 0.13);
-      pieza(caja, '#ebd4af', x - 4 + i * 0.8, 0.02, 3.68, 0.78, 0.13, 0.35);
+    const x = lado * 8.3;
+    pieza(caja, '#977860', x, -0.76, -4.2, 13.4, 1.35, 15.8);
+    superficie(caja, adoquin, x, -0.09, -4.2, 13.4, 0.18, 15.8, 3.4);
+    for (let i = 0; i < 17; i++) {
+      pieza(caja, i % 2 ? '#c9ac8c' : '#b79b80', x - 6.4 + i * 0.8, -0.38, 3.73, 0.76, 0.49, 0.13);
+      pieza(caja, '#ebd4af', x - 6.4 + i * 0.8, 0.02, 3.68, 0.78, 0.13, 0.35);
     }
   }
   for (let i = -8; i <= 8; i++) {
@@ -141,10 +146,12 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
       pieza(caja, blanco, x, y + 0.43, z, 0.26, 0.07, 0.21);
     }
   }
+  superficie(caja, adoquin, 0, -0.09, -8.65, 3.3, 0.18, 7.1, 3.4);
+  const fachadas: T.Mesh[] = [];
   const ventanas: number[][] = [];
   function casa(x: number, z: number, w: number, h: number, d: number, tinte: string, base = 0) {
     const frente = z + d / 2;
-    superficie(caja, cal, x, base + h / 2, z, w, h, d, 2.6);
+    fachadas.push(superficie(caja, cal, x, base + h / 2, z, w, h, d, 2.6));
     pieza(caja, tinte, x, base + 0.14, z, w + 0.03, 0.28, d + 0.04);
     pieza(caja, '#ebc8a1', x, base + h + 0.04, z, w + 0.14, 0.15, d + 0.14);
     pieza(caja, '#ba8060', x, base + h + 0.13, z, w - 0.1, 0.1, d - 0.1);
@@ -234,22 +241,25 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
       );
     }
   }
-  casa(-8, -2.25, 3.3, 2.6, 3.1, azul);
-  casa(-4.4, -2.6, 3.1, 3.5, 3.1, '#b96943');
-  casa(3.6, -2.7, 2.9, 2.4, 3.1, azul);
-  casa(7.3, -2.6, 3.4, 3.3, 3, '#bc7642');
-  for (const [i, x] of [-9, -5.8, -2.4, 1, 4.4, 8].entries()) {
-    pieza(caja, piedra, x, 0.3, -7, 3.45, 0.6, 4.3);
-    casa(x, -7, 2.7, 2.5 + azar() * 1.4, 2.6, i % 2 ? '#7f9885' : azul, 0.6);
+  for (const c of PUEBLOS[pueblo].casas) casa(c.x, c.z, c.ancho, c.alto, c.fondo, c.color);
+  if (pueblo === 'agaete') {
+    // La ermita y sus torres azules marcan el paseo de Las Nieves.
+    for (const x of [-3, -0.2]) {
+      pieza(caja, blanco, x, 2.45, -6.8, 0.85, 4.9, 1.1);
+      pieza(caja, '#1f5893', x, 4.15, -6.21, 0.37, 0.72, 0.08);
+      pieza(piramide, '#31669c', x, 5.24, -6.8, 0.86, 0.85, 0.86, 0, Math.PI / 4);
+    }
   }
-  // Campanario, huecos de campana y remate de teja.
-  pieza(caja, '#f1d59c', -1.6, 3.2, -7, 1.58, 6.4, 1.5);
-  for (const y of [3.8, 5.1, 6.4]) pieza(caja, blanco, -1.6, y, -7, 1.78, 0.16, 1.72);
-  for (const dx of [-0.58, 0.58])
-    for (const dz of [-0.53, 0.53]) pieza(caja, '#edd3aa', -1.6 + dx, 7, -7 + dz, 0.28, 1.2, 0.28);
-  pieza(poste, '#a88043', -1.6, 6.92, -7, 0.57, 0.6, 0.57);
-  pieza(piramide, '#a65f43', -1.6, 7.92, -7, 1.42, 0.92, 1.42, 0, Math.PI / 4);
-  pieza(poste, '#6b513e', -1.6, 8.52, -7, 0.07, 0.55, 0.07);
+  if (pueblo === 'mogan') {
+    // Campanario, huecos de campana y remate de teja.
+    pieza(caja, '#f1d59c', -1.6, 3.2, -7, 1.58, 6.4, 1.5);
+    for (const y of [3.8, 5.1, 6.4]) pieza(caja, blanco, -1.6, y, -7, 1.78, 0.16, 1.72);
+    for (const dx of [-0.58, 0.58])
+      for (const dz of [-0.53, 0.53]) pieza(caja, '#edd3aa', -1.6 + dx, 7, -7 + dz, 0.28, 1.2, 0.28);
+    pieza(poste, '#a88043', -1.6, 6.92, -7, 0.57, 0.6, 0.57);
+    pieza(piramide, '#a65f43', -1.6, 7.92, -7, 1.42, 0.92, 1.42, 0, Math.PI / 4);
+    pieza(poste, '#6b513e', -1.6, 8.52, -7, 0.07, 0.55, 0.07);
+  }
   for (let i = 0; i < 8; i++)
     pieza(caja, i % 2 ? '#f8e2b7' : '#cc7455', 5.77 + i * 0.4, 2.24, -0.75, 0.41, 0.085, 1.18, 0.16);
   // Palmera canaria: hojas lanceoladas con nervadura central y punta caída.
@@ -380,29 +390,31 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
     superficie(caja, adoquin, 1.98, 0.044 * i, z, 0.8, 0.1 + i * 0.087, 0.38, 2.8);
     pieza(caja, blanco, 2.45, 0.3 + i * 0.084, z, 0.15, 0.5, 0.38);
   }
-  // Reloj de la plaza, con esfera de cerámica y agujas visibles en la aproximación.
-  const reloj = new T.CylinderGeometry(1, 1, 1, 32);
-  pieza(reloj, '#977846', -1.6, 5.78, -6.23, 0.55, 0.08, 0.55, Math.PI / 2);
-  pieza(reloj, '#f5e7bd', -1.6, 5.78, -6.17, 0.45, 0.06, 0.45, Math.PI / 2);
-  for (let j = 0; j < 12; j++) {
-    const a = (Math.PI * j) / 6;
-    pieza(
-      caja,
-      madera,
-      -1.6 + Math.sin(a) * 0.36,
-      5.78 + Math.cos(a) * 0.36,
-      -6.125,
-      0.035,
-      0.09,
-      0.016,
-      0,
-      0,
-      -a,
-    );
+  if (pueblo === 'mogan') {
+    // Reloj de la plaza, con esfera de cerámica y agujas visibles en la aproximación.
+    const reloj = new T.CylinderGeometry(1, 1, 1, 32);
+    pieza(reloj, '#977846', -1.6, 5.78, -6.23, 0.55, 0.08, 0.55, Math.PI / 2);
+    pieza(reloj, '#f5e7bd', -1.6, 5.78, -6.17, 0.45, 0.06, 0.45, Math.PI / 2);
+    for (let j = 0; j < 12; j++) {
+      const a = (Math.PI * j) / 6;
+      pieza(
+        caja,
+        madera,
+        -1.6 + Math.sin(a) * 0.36,
+        5.78 + Math.cos(a) * 0.36,
+        -6.125,
+        0.035,
+        0.09,
+        0.016,
+        0,
+        0,
+        -a,
+      );
+    }
+    pieza(caja, madera, -1.51, 5.88, -6.1, 0.055, 0.3, 0.025, 0, 0, -0.7);
+    pieza(caja, madera, -1.72, 5.81, -6.09, 0.26, 0.05, 0.025, 0, 0, -0.23);
+    reloj.dispose();
   }
-  pieza(caja, madera, -1.51, 5.88, -6.1, 0.055, 0.3, 0.025, 0, 0, -0.7);
-  pieza(caja, madera, -1.72, 5.81, -6.09, 0.26, 0.05, 0.025, 0, 0, -0.23);
-  reloj.dispose();
   for (const [x, z] of [
     [-8.5, -0.5],
     [3.6, -0.73],
@@ -441,7 +453,7 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
   for (let i = 0; i < 90; i++) {
     const lado = i % 2 ? 1 : -1,
       z = -9 + azar() * 10,
-      x = lado * (10.4 + azar() * 3.1);
+      x = lado * (15.2 + azar() * 3.1);
     const r = 0.34 + azar() * 0.83;
     pieza(esfera, i % 3 ? '#8b7a69' : '#aa9680', x, -0.69, z, r, 0.46 + azar() * 0.58, r * 0.84);
   }
@@ -466,7 +478,7 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
     const limites = new T.Box3().setFromObject(modelo);
     const tamano = limites.getSize(new T.Vector3()),
       centro = limites.getCenter(new T.Vector3());
-    const escala = [3.55, 4.65, 2.4][i] / Math.max(tamano.x, tamano.z);
+    const escala = [pueblo === 'agaete' ? 7.2 : 3.55, 4.65, 2.4][i] / Math.max(tamano.x, tamano.z);
     modelo.position.set(-centro.x, -limites.min.y, -centro.z);
     modelo.traverse((obj) => {
       if (obj instanceof T.Mesh) obj.castShadow = obj.receiveShadow = true;
@@ -474,7 +486,7 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
     const barco = new T.Group();
     barco.add(modelo);
     barco.scale.setScalar(escala);
-    barco.position.set([-5.25, 6.6, -9.3][i], -0.85, [5.5, 6, 6.8][i]);
+    barco.position.set([-5.25, 6.6, -9.3][i], -0.85, [pueblo === 'agaete' ? 6.65 : 5.5, 6, 6.8][i]);
     escena.add(barco);
     return barco;
   });
@@ -501,5 +513,5 @@ export function crearMaqueta(escena: T.Scene, recursos: Awaited<ReturnType<typeo
   const jugador = persona(INICIO.x, INICIO.z, false),
     pastor = persona(PASTOR.x, PASTOR.z, true);
   for (const geo of [caja, esfera, poste, piramide]) geo.dispose();
-  return { jugador, pastor, barcos, cristal };
+  return { jugador, pastor, barcos, cristal, fachadas };
 }
