@@ -53,7 +53,7 @@ export class CartaScene extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => visitar(sitio));
       const boton = this.add
-        .text(24 + i * 209, 475, VISITAS[sitio].nombre + ' ↗', estilo)
+        .text(18 + (i%3) * 309, 446 + Math.floor(i/3)*39, VISITAS[sitio].nombre + ' ↗', estilo)
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => visitar(sitio));
       botones.push(boton);
@@ -62,7 +62,7 @@ export class CartaScene extends Phaser.Scene {
       actual = i;
       botones.forEach((b, j) => b.setColor(i === j ? '#ffdb8c' : '#fff2d5'));
     };
-    this.add.text(25, 454, CARTA.sitios, {
+    this.add.text(25, 425, CARTA.sitios, {
       fontFamily: 'sans-serif',
       fontSize: '13px',
       color: '#e6e7ce',

@@ -64,3 +64,12 @@ pesquera. Las distancias, las casas y los barcos se adaptan al paseo jugable.
 
 - [Ficha de campo del IGN en Orchilla](https://www.ign.es/web/resources/gravimetria/absoluta/HIER_FARO.pdf) y [descripción del faro en CanariWiki](https://www3.gobiernodecanarias.org/medusa/wiki/index.php?title=Faro_de_Orchilla).
 - [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).
+
+## Paseo de Playa del Inglés
+
+La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
+RIU y las dunas se han modelado para el juego. La ruta comprime la distancia
+entre las paradas. El pasaje que comunica la avenida con el mirador sigue la
+descripción del [Plan Director de la reserva](https://www.idecanarias.es/resources/PLA_ENP_URB/GC/AD/C-07_Las_Dunas_de_Maspalomas/RNE/TIP/pd_rne_dma_mi.pdf).
+El viajero de las escenas 3D comparte modelo con Mogán. La hoja
+`public/assets/sprites/viajero.png` contiene vistas del mismo modelo para los mapas 2D.

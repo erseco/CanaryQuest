@@ -4,6 +4,7 @@ import geografia from '../data/geografia.json';
 import { CARTA } from '../data/dialogos';
 
 export const SITIOS = {
+  dunas:{isla:'gran-canaria',carta:proyectarLugar(geografia['gran-canaria'].dunas)},
   'la-restinga': { isla:'el-hierro', carta:proyectarLugar(geografia['el-hierro']['la-restinga']) },
   'orchilla': { isla:'el-hierro', carta:proyectarLugar(geografia['el-hierro']['orchilla']) },
   'la-caleta': { isla: 'el-hierro', carta: proyectarLugar(geografia['el-hierro']['la-caleta']) },

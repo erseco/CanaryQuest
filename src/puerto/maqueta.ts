@@ -1,3 +1,4 @@
+import { persona } from './persona';
 import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { cargarRecursos } from './recursos';
@@ -490,28 +491,9 @@ export function crearMaqueta(
     escena.add(barco);
     return barco;
   });
-  function persona(x: number, z: number, pastor: boolean) {
-    const grupo = new T.Group(),
-      camisa = pastor ? '#c89860' : '#187d99';
-    for (const dx of [-0.12, 0.12]) {
-      pieza(poste, '#354357', dx, 0.25, 0, 0.16, 0.46, 0.17);
-      pieza(esfera, '#694830', dx, 0.09, 0.06, 0.13, 0.1, 0.17);
-      pieza(poste, camisa, dx * 2, 0.7, 0, 0.13, 0.48, 0.15, 0, 0, dx);
-    }
-    pieza(poste, camisa, 0, 0.69, 0, 0.49, 0.54, 0.37);
-    pieza(esfera, '#d5996a', 0, 1.12, 0, 0.22, 0.26, 0.21);
-    pieza(esfera, pastor ? '#d0a568' : '#513f33', 0, 1.32, -0.02, 0.23, 0.13, 0.22);
-    if (pastor) {
-      pieza(poste, '#cfa667', 0, 1.32, 0, 0.68, 0.07, 0.65);
-      pieza(poste, madera, 0.32, 0.65, 0.1, 0.045, 1.3, 0.045);
-    } else pieza(caja, '#d07b40', 0, 0.75, -0.21, 0.34, 0.38, 0.17);
-    hornear(grupo);
-    grupo.position.set(x, 0, z);
-    escena.add(grupo);
-    return grupo;
-  }
   const jugador = persona(INICIO.x, INICIO.z, false),
     pastor = persona(PASTOR.x, PASTOR.z, true);
+  escena.add(jugador, pastor);
   for (const geo of [caja, esfera, poste, piramide]) geo.dispose();
   return { jugador, pastor, barcos, cristal, fachadas };
 }

@@ -70,7 +70,7 @@ export class PreloadScene extends Phaser.Scene {
     }
 
     // Personajes
-    this.load.atlas('atlas', 'assets/sprites/atlas.png', 'assets/sprites/atlas.json');
+    this.load.spritesheet('viajero','assets/sprites/viajero.png',{frameWidth:32,frameHeight:64});
     this.load.spritesheet('hero', 'assets/sprites/hero.png', {
       frameWidth: 32,
       frameHeight: 32,
@@ -128,17 +128,11 @@ export class PreloadScene extends Phaser.Scene {
 
   private crearAnimaciones(): void {
     const dirs = ['front', 'back', 'left', 'right'] as const;
-    for (const dir of dirs) {
+    for (const [fila,dir] of dirs.entries()) {
       this.anims.create({
-        key: `misa-${dir}-walk`,
-        frames: this.anims.generateFrameNames('atlas', {
-          prefix: `misa-${dir}-walk.`,
-          start: 0,
-          end: 3,
-          zeroPad: 3,
-        }),
-        frameRate: 10,
-        repeat: -1,
+        key: `viajero-${dir}-walk`,
+        frames: this.anims.generateFrameNumbers('viajero',{start:fila*5+1,end:fila*5+4}),
+        frameRate:10, repeat:-1,
       });
     }
     // BrowserQuest: <sprite>-<animación> (walk_right, idle_down, death…); la izquierda es flipX

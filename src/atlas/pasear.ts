@@ -1,4 +1,7 @@
 import * as T from 'three';
+import { persona } from '../puerto/persona';
+import { caminoDunas, maspalomas } from './maspalomas';
+import { MASPALOMAS } from '../data/dialogos';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { Sitio } from './carta';
 import { extremo, caminoExtremo } from './extremos';
@@ -9,7 +12,6 @@ import '../puerto/puerto.css';
 
 export async function pasear(
   sitio: Sitio,
-  heroe: HTMLCanvasElement,
   volver: () => void,
   isla: () => void,
   ciudad: () => void,
@@ -18,7 +20,7 @@ export async function pasear(
     ficha = VISITAS[sitio];
   const renderer = new T.WebGLRenderer({ antialias: true });
   const nuevo = sitio === 'orchilla' || sitio === 'la-restinga';
-  const maqueta = await (nuevo ? extremo(sitio) : maquetaVisita(caleta)).catch((error) => {
+  const maqueta = await (sitio==='dunas' ? maspalomas() : nuevo ? extremo(sitio) : maquetaVisita(caleta)).catch((error) => {
     renderer.dispose();
     renderer.forceContextLoss();
     throw error;
@@ -28,7 +30,7 @@ export async function pasear(
   const root = document.createElement('section');
   root.className = 'puerto visita';
   root.innerHTML = `<header><span class="marca">CanaryQuest</span><div class="acciones"><button data-carta>${CARTA.titulo}</button><button data-isla>${CARTA.isla}</button></div></header>
-  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p>${nuevo ? '' : '<small>'+CARTA.ortofoto+'</small>'}${sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
+  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p>${nuevo || sitio==='dunas' ? '' : '<small>'+CARTA.ortofoto+'</small>'}${sitio==='dunas' ? '<button data-ciudad hidden>'+MASPALOMAS.sendero+' ↗</button>' : sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
   root.prepend(renderer.domElement);
   document.body.append(root);
   const canvas = renderer.domElement;
@@ -48,15 +50,12 @@ export async function pasear(
   orbita.minPolarAngle = 0.34;
   orbita.maxPolarAngle = 1.22;
   camara.position.set(...((caleta ? [13, 20, 22] : [4, 12, 25]) as [number, number, number]));
-  const textura = new T.CanvasTexture(heroe);
-  textura.colorSpace = T.SRGBColorSpace;
-  textura.magFilter = T.NearestFilter;
-  const jugador = new T.Sprite(new T.SpriteMaterial({ map: textura }));
-  jugador.center.set(0.5, 0);
-  jugador.scale.set(1.15, 2.3, 1);
-  const inicio = nuevo ? [0, sitio === 'orchilla' ? 5 : 0] : geo.mundo(caleta ? [385, 328] : [368, 308]);
+  const jugador=persona(0,0,false);
+  const sendero=root.querySelector<HTMLButtonElement>('[data-ciudad]');
+  const inicio = sitio==='dunas' ? [0,16] : nuevo ? [0, sitio === 'orchilla' ? 5 : 0] : geo.mundo(caleta ? [385, 328] : [368, 308]);
   jugador.position.set(inicio[0], 0.14, inicio[1]);
   scene.add(jugador);
+  if(sitio==='dunas'){orbita.target.z=16;camara.position.set(0,12,42)}
   const teclas = new Set<string>(),
     eventos = new AbortController(),
     op = { signal: eventos.signal };
@@ -108,7 +107,7 @@ export async function pasear(
     },
     op,
   );
-  const libre = (x: number, z: number) => nuevo ? caminoExtremo(sitio,x,z) : paseable(caleta, geo.foto(x, z));
+  const libre = (x: number, z: number) => sitio==='dunas' ? caminoDunas(x,z) : nuevo ? caminoExtremo(sitio,x,z) : paseable(caleta, geo.foto(x, z));
   canvas.addEventListener(
     'pointerup',
     (e) => {
@@ -160,11 +159,13 @@ export async function pasear(
         pos.z += (dz / n) * paso;
         mueve = true;
       }
+      if(mueve)jugador.rotation.y=Math.atan2(dx,dz);
       if (!mueve) destino = null;
     }
-    pos.y = 0.14 + (n > 0.07 ? Math.abs(Math.sin(t * 12)) * 0.07 : 0);
-    const mx = (pos.x * 0.4 - orbita.target.x) * dt * 3,
-      mz = (pos.z * 0.45 - orbita.target.z) * dt * 3;
+    if(sitio==='dunas' && sendero)sendero.hidden=pos.z> -20;
+    pos.y = 0.02 + (n > 0.07 ? Math.abs(Math.sin(t * 12)) * 0.07 : 0);
+    const mx = (pos.x * (sitio==='dunas'?1:.4) - orbita.target.x) * dt * 3,
+      mz = (pos.z * (sitio==='dunas'?1:.45) - orbita.target.z) * dt * 3;
     orbita.target.x += mx;
     camara.position.x += mx;
     orbita.target.z += mz;
@@ -177,14 +178,12 @@ export async function pasear(
     eventos.abort();
     renderer.setAnimationLoop(null);
     orbita.dispose();
-    textura.dispose();
     scene.traverse((o) => {
       if (o instanceof T.Mesh) {
         o.geometry.dispose();
         for (const m of [o.material].flat()) m.dispose();
       }
     });
-    jugador.material.dispose();
     maqueta.limpiar();
     renderer.dispose();
     renderer.forceContextLoss();

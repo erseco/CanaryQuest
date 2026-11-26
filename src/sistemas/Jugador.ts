@@ -26,7 +26,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     y: number,
     puedeEstar?: (x: number, y: number) => boolean,
   ) {
-    super(escena, x, y, 'atlas', 'misa-front');
+    super(escena, x, y, 'viajero', 0);
     escena.add.existing(this);
     escena.physics.add.existing(this);
     this.setOrigin(0.5, 1);
@@ -105,7 +105,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
       } else {
         this.direccion = vy < 0 ? 'back' : 'front';
       }
-      this.anims.play(`misa-${this.direccion}-walk`, true);
+      this.anims.play(`viajero-${this.direccion}-walk`, true);
     } else {
       this.pararAnimacion();
     }
@@ -167,15 +167,7 @@ export class Jugador extends Phaser.Physics.Arcade.Sprite {
     const actual = this.anims.currentAnim?.key;
     if (actual !== undefined) {
       this.anims.stop();
-      this.setFrame(
-        actual.includes('left')
-          ? 'misa-left'
-          : actual.includes('right')
-            ? 'misa-right'
-            : actual.includes('back')
-              ? 'misa-back'
-              : 'misa-front',
-      );
+      this.setFrame({front:0,back:5,left:10,right:15}[this.direccion]);
     }
   }
 }

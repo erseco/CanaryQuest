@@ -26,35 +26,18 @@ export class VisitaScene extends Phaser.Scene {
     const ciudad = () => {
       ui();
       this.scene.start('Detail', {
-        mapaId: 'las-palmas',
+        mapaId: sitio==='dunas'?'dunas':'las-palmas',
         retorno: { islaId, x: entrada.x, y: entrada.y },
       });
     };
     const carta = () => this.scene.start('Carta', { islaId, entrada });
-    const frame = this.textures.getFrame('atlas', 'misa-front')!;
-    const sprite = document.createElement('canvas');
-    sprite.width = frame.cutWidth;
-    sprite.height = frame.cutHeight;
-    sprite
-      .getContext('2d')!
-      .drawImage(
-        frame.source.image as HTMLImageElement,
-        frame.cutX,
-        frame.cutY,
-        frame.cutWidth,
-        frame.cutHeight,
-        0,
-        0,
-        sprite.width,
-        sprite.height,
-      );
     try {
       const { pasear } = await import('../atlas/pasear');
-      const cerrar = await pasear(sitio, sprite, carta, isla, ciudad);
+      const cerrar = await pasear(sitio, carta, isla, ciudad);
       this.events.once('shutdown', cerrar);
     } catch (error) {
       console.warn('Visita 3D no disponible', error);
-      if (sitio === 'las-palmas') {
+      if (sitio === 'las-palmas' || sitio==='dunas') {
         ciudad();
         return;
       }
