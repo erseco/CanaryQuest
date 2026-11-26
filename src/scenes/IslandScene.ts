@@ -1,3 +1,4 @@
+import { SITIOS } from '../atlas/carta';
 import Phaser from 'phaser';
 import { CARTA } from '../data/dialogos';
 import { ISLAS, buscarTerminal, type IslaId } from '../data/islas';
@@ -258,7 +259,7 @@ export class IslandScene extends Phaser.Scene {
       this.saliendo = true;
       this.cameras.main.fadeOut(250);
       this.cameras.main.once('camerafadeoutcomplete', () => {
-        if (poi.nombre === 'la-caleta' || poi.nombre === 'las-palmas') {
+        if (Object.hasOwn(SITIOS, poi.nombre)) {
           this.scene.start('Visita', { sitio: poi.nombre });
           return;
         }

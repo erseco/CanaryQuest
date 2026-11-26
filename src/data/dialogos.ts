@@ -166,6 +166,8 @@ export const CARTA = {
   ayuda: 'Toca el suelo para caminar. Arrastra para girar. Flechas o WASD para moverte.',
 };
 export const VISITAS = {
+  'la-restinga': {nombre:'La Restinga',zona:'El Pinar · El Hierro',descripcion:'Recorre el paseo del puerto y el pantalán entre los barcos de pesca.'},
+  'orchilla': {nombre:'Faro de Orchilla',zona:'El Pinar · El Hierro',descripcion:'Sigue el destello de la torre octogonal entre las coladas de lava.'},
   'la-caleta': {
     nombre: 'Piscinas de La Caleta', zona: 'Valverde · El Hierro',
     descripcion: 'Tres vasos de agua marina y un paseo de piedra sobre la costa volcánica.',

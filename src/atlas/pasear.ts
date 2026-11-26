@@ -1,7 +1,8 @@
 import * as T from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { Sitio } from './carta';
-import { maquetaVisita } from './maquetas';
+import { extremo, caminoExtremo } from './extremos';
+import { referencia, maquetaVisita } from './maquetas';
 import { paseable } from './recintos';
 import { CARTA, VISITAS } from '../data/dialogos';
 import '../puerto/puerto.css';
@@ -16,16 +17,18 @@ export async function pasear(
   const caleta = sitio === 'la-caleta',
     ficha = VISITAS[sitio];
   const renderer = new T.WebGLRenderer({ antialias: true });
-  const maqueta = await maquetaVisita(caleta).catch((error) => {
+  const nuevo = sitio === 'orchilla' || sitio === 'la-restinga';
+  const maqueta = await (nuevo ? extremo(sitio) : maquetaVisita(caleta)).catch((error) => {
     renderer.dispose();
     renderer.forceContextLoss();
     throw error;
   });
-  const { scene, geo } = maqueta;
+  const { scene } = maqueta;
+  const geo = referencia(caleta);
   const root = document.createElement('section');
   root.className = 'puerto visita';
   root.innerHTML = `<header><span class="marca">CanaryQuest</span><div class="acciones"><button data-carta>${CARTA.titulo}</button><button data-isla>${CARTA.isla}</button></div></header>
-  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p><small>${CARTA.ortofoto}</small>${caleta ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
+  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p>${nuevo ? '' : '<small>'+CARTA.ortofoto+'</small>'}${sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
   root.prepend(renderer.domElement);
   document.body.append(root);
   const canvas = renderer.domElement;
@@ -51,7 +54,7 @@ export async function pasear(
   const jugador = new T.Sprite(new T.SpriteMaterial({ map: textura }));
   jugador.center.set(0.5, 0);
   jugador.scale.set(1.15, 2.3, 1);
-  const inicio = geo.mundo(caleta ? [385, 328] : [368, 308]);
+  const inicio = nuevo ? [0, sitio === 'orchilla' ? 5 : 0] : geo.mundo(caleta ? [385, 328] : [368, 308]);
   jugador.position.set(inicio[0], 0.14, inicio[1]);
   scene.add(jugador);
   const teclas = new Set<string>(),
@@ -105,7 +108,7 @@ export async function pasear(
     },
     op,
   );
-  const libre = (x: number, z: number) => paseable(caleta, geo.foto(x, z));
+  const libre = (x: number, z: number) => nuevo ? caminoExtremo(sitio,x,z) : paseable(caleta, geo.foto(x, z));
   canvas.addEventListener(
     'pointerup',
     (e) => {

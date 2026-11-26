@@ -53,7 +53,7 @@ export class CartaScene extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => visitar(sitio));
       const boton = this.add
-        .text(24 + i * 259, 475, VISITAS[sitio].nombre + ' ↗', estilo)
+        .text(24 + i * 209, 475, VISITAS[sitio].nombre + ' ↗', estilo)
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', () => visitar(sitio));
       botones.push(boton);
@@ -68,8 +68,8 @@ export class CartaScene extends Phaser.Scene {
       color: '#e6e7ce',
     });
     seleccionar(0);
-    this.input.keyboard?.on('keydown-LEFT', () => seleccionar(1 - actual));
-    this.input.keyboard?.on('keydown-RIGHT', () => seleccionar(1 - actual));
+    this.input.keyboard?.on('keydown-LEFT', () => seleccionar((actual + sitios.length - 1) % sitios.length));
+    this.input.keyboard?.on('keydown-RIGHT', () => seleccionar((actual + 1) % sitios.length));
     this.input.keyboard?.on('keydown-ENTER', () => visitar(sitios[actual]));
   }
 }

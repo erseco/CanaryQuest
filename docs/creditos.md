@@ -54,3 +54,13 @@
 - Arquitectura, vegetación, personajes y sombreado del agua creados para CanaryQuest. Las cuatro texturas de superficie y la panorámica del horizonte se generaron para esta escena con ImageGen. GPL-3.0.
 - Pesquero, velero, bote de remos, barco de pasajeros y paleta de Kenney, **Watercraft Kit 2.1**, CC0. La licencia original acompaña a los modelos en `public/assets/puerto/License.txt`. [Pack original](https://kenney.nl/assets/watercraft-kit)
 - Renderizado con Three.js, MIT.
+
+## Faro de Orchilla y La Restinga
+
+Las dos visitas son maquetas originales. Las coordenadas de acceso se guardan en
+`src/data/geografia.json`. En Orchilla se representan la torre octogonal, la
+casa anexa y el malpaís. En La Restinga, el paseo, un pantalán y la dársena
+pesquera. Las distancias, las casas y los barcos se adaptan al paseo jugable.
+
+- [Ficha de campo del IGN en Orchilla](https://www.ign.es/web/resources/gravimetria/absoluta/HIER_FARO.pdf) y [descripción del faro en CanariWiki](https://www3.gobiernodecanarias.org/medusa/wiki/index.php?title=Faro_de_Orchilla).
+- [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).

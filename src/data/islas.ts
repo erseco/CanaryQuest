@@ -61,7 +61,7 @@ export const ISLAS: Record<IslaId, Isla> = {
       { id: 'eh-aeropuerto', nombre: 'Aeropuerto de El Hierro', tipo: 'aeropuerto', mapa: proyectarLugar(geografia['el-hierro']['eh-aeropuerto']) },
     ],
     mapaMundo: puntoCarta(-18.015, 27.745),
-    zonas: [{ mapa: 'la-caleta', etiqueta: 'Piscinas de La Caleta' }],
+    zonas: [{ mapa:'la-restinga', etiqueta:'La Restinga' }, { mapa: 'orchilla', etiqueta:'Faro de Orchilla' }, { mapa: 'la-caleta', etiqueta: 'Piscinas de La Caleta' }],
   },
   'la-gomera': {
     id: 'la-gomera',

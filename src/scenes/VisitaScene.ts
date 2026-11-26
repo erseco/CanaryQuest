@@ -58,6 +58,7 @@ export class VisitaScene extends Phaser.Scene {
         ciudad();
         return;
       }
+      if (sitio !== 'la-caleta') { isla(); return; }
       this.add.image(480, 270, 'orto-caleta').setDisplaySize(960, 540);
       this.add.text(20, 20, VISITAS[sitio].nombre, {
         fontFamily: 'Georgia',
