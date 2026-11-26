@@ -103,3 +103,14 @@ embarcadero. El personaje camina hasta allí. También puedes tocar una fachada
 para entrar, o acercarte a la puerta con el teclado y pulsar **E**. El camino
 enlaza Mogán y el Puerto de las Nieves en ambos sentidos. La lancha de Mogán
 te deja en Agaete, donde puedes embarcar en el ferry a Santa Cruz de Tenerife.
+
+### Carta de Canarias y mapas insulares
+
+Desde el puerto abre **Mapa de la isla** para caminar por el relieve. Toca la
+miniatura o pulsa **M** para localizarte. **C** abre la carta del archipiélago.
+Los puertos conservan sus conexiones, incluida la travesía de Órzola a Caleta
+de Sebo. Puedes visitar las piscinas de La Caleta en El Hierro y la plaza de
+Santa Ana en Las Palmas desde sus marcadores o desde la carta.
+
+Los ocho mapas de paseo se dibujan a partir del MDT200 del IGN. Las dos visitas
+usan ortofotos del PNOA como base. [Fuentes y licencias](docs/creditos.md#cartograf%C3%ADa-y-visitas).

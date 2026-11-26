@@ -1,0 +1,162 @@
+{
+  "la-palma": {
+    "lp-santa-cruz": [
+      -17.769,
+      28.675
+    ],
+    "lp-aeropuerto": [
+      -17.7556,
+      28.6265
+    ],
+    "caldera": [
+      -17.869,
+      28.727
+    ]
+  },
+  "el-hierro": {
+    "eh-la-estaca": [
+      -17.902,
+      27.786
+    ],
+    "eh-aeropuerto": [
+      -17.887,
+      27.815
+    ],
+    "la-caleta": [
+      -17.88764,
+      27.80061
+    ],
+    "malpaso": [
+      -18.039,
+      27.728
+    ]
+  },
+  "la-gomera": {
+    "lg-san-sebastian": [
+      -17.108,
+      28.09
+    ],
+    "lg-aeropuerto": [
+      -17.214,
+      28.03
+    ],
+    "garajonay": [
+      -17.247,
+      28.11
+    ]
+  },
+  "tenerife": {
+    "tf-santa-cruz": [
+      -16.238,
+      28.468
+    ],
+    "tf-los-cristianos": [
+      -16.717,
+      28.049
+    ],
+    "tf-norte": [
+      -16.341,
+      28.483
+    ],
+    "tf-sur": [
+      -16.572,
+      28.044
+    ],
+    "teide": [
+      -16.6426,
+      28.2724
+    ]
+  },
+  "gran-canaria": {
+    "gc-las-palmas": [
+      -15.416,
+      28.141
+    ],
+    "gc-agaete": [
+      -15.71,
+      28.102
+    ],
+    "gc-aeropuerto": [
+      -15.3866,
+      27.9319
+    ],
+    "pueblo": [
+      -15.767,
+      27.819
+    ],
+    "roque-nublo": [
+      -15.612,
+      27.968
+    ],
+    "dunas": [
+      -15.581,
+      27.744
+    ],
+    "las-palmas": [
+      -15.4155,
+      28.10047
+    ],
+    "isleta": [
+      -15.429,
+      28.154
+    ]
+  },
+  "fuerteventura": {
+    "fv-puerto-rosario": [
+      -13.858,
+      28.497
+    ],
+    "fv-corralejo": [
+      -13.861,
+      28.74
+    ],
+    "fv-morro-jable": [
+      -14.36,
+      28.052
+    ],
+    "fv-aeropuerto": [
+      -13.864,
+      28.453
+    ],
+    "betancuria": [
+      -14.055,
+      28.425
+    ]
+  },
+  "lanzarote": {
+    "lz-arrecife": [
+      -13.521,
+      28.975
+    ],
+    "lz-playa-blanca": [
+      -13.835,
+      28.858
+    ],
+    "lz-orzola": [
+      -13.452,
+      29.224
+    ],
+    "lz-aeropuerto": [
+      -13.605,
+      28.945
+    ],
+    "timanfaya": [
+      -13.755,
+      29.005
+    ],
+    "jameos": [
+      -13.432,
+      29.157
+    ]
+  },
+  "la-graciosa": {
+    "lgr-caleta-sebo": [
+      -13.503,
+      29.232
+    ],
+    "montana-amarilla": [
+      -13.543,
+      29.221
+    ]
+  }
+}

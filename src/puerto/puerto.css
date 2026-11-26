@@ -235,3 +235,8 @@
 }
 .puerto .destinos {position:absolute;z-index:2;right:clamp(16px,3.7vw,62px);top:76px;background:#173e42ea;color:#fff5da;border:1px solid #f8efd25e;border-radius:18px;padding:8px 12px;font:inherit;max-width:min(55vw,220px)}
 @media(max-width:640px){.puerto .destinos{top:63px;right:16px;max-width:49vw;font-size:13px}}
+
+.visita aside {top:16%;max-width:34%}
+.visita h1 {font-size:clamp(27px,3.8vw,60px);max-width:6em}
+.visita footer details p {top:auto;bottom:42px}
+.visita article p:last-child {margin-bottom:0}

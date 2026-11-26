@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { fondoCarta } from '../atlas/carta';
 import { ISLAS, buscarTerminal, type IslaId, type Punto, type Terminal } from '../data/islas';
 import { destinosDesde, medioDe, type Destino, type MedioTransporte } from '../sistemas/viajes';
 import { MUELLE } from '../puerto/paseo';
@@ -25,9 +26,7 @@ export class TravelMapScene extends Phaser.Scene {
   private seleccion = 0;
   private marcadores: Phaser.GameObjects.Container[] = [];
   private info!: Phaser.GameObjects.Text;
-  private escala = 1;
-  private offsetX = 0;
-  private offsetY = 0;
+  private enPantalla!: (p: Punto) => Punto;
   private viajando = false;
 
   constructor() {
@@ -44,28 +43,18 @@ export class TravelMapScene extends Phaser.Scene {
     this.viajando = false;
   }
 
-  /** De coordenadas de mapa-mundo.jpg a pantalla. */
-  private enPantalla(p: Punto): Punto {
-    return { x: this.offsetX + p.x * this.escala, y: this.offsetY + p.y * this.escala };
-  }
-
   create(): void {
     const { width, height } = this.scale;
-    const fondo = this.add.image(0, 0, 'mapa-mundo').setOrigin(0);
-    this.escala = Math.min(width / fondo.width, height / fondo.height);
-    fondo.setScale(this.escala);
-    this.offsetX = (width - fondo.width * this.escala) / 2;
-    this.offsetY = (height - fondo.height * this.escala) / 2;
-    fondo.setPosition(this.offsetX, this.offsetY);
+    this.enPantalla = fondoCarta(this);
 
     const esBarco = this.medio === 'barco';
     this.add
       .text(width / 2, 16, `${esBarco ? '⚓' : '✈'} ${this.origen.nombre} — ¿a dónde ${esBarco ? 'navegamos' : 'volamos'}?`, {
-        fontFamily: 'monospace',
+        fontFamily: 'Georgia, serif',
         fontSize: '20px',
         fontStyle: 'bold',
         color: '#ffffff',
-        backgroundColor: '#0a1a3aCC',
+        backgroundColor: '#173e43',
         padding: { x: 14, y: 8 },
       })
       .setOrigin(0.5, 0)
@@ -76,7 +65,7 @@ export class TravelMapScene extends Phaser.Scene {
     this.add.circle(aqui.x, aqui.y, 6, 0x9fd8ff).setDepth(50);
     this.add
       .text(aqui.x, aqui.y - 10, 'Estás aquí', {
-        fontFamily: 'monospace',
+        fontFamily: 'Georgia, serif',
         fontSize: '12px',
         color: '#9fd8ff',
         stroke: '#0a1a3a',
@@ -105,20 +94,20 @@ export class TravelMapScene extends Phaser.Scene {
 
     this.info = this.add
       .text(width / 2, height - 44, '', {
-        fontFamily: 'monospace',
+        fontFamily: 'Georgia, serif',
         fontSize: '17px',
         color: '#f4c542',
-        backgroundColor: '#0a1a3aCC',
+        backgroundColor: '#173e43',
         padding: { x: 12, y: 6 },
       })
       .setOrigin(0.5, 1)
       .setDepth(100);
     this.add
       .text(width / 2, height - 10, '←/→ elegir · ENTER viajar · ESC volver', {
-        fontFamily: 'monospace',
+        fontFamily: 'Georgia, serif',
         fontSize: '15px',
         color: '#ffffff',
-        backgroundColor: '#0a1a3aCC',
+        backgroundColor: '#173e43',
         padding: { x: 10, y: 5 },
       })
       .setOrigin(0.5, 1)
@@ -126,7 +115,7 @@ export class TravelMapScene extends Phaser.Scene {
 
     if (this.datos.desdePueblo) {
       this.add.text(width - 12, 60, PASEO.volverMuelle, {
-        fontFamily: 'monospace', fontSize: '16px', backgroundColor: '#173e42', padding: { x: 10, y: 8 },
+        fontFamily: 'Georgia, serif', fontSize: '16px', backgroundColor: '#173e42', padding: { x: 10, y: 8 },
       }).setOrigin(1, 0).setDepth(100).setInteractive({ useHandCursor: true }).on('pointerdown', () => this.volver());
     }
     this.resaltarSeleccion();
@@ -167,7 +156,7 @@ export class TravelMapScene extends Phaser.Scene {
       this.scene.start('Puerto', { pueblo: 'agaete', llegada: MUELLE });
       return;
     }
-    this.scene.start('Island', { islaId: this.datos.origen, entrada: { x: this.origen.x, y: this.origen.y } });
+    this.scene.start('Island', { islaId: this.datos.origen, lugar: this.origen.id });
   }
 
   private viajarA(destino: Destino): void {
@@ -189,17 +178,6 @@ export class TravelMapScene extends Phaser.Scene {
       duration: 2200,
       ease: this.medio === 'barco' ? 'sine.inOut' : 'quad.inOut',
       onComplete: () => {
-        if (ISLAS[destino.isla].ilustracion === null) {
-          // Isla sin arte todavía
-          this.game.events.emit('dialogo', {
-            clave: 'proximamente',
-            alTerminar: () => {
-              vehiculo.destroy();
-              this.viajando = false;
-            },
-          });
-          return;
-        }
         this.cameras.main.fadeOut(300);
         this.cameras.main.once('camerafadeoutcomplete', () => {
           const partida = this.registry.get('partida') as Partida;
@@ -211,7 +189,7 @@ export class TravelMapScene extends Phaser.Scene {
           // Se desembarca en la terminal de llegada
           this.scene.start('Island', {
             islaId: destino.isla,
-            entrada: { x: destino.terminal.x, y: destino.terminal.y },
+            lugar: destino.terminal.id,
           });
         });
       },

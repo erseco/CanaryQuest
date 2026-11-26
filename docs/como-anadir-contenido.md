@@ -35,28 +35,22 @@ Los mapas grandes se generan por código y siguen siendo editables en Tiled
 
 ## Puertos, aeropuertos y líneas
 
-Cada isla declara sus `terminales` reales en `src/data/islas.ts` (id, nombre,
-tipo `puerto`/`aeropuerto`, posición en la ilustración y `mapa` = posición sobre
-`mapa-mundo.jpg`). Las líneas de ferry van puerto a puerto en `RUTAS_BARCO`
-con su naviera; en avión, Binter une todos los aeropuertos. El test
-`tests/viajes.test.ts` falla si una terminal o zona queda fuera de la zona
-andable (así se detectó el antiguo puerto de Mogán, inalcanzable).
+Los puertos, aeropuertos y lugares tienen coordenadas geográficas en
+`src/data/geografia.json` (longitud, latitud). Los nombres y conexiones de ferry
+se definen en `src/data/islas.ts`. La carta del archipiélago y el mapa de paseo
+usan las mismas coordenadas. Los muelles se ajustan al punto de tierra cercano.
 
-Para que una isla sin `.tmj` de overworld tenga entradas, añade `zonas` en
-`src/data/islas.ts` (mapa, etiqueta y posición sobre la ilustración).
-Regenerar un mapa **sobrescribe** los retoques hechos a mano en Tiled.
+## Regenerar el relieve y las colisiones
 
-## Afinar las colisiones de una isla (quitar el rectángulo genérico)
-
-1. Copia `public/assets/maps/islas/gran-canaria.tmj` como plantilla a
-   `<isla>.tmj`.
-2. Ábrelo en [Tiled](https://www.mapeditor.org): añade la ilustración de
-   `public/assets/islas/<isla>.jpg` como **capa de imagen** para calcar.
-3. Edita el polígono `andable` (capa `colisiones`) siguiendo la costa, y los
-   puntos de la capa `pois`: `spawn`, `pueblo` (tipo `entrada`), `puerto` y
-   `aeropuerto` (tipo `transporte`), hitos (tipo `hito`).
-4. Registra la carga en `PreloadScene` (`this.load.tilemapTiledJSON('map-<isla>', ...)`).
-5. Comprueba con `?debug=1` (el polígono se pinta en magenta).
+1. Descarga el ArcGrid del IGN con la URL de `scripts/generar-carta.py`.
+2. En un entorno Python con numpy, scipy, Pillow y rasterio ejecuta
+   `python scripts/generar-carta.py recorte.asc` y
+   `python scripts/generar-relieves.py recorte.asc`.
+3. El segundo script escribe una ilustración de 1920 × 1600 y un mapa Tiled
+   por isla. Genera el polígono costero, entradas y terminales en la misma
+   proyección. Los cambios manuales en esos ocho mapas se sobrescriben.
+4. `npm test` comprueba que todas las entradas y terminales están en tierra.
+   Abre el juego con `?debug=1` para ver la costa transitable en magenta.
 
 ## Añadir un pueblo/mazmorra nuevo
 
@@ -69,15 +63,6 @@ Regenerar un mapa **sobrescribe** los retoques hechos a mano en Tiled.
 3. Entra desde un POI: en el `.tmj` de la isla añade un punto tipo `entrada`
    con el nombre del mapa, y amplía `activarPoi()` de IslandScene si hace
    falta un caso nuevo.
-
-## Añadir una isla nueva (cuando exista su ilustración)
-
-1. Copia la ilustración a `art/islas/` y una versión optimizada a
-   `public/assets/islas/<isla>.jpg` (1254×1254 aprox.).
-2. En `src/data/islas.ts`, rellena `ilustracion` (deja de ser `null`) y
-   revisa puerto/aeropuerto/mapaMundo.
-3. La carga en PreloadScene es automática (recorre `ISLAS`).
-4. Sigue «Afinar las colisiones» para su `.tmj` y añade su misión.
 
 ## Checklist antes de commitear contenido
 

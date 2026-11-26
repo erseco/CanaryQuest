@@ -5,7 +5,7 @@ import type { abrirPuerto } from '../puerto/vista';
 import type { Partida } from '../sistemas/SaveManager';
 import type { Pueblo } from '../data/pueblos';
 import { CAMINO, MUELLE, type PuntoPuerto } from '../puerto/paseo';
-import { buscarTerminal, type Punto } from '../data/islas';
+import type { Punto } from '../data/islas';
 
 export class PuertoScene extends Phaser.Scene {
   constructor() {
@@ -27,15 +27,6 @@ export class PuertoScene extends Phaser.Scene {
       if (this.scene.isSleeping('UI')) this.scene.wake('UI');
       else this.scene.launch('UI');
     };
-    const salir = () => {
-      iniciarUI();
-      this.game.events.emit('mision-cambiada');
-      this.scene.start('Island', {
-        islaId,
-        entrada:
-          datos.entrada ?? (pueblo === 'agaete' ? buscarTerminal('gc-agaete')?.terminal : undefined),
-      });
-    };
     const objetivo = () => {
       if (qm.estaCompletada(mision)) return PUERTO.completada;
       const paso = qm.pasoActual(mision);
@@ -49,7 +40,10 @@ export class PuertoScene extends Phaser.Scene {
       const modulo = await import('../puerto/vista');
       vista = await modulo.abrirPuerto(
         () => this.game.events.emit('npc-hablar', { npc: 'pastor' }),
-        salir,
+        () => {
+          iniciarUI();
+          this.scene.start('Island', {islaId, lugar: pueblo === 'agaete' ? 'gc-agaete' : 'pueblo'});
+        },
         objetivo,
         pueblo,
         (destino, porMar = false) => {
@@ -74,7 +68,7 @@ export class PuertoScene extends Phaser.Scene {
         .tilemap({ key: 'map-gran-canaria' })
         .getObjectLayer('pois')
         ?.objects.find((o) => o.name === 'pueblo');
-      const entrada = datos.entrada ?? { x: puntoPueblo?.x ?? 250, y: (puntoPueblo?.y ?? 940) + 50 };
+      const entrada = datos.entrada ?? { x: puntoPueblo!.x!, y: puntoPueblo!.y! };
       this.scene.start('Detail', { mapaId: 'pueblo', retorno: { islaId, ...entrada } });
       return;
     }

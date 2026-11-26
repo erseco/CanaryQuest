@@ -128,6 +128,7 @@ export const AYUDA: string[] = [
   '',
   'CONSEJOS',
   '• Arriba a la izquierda verás tu misión y lo que te falta.',
+  '• Pulsa M o toca la miniatura para ver la isla entera. C abre la carta de Canarias.',
   '• Las ★ del mapa de cada isla son zonas que puedes explorar.',
   '• Viaja entre islas en barco (⚓) o en avión (✈).',
   '• Los enemigos a veces sueltan corazones. ¡Reúne los 8 símbolos guanches!',
@@ -153,4 +154,24 @@ export const PASEO = {
   explorar:'Explora el pueblo o elige un lugar para caminar hasta él.',
   enCasa:'Puedes recorrer la habitación y volver al pueblo por la puerta.',
   volverMuelle:'Volver al embarcadero',
+};
+
+export const CARTA = {
+  titulo: 'Carta de Canarias', controles:'Controles', oceano: 'OCÉANO ATLÁNTICO', norte: 'N', visitar: 'Visitar',
+  isla: 'Mapa de la isla', volver: 'Volver', pasear: 'Recorrer Vegueta y Triana',
+  activar: ' · E o toca para entrar',
+  lugares: {teide:'Pico del Teide',caldera:'Caldera de Taburiente','montana-amarilla':'Montaña Amarilla',malpaso:'Pico de Malpaso',pueblo:'Puerto de Mogán','roque-nublo':'Roque Nublo',dunas:'Dunas de Maspalomas','las-palmas':'Las Palmas de Gran Canaria',isleta:'La Isleta'} as Record<string,string>,
+  ortofoto:'Ortofoto PNOA © IGN',
+  fuente: 'Relieve · MDT200 © Instituto Geográfico Nacional', sitios: 'Lugares visitables',
+  ayuda: 'Toca el suelo para caminar. Arrastra para girar. Flechas o WASD para moverte.',
+};
+export const VISITAS = {
+  'la-caleta': {
+    nombre: 'Piscinas de La Caleta', zona: 'Valverde · El Hierro',
+    descripcion: 'Tres vasos de agua marina y un paseo de piedra sobre la costa volcánica.',
+  },
+  'las-palmas': {
+    nombre: 'Las Palmas de Gran Canaria', zona: 'Vegueta · Gran Canaria',
+    descripcion: 'Cruza la plaza de Santa Ana entre la catedral y las Casas Consistoriales.',
+  },
 };

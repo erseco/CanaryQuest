@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CARTA } from '../data/dialogos';
 import { ISLAS, buscarTerminal, type IslaId } from '../data/islas';
 import { Jugador } from '../sistemas/Jugador';
 import { Musica } from '../sistemas/Musica';
@@ -27,80 +28,71 @@ export class IslandScene extends Phaser.Scene {
   private poiCercano: Poi | null = null;
   private aviso!: Phaser.GameObjects.Text;
   private saliendo = false;
+  private localizador!: Phaser.GameObjects.Arc;
+  private miniatura!: Phaser.GameObjects.Image;
 
   constructor() {
     super('Island');
   }
 
-  init(datos: { islaId: IslaId; entrada?: { x: number; y: number } }): void {
+  init(datos: { islaId: IslaId; lugar?: string; entrada?: { x: number; y: number } }): void {
     this.islaId = datos.islaId;
     this.saliendo = false;
     this.poiCercano = null;
   }
 
-  create(datos: { islaId: IslaId; entrada?: { x: number; y: number } }): void {
+  create(datos: { islaId: IslaId; lugar?: string; entrada?: { x: number; y: number } }): void {
     const isla = ISLAS[this.islaId];
     const fondo = this.add.image(0, 0, `isla-${this.islaId}`).setOrigin(0);
 
-    // Cargar polígono andable y POIs del .tmj de la isla, si existe.
-    // Las islas aún sin mapa de colisiones usan un rectángulo genérico
-    // y los POIs de transporte definidos en datos (pendientes de pulir).
-    if (this.cache.tilemap.exists(`map-${this.islaId}`)) {
-      const mapa = this.make.tilemap({ key: `map-${this.islaId}` });
-      const capaColisiones = mapa.getObjectLayer('colisiones');
-      const poligono = capaColisiones?.objects.find((o) => o.name === 'andable');
-      // Phaser 4: Geom.Point se eliminó; los vértices de polígono son Vector2.
-      const puntos = (poligono?.polygon ?? []).map(
-        (p) => new Phaser.Math.Vector2((poligono?.x ?? 0) + p.x, (poligono?.y ?? 0) + p.y),
-      );
-      this.andable = new Phaser.Geom.Polygon(puntos);
-
-      this.pois = (mapa.getObjectLayer('pois')?.objects ?? []).map((o) => ({
-        nombre: o.name,
-        tipo: (o.type ?? (o as unknown as Record<string, string>)['class']) || '',
-        x: o.x ?? 0,
-        y: o.y ?? 0,
-      }));
-    } else {
-      const margen = 150;
-      this.andable = new Phaser.Geom.Polygon([
-        new Phaser.Math.Vector2(margen, margen),
-        new Phaser.Math.Vector2(fondo.width - margen, margen),
-        new Phaser.Math.Vector2(fondo.width - margen, fondo.height - margen),
-        new Phaser.Math.Vector2(margen, fondo.height - margen),
-      ]);
-      this.pois = [];
-      const puerto = isla.terminales.find((t) => t.tipo === 'puerto');
-      if (puerto) this.pois.push({ nombre: 'spawn', tipo: 'spawn', x: puerto.x, y: puerto.y - 60 });
-      for (const z of isla.zonas ?? []) {
-        this.pois.push({ nombre: z.mapa, tipo: 'entrada', x: z.x, y: z.y });
-      }
-    }
-    // Puertos y aeropuertos reales, en todas las islas (datos en islas.ts)
-    for (const t of isla.terminales) {
-      this.pois.push({ nombre: t.id, tipo: 'transporte', x: t.x, y: t.y });
-    }
-
-    const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === 'spawn') ?? { x: 400, y: 900 };
+    const mapa = this.make.tilemap({ key: `map-${this.islaId}` });
+    const orilla = mapa.getObjectLayer('colisiones')!.objects[0];
+    this.andable = new Phaser.Geom.Polygon(
+      orilla.polygon!.map((p) => new Phaser.Math.Vector2(p.x, p.y)),
+    );
+    this.pois = mapa.getObjectLayer('pois')!.objects.map((o) => ({
+      nombre: o.name,
+      tipo: o.type!,
+      x: o.x!,
+      y: o.y!,
+    }));
+    const spawn = datos.entrada ?? this.pois.find((p) => p.nombre === (datos.lugar ?? 'spawn'))!;
     this.jugador = new Jugador(this, spawn.x, spawn.y, (x, y) =>
       Phaser.Geom.Polygon.Contains(this.andable, x, y),
     );
 
-    // Marcadores visuales de POIs
+    this.jugador.setDepth(12);
     for (const poi of this.pois) {
       if (poi.tipo === 'spawn') continue;
-      const icono =
-        poi.tipo === 'transporte'
-          ? buscarTerminal(poi.nombre)?.terminal.tipo === 'puerto'
-            ? '⚓'
-            : '✈'
-          : ENTRADAS_DETALLE.has(poi.nombre) || poi.tipo === 'entrada'
-            ? '★'
-            : '◆';
+      const terminal = buscarTerminal(poi.nombre)?.terminal;
+      const icono = terminal
+        ? terminal.tipo === 'puerto'
+          ? '⚓'
+          : '✈'
+        : poi.tipo === 'paisaje'
+          ? '▲'
+          : '★';
+      const y = poi.y - 14;
+      this.add.circle(poi.x, y, 12, 0x18494b).setStrokeStyle(2, 0xf3d490).setDepth(5);
       this.add
-        .text(poi.x, poi.y, icono, { fontSize: '28px' })
+        .text(poi.x, y, icono, { fontFamily: 'Arial', fontSize: '15px', color: '#fbebbd' })
         .setOrigin(0.5)
-        .setDepth(5);
+        .setDepth(6);
+      const nombre =
+        terminal?.nombre.replace(/^Puerto de |^Aeropuerto de /, '') ??
+        isla.zonas?.find((z) => z.mapa === poi.nombre)?.etiqueta ??
+        CARTA.lugares[poi.nombre];
+      if (nombre)
+        this.add
+          .text(poi.x, y - 16, nombre, {
+            fontFamily: 'Georgia',
+            fontSize: '15px',
+            color: '#fff7d8',
+            stroke: '#254744',
+            strokeThickness: 4,
+          })
+          .setOrigin(0.5, 1)
+          .setDepth(5);
     }
 
     this.cameras.main.setBounds(0, 0, fondo.width, fondo.height);
@@ -108,10 +100,14 @@ export class IslandScene extends Phaser.Scene {
     this.cameras.main.fadeIn(300);
 
     // Tap-to-move / activar POI
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      const mundo = pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
-      this.jugador.irA(mundo.x, mundo.y);
-    });
+    this.input.on(
+      'pointerdown',
+      (pointer: Phaser.Input.Pointer, objetos: Phaser.GameObjects.GameObject[]) => {
+        if (objetos.length) return;
+        const mundo = pointer.positionToCamera(this.cameras.main) as Phaser.Math.Vector2;
+        this.jugador.irA(mundo.x, mundo.y);
+      },
+    );
 
     this.aviso = this.add
       .text(this.scale.width / 2, this.scale.height - 90, '', {
@@ -129,20 +125,76 @@ export class IslandScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown-E', () => this.activarPoi());
     this.input.keyboard?.on('keydown-ENTER', () => this.activarPoi());
 
-    // Cartel con el nombre de la isla
+    const papel = {
+      fontFamily: 'Georgia, serif',
+      fontSize: '17px',
+      color: '#fff1d3',
+      backgroundColor: '#173f46',
+      padding: { x: 13, y: 7 },
+    };
     this.add
-      .text(this.scale.width / 2, 24, isla.nombre, {
-        fontFamily: 'monospace',
-        fontSize: '24px',
-        fontStyle: 'bold',
-        color: '#ffffff',
-        stroke: '#0a1a3a',
-        strokeThickness: 6,
-      })
+      .text(this.scale.width / 2, 10, isla.nombre, { ...papel, fontSize: '25px' })
       .setOrigin(0.5, 0)
       .setScrollFactor(0)
       .setDepth(100);
+    const abrirCarta = () =>
+      this.scene.start('Carta', {
+        islaId: this.islaId,
+        entrada: { x: this.jugador.x, y: this.jugador.y },
+      });
+    this.add
+      .text(this.scale.width / 2, 50, CARTA.titulo + ' ↗', papel)
+      .setOrigin(0.5, 0)
+      .setScrollFactor(0)
+      .setDepth(100)
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', abrirCarta);
+    this.input.keyboard?.on('keydown-C', abrirCarta);
 
+    // La miniatura usa la misma textura y proyección que el terreno bajo los pies.
+    const borde = this.add.rectangle(878, 130, 124, 104, 0xf4d8a0).setDepth(89).setScrollFactor(0);
+    this.miniatura = this.add
+      .image(878, 130, fondo.texture.key)
+      .setDisplaySize(120, 100)
+      .setScrollFactor(0)
+      .setDepth(90)
+      .setInteractive({ useHandCursor: true });
+    this.localizador = this.add
+      .circle(0, 0, 4, 0xffde7c)
+      .setStrokeStyle(2, 0x315054)
+      .setScrollFactor(0)
+      .setDepth(92);
+    const destinos = this.pois
+      .filter((p) => p.tipo !== 'spawn')
+      .map((p) => ({
+        p,
+        marca: this.add
+          .circle(0, 0, 2.5, 0xf3e9cd)
+          .setStrokeStyle(1, 0x314844)
+          .setScrollFactor(0)
+          .setDepth(91),
+      }));
+    const situar = () =>
+      destinos.forEach(({ p, marca }) =>
+        marca.setPosition(
+          this.miniatura.x + (p.x / fondo.width - 0.5) * this.miniatura.displayWidth,
+          this.miniatura.y + (p.y / fondo.height - 0.5) * this.miniatura.displayHeight,
+        ),
+      );
+    situar();
+    let ampliada = false;
+    const ampliar = () => {
+      ampliada = !ampliada;
+      this.miniatura
+        .setPosition(ampliada ? 480 : 878, ampliada ? 271 : 130)
+        .setDisplaySize(ampliada ? 432 : 120, ampliada ? 360 : 100);
+      borde
+        .setPosition(this.miniatura.x, this.miniatura.y)
+        .setSize(this.miniatura.displayWidth + 4, this.miniatura.displayHeight + 4);
+      situar();
+    };
+    this.miniatura.on('pointerdown', ampliar);
+    this.input.keyboard?.on('keydown-M', ampliar);
     Musica.reproducir(this, 'musica-isla');
 
     // Depuración: ?debug=1 pinta el polígono andable
@@ -161,37 +213,42 @@ export class IslandScene extends Phaser.Scene {
     this.jugador.padTactil.set(pad.x, pad.y);
     this.jugador.actualizar(delta);
 
+    this.localizador.setPosition(
+      this.miniatura.x + (this.jugador.x / this.miniatura.width - 0.5) * this.miniatura.displayWidth,
+      this.miniatura.y + (this.jugador.y / this.miniatura.height - 0.5) * this.miniatura.displayHeight,
+    );
     // Detectar POI cercano
-    const cercano =
-      this.pois.find(
-        (p) =>
-          p.tipo !== 'spawn' &&
-          Phaser.Math.Distance.Between(this.jugador.x, this.jugador.y, p.x, p.y) < RADIO_POI,
-      ) ?? null;
+    let cercano: Poi | null = null;
+    let radio = RADIO_POI;
+    for (const p of this.pois) {
+      if (p.tipo === 'spawn') continue;
+      const distancia = Math.hypot(p.x - this.jugador.x, p.y - this.jugador.y);
+      if (distancia < radio) {
+        cercano = p;
+        radio = distancia;
+      }
+    }
     if (cercano !== this.poiCercano) {
       this.poiCercano = cercano;
       if (cercano === null) {
         this.aviso.setVisible(false);
       } else {
-        this.aviso.setText(`${this.etiquetaPoi(cercano)} — pulsa E o toca aquí`).setVisible(true);
+        this.aviso
+          .setText(this.etiquetaPoi(cercano) + (cercano.tipo === 'paisaje' ? '' : CARTA.activar))
+          .setVisible(true);
         this.aviso.removeAllListeners('pointerdown');
-        this.aviso.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.activarPoi());
+        this.aviso.disableInteractive();
+        if (cercano.tipo !== 'paisaje')
+          this.aviso.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.activarPoi());
       }
     }
   }
 
   private etiquetaPoi(poi: Poi): string {
-    const nombres: Record<string, string> = {
-      pueblo: 'Puerto de Mogán (pueblo)',
-      'roque-nublo': 'Roque Nublo',
-      dunas: 'Dunas de Maspalomas',
-      'las-palmas': 'Las Palmas (Triana · Vegueta · Catedral)',
-      isleta: 'La Isleta',
-    };
     const zona = ISLAS[this.islaId].zonas?.find((z) => z.mapa === poi.nombre);
     const terminal = buscarTerminal(poi.nombre)?.terminal;
     if (terminal) return `${terminal.nombre} (${terminal.tipo === 'puerto' ? 'ferry' : 'Binter'})`;
-    return nombres[poi.nombre] ?? zona?.etiqueta ?? poi.nombre;
+    return CARTA.lugares[poi.nombre] ?? zona?.etiqueta ?? poi.nombre;
   }
 
   private activarPoi(): void {
@@ -201,13 +258,17 @@ export class IslandScene extends Phaser.Scene {
       this.saliendo = true;
       this.cameras.main.fadeOut(250);
       this.cameras.main.once('camerafadeoutcomplete', () => {
+        if (poi.nombre === 'la-caleta' || poi.nombre === 'las-palmas') {
+          this.scene.start('Visita', { sitio: poi.nombre });
+          return;
+        }
         if (poi.nombre === 'pueblo') {
-          this.scene.start('Puerto', { entrada: { x: poi.x, y: poi.y + 50 } });
+          this.scene.start('Puerto', { entrada: { x: poi.x, y: poi.y } });
           return;
         }
         this.scene.start('Detail', {
           mapaId: poi.nombre,
-          retorno: { islaId: this.islaId, x: poi.x, y: poi.y + 50 },
+          retorno: { islaId: this.islaId, x: poi.x, y: poi.y },
         });
       });
     } else if (poi.nombre === 'gc-agaete') {

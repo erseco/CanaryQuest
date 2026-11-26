@@ -38,11 +38,11 @@ export class PreloadScene extends Phaser.Scene {
 
     // Ilustraciones de islas y mapas
     for (const isla of Object.values(ISLAS)) {
-      if (isla.ilustracion !== null) {
-        this.load.image(`isla-${isla.id}`, isla.ilustracion);
-      }
+      this.load.image(`isla-${isla.id}`, `assets/islas/${isla.id}.webp`);
+      this.load.tilemapTiledJSON(`map-${isla.id}`, `assets/maps/islas/${isla.id}.tmj`);
     }
-    this.load.image('mapa-mundo', 'assets/islas/mapa-mundo.jpg');
+    this.load.image('orto-caleta', 'assets/visitas/caleta-pnoa.webp');
+    this.load.image('mapa-mundo', 'assets/islas/carta-canarias.webp');
     this.load.image('titulo-fondo', 'assets/titulo/archipielago-aereo.jpg');
 
     // Mapas de detalle (tilemap Tiled + tilesets) e islas
@@ -68,7 +68,6 @@ export class PreloadScene extends Phaser.Scene {
     for (const ts of ['cumbre-camino', 'cumbre-risco', 'cumbre-presa', 'casa-cueva']) {
       this.load.image(`tiles-${ts}`, `assets/tilesets/pixellab-${ts}-32.png`);
     }
-    this.load.tilemapTiledJSON('map-gran-canaria', 'assets/maps/islas/gran-canaria.tmj');
 
     // Personajes
     this.load.atlas('atlas', 'assets/sprites/atlas.png', 'assets/sprites/atlas.json');
@@ -179,12 +178,21 @@ export class PreloadScene extends Phaser.Scene {
     g.fillStyle(0x9fd8ff).fillRect(11, 10, 5, 4).fillRect(19, 10, 5, 4).fillRect(27, 10, 5, 4);
     g.generateTexture('ferry', 48, 30);
 
-    // Avión (ATR Binter: fuselaje blanco, cola turquesa)
+    // Turbohélice interinsular visto desde arriba, con la proa a la derecha.
     g.clear();
-    g.fillStyle(0xffffff).fillRect(4, 12, 40, 8); // fuselaje
-    g.fillStyle(0xffffff).fillRect(18, 2, 8, 28); // alas
-    g.fillStyle(0x00a9a5).fillRect(0, 10, 6, 12); // cola turquesa
-    g.generateTexture('avion', 48, 32);
+    g.fillStyle(0xbac9c4).fillTriangle(29, 22, 40, 22, 24, 1).fillTriangle(29, 26, 40, 26, 24, 47);
+    g.fillStyle(0xf4f7f1).fillTriangle(25, 1, 32, 2, 39, 22).fillTriangle(25, 47, 32, 46, 39, 26);
+    g.fillStyle(0x31943e).fillTriangle(5, 24, 14, 24, 5, 12).fillTriangle(5, 24, 14, 24, 5, 36);
+    for (const y of [12, 36]) {
+      g.fillStyle(0xedf4e9).fillRoundedRect(28, y - 2, 13, 5, 2);
+      g.fillStyle(0x293e3b).fillRect(40, y - 6, 2, 13);
+    }
+    g.fillStyle(0xfcfff8).fillEllipse(35, 24, 64, 11);
+    g.fillStyle(0x23783d).fillTriangle(2, 24, 19, 20, 17, 27);
+    g.fillStyle(0x96cb3c).fillTriangle(2, 24, 14, 20, 11, 24);
+    g.fillStyle(0x34524e).fillTriangle(56, 20, 62, 23, 56, 22);
+    for (let x = 23; x < 54; x += 4) g.fillRect(x, 21, 2, 1);
+    g.generateTexture('avion', 68, 48);
 
     // Corazón que sueltan los enemigos (Zelda)
     g.clear();

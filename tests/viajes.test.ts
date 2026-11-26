@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ISLAS, RUTAS_BARCO, buscarTerminal, type Punto } from '../src/data/islas';
 import { destinosDesde } from '../src/sistemas/viajes';
-import tmjGranCanaria from '../public/assets/maps/islas/gran-canaria.tmj?raw';
+import geografia from '../src/data/geografia.json';
 
 const islasDe = (terminalId: string) => destinosDesde(terminalId).map((d) => d.isla);
 
@@ -89,28 +89,19 @@ function dentro(p: Punto, poligono: Punto[]): boolean {
 }
 
 describe('terminales y zonas alcanzables a pie', () => {
-  // Gran Canaria usa el polígono de su .tmj; el resto, el rectángulo genérico de IslandScene
-  const tmj = JSON.parse(tmjGranCanaria) as {
-    layers: Array<{ name: string; objects?: Array<{ name: string; x: number; y: number; polygon?: Punto[] }> }>;
-  };
-  const andable = tmj.layers.find((l) => l.name === 'colisiones')!.objects![0];
-  const poligono = andable.polygon!.map((p) => ({ x: andable.x + p.x, y: andable.y + p.y }));
-
-  it('en Gran Canaria (polígono de costa)', () => {
-    const pois = tmj.layers.find((l) => l.name === 'pois')!.objects!;
-    for (const t of ISLAS['gran-canaria'].terminales) expect(dentro(t, poligono), t.id).toBe(true);
-    for (const p of pois) expect(dentro(p, poligono), p.name).toBe(true);
+  const mapas = import.meta.glob<string>('../public/assets/maps/islas/*.tmj', {
+    eager:true,query:'?raw',import:'default',
   });
-
-  it('en las islas con rectángulo genérico (margen 150 px)', () => {
-    for (const isla of Object.values(ISLAS)) {
-      if (isla.id === 'gran-canaria' || isla.ilustracion === null) continue;
-      for (const p of [...isla.terminales, ...(isla.zonas ?? [])]) {
-        expect(p.x, `${isla.id} ${JSON.stringify(p)}`).toBeGreaterThanOrEqual(150);
-        expect(p.x).toBeLessThanOrEqual(1104);
-        expect(p.y).toBeGreaterThanOrEqual(150);
-        expect(p.y, `${isla.id} ${JSON.stringify(p)}`).toBeLessThanOrEqual(1104);
-      }
-    }
-  });
+  for(const isla of Object.values(ISLAS)){
+    it(isla.nombre,()=>{
+      const mapa=JSON.parse(mapas[`../public/assets/maps/islas/${isla.id}.tmj`]) as {
+        layers: Array<{name:string;objects:Array<{name:string;x:number;y:number;polygon:Punto[]}>}>
+      };
+      const poligono=mapa.layers.find(l=>l.name==='colisiones')!.objects[0].polygon;
+      const pois=mapa.layers.find(l=>l.name==='pois')!.objects;
+      expect(pois.map(p=>p.name).sort()).toEqual(['spawn',...Object.keys(geografia[isla.id])].sort());
+      for(const t of isla.terminales)expect(pois.some(p=>p.name===t.id)).toBe(true);
+      for(const p of pois)expect(dentro(p,poligono),p.name).toBe(true);
+    });
+  }
 });
