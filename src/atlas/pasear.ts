@@ -1,6 +1,7 @@
 import * as T from 'three';
 import { persona } from '../puerto/persona';
-import { caminoDunas, maspalomas } from './maspalomas';
+import { caminoDunas, inicioDunas, plano } from './plano-maspalomas';
+import { maspalomas } from './maspalomas';
 import { MASPALOMAS } from '../data/dialogos';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { Sitio } from './carta';
@@ -30,7 +31,7 @@ export async function pasear(
   const root = document.createElement('section');
   root.className = 'puerto visita';
   root.innerHTML = `<header><span class="marca">CanaryQuest</span><div class="acciones"><button data-carta>${CARTA.titulo}</button><button data-isla>${CARTA.isla}</button></div></header>
-  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p>${nuevo || sitio==='dunas' ? '' : '<small>'+CARTA.ortofoto+'</small>'}${sitio==='dunas' ? '<button data-ciudad hidden>'+MASPALOMAS.sendero+' ↗</button>' : sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
+  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p>${nuevo ? '' : '<small>'+CARTA.ortofoto+'</small>'}${sitio==='dunas' ? '<button data-ciudad hidden>'+MASPALOMAS.sendero+' ↗</button>' : sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
   root.prepend(renderer.domElement);
   document.body.append(root);
   const canvas = renderer.domElement;
@@ -52,10 +53,10 @@ export async function pasear(
   camara.position.set(...((caleta ? [13, 20, 22] : [4, 12, 25]) as [number, number, number]));
   const jugador=persona(0,0,false);
   const sendero=root.querySelector<HTMLButtonElement>('[data-ciudad]');
-  const inicio = sitio==='dunas' ? [0,16] : nuevo ? [0, sitio === 'orchilla' ? 5 : 0] : geo.mundo(caleta ? [385, 328] : [368, 308]);
+  const inicio = sitio==='dunas' ? [inicioDunas.x,inicioDunas.z] : nuevo ? [0, sitio === 'orchilla' ? 5 : 0] : geo.mundo(caleta ? [385, 328] : [368, 308]);
   jugador.position.set(inicio[0], 0.14, inicio[1]);
   scene.add(jugador);
-  if(sitio==='dunas'){orbita.target.z=16;camara.position.set(0,12,42)}
+  if(sitio==='dunas'){orbita.target.set(inicioDunas.x,0,inicioDunas.z);camara.position.set(inicioDunas.x+8,12,inicioDunas.z-23)}
   const teclas = new Set<string>(),
     eventos = new AbortController(),
     op = { signal: eventos.signal };
@@ -84,7 +85,7 @@ export async function pasear(
   window.addEventListener('keyup', (e) => teclas.delete(e.code), op);
   window.addEventListener('blur', () => teclas.clear(), op);
   const rayo = new T.Raycaster(),
-    plano = new T.Plane(new T.Vector3(0, 1, 0), 0);
+    planoSuelo = new T.Plane(new T.Vector3(0, 1, 0), 0);
   const inicioToque = new T.Vector2();
   let arrastre = false,
     destino: T.Vector3 | null = null;
@@ -120,7 +121,7 @@ export async function pasear(
         ),
         camara,
       );
-      const p = rayo.ray.intersectPlane(plano, new T.Vector3());
+      const p = rayo.ray.intersectPlane(planoSuelo, new T.Vector3());
       if (p && libre(p.x, p.z)) destino = p;
     },
     op,
@@ -162,7 +163,7 @@ export async function pasear(
       if(mueve)jugador.rotation.y=Math.atan2(dx,dz);
       if (!mueve) destino = null;
     }
-    if(sitio==='dunas' && sendero)sendero.hidden=pos.z> -20;
+    if(sitio==='dunas' && sendero)sendero.hidden=pos.z>plano.mirador.z;
     pos.y = 0.02 + (n > 0.07 ? Math.abs(Math.sin(t * 12)) * 0.07 : 0);
     const mx = (pos.x * (sitio==='dunas'?1:.4) - orbita.target.x) * dt * 3,
       mz = (pos.z * (sitio==='dunas'?1:.45) - orbita.target.z) * dt * 3;

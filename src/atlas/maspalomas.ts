@@ -2,15 +2,7 @@ import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { MASPALOMAS } from '../data/dialogos';
 
-export function caminoDunas(x: number, z: number) {
-  if (z > 18 || z < -38) return false;
-  if (z >= -6) return Math.abs(x) < 4.6 ||
-      (x > -13 && x < 0 && z > 12 && z < 16) ||
-      (x > 0 && x < 15.5 && z > 8 && z < 10.8);
-  if (z >= -13) return Math.abs(x) < 2.15;
-  return Math.abs(x) < (z < -21 ? 6 : 9);
-}
-
+import { plano, tirajana } from './plano-maspalomas';
 export async function maspalomas() {
   const scene = new T.Scene();
   scene.background = new T.Color('#abd8de');
@@ -27,6 +19,9 @@ export async function maspalomas() {
   const cubo = new T.BoxGeometry(),
     bola = new T.SphereGeometry(1, 12, 8),
     poste = new T.CylinderGeometry(0.5, 0.5, 1, 10);
+  // Se modela cada fachada en su propio sistema local antes de situarla en el plano.
+  let origen = { x: 0, z: 0 },
+    sentido = 1;
   function pieza(
     g: T.BufferGeometry,
     color: string,
@@ -44,7 +39,8 @@ export async function maspalomas() {
     geo.scale(w, h, d);
     geo.rotateZ(rz);
     geo.rotateY(ry);
-    geo.translate(x, y, z);
+    if (sentido < 0) geo.rotateY(Math.PI);
+    geo.translate(origen.x + sentido * x, y, origen.z + sentido * z);
     const c = new T.Color(color),
       n = geo.attributes.position.count,
       cs = new Float32Array(n * 3);
@@ -69,44 +65,30 @@ export async function maspalomas() {
     t.colorSpace = T.SRGBColorSpace;
     texturas.push(t);
     const m = new T.Mesh(new T.PlaneGeometry(w, h), new T.MeshBasicMaterial({ map: t }));
-    m.position.set(x, y, z);
+    m.rotation.y = sentido < 0 ? Math.PI : 0;
+    m.position.set(origen.x + sentido * x, y, origen.z + sentido * z);
     scene.add(m);
   }
   const cal = '#f6e8cb',
     teja = '#b56d50',
     jade = '#326f69';
-  const adoquin = await new T.TextureLoader().loadAsync(
-    import.meta.env.BASE_URL + 'assets/puerto/adoquin.webp',
+  const orto = await new T.TextureLoader().loadAsync(
+    import.meta.env.BASE_URL + 'assets/visitas/maspalomas-pnoa.webp',
   );
-  adoquin.colorSpace = T.SRGBColorSpace;
-  adoquin.wrapS = adoquin.wrapT = T.RepeatWrapping;
-  adoquin.repeat.set(6, 15);
-  texturas.push(adoquin);
-  const calle = new T.Mesh(
-    new T.PlaneGeometry(32, 43),
-    new T.MeshStandardMaterial({ map: adoquin, color: '#e5cbb2' }),
-  );
-  calle.rotation.x = -Math.PI / 2;
-  calle.position.z = 0;
-  calle.receiveShadow = true;
-  scene.add(calle);
-  // Jardines y manzanas de fondo cierran la avenida al girar la cámara.
-  pieza(cubo,'#cab889',0,-.42,13,140,.7,72);
-  for(const lado of [-1,1])for(let i=0;i<6;i++){
-    const x=lado*(21+(i%2)*5), z=-12+i*7, h=3.3+(i%3);
-    pieza(cubo,i%2?cal:'#e7c39c',x,h/2,z,6,h,5.8);
-    pieza(cubo,teja,x,h,z,6.3,.22,6);
-    for(const dz of [-1.5,0,1.5])pieza(cubo,jade,x-lado*3.03,h*.56,z+dz,.11,1.1,.83);
-  }
-  for(const lado of [-1,1])for(const z of [-2,1,16.9]){
-    const x=lado*6.5;
-    pieza(cubo,'#bd9273',x,.22,z,2.5,.44,1.1);
-    for(let j=0;j<9;j++){
-      const dx=(j%5-2)*.42,dz=Math.floor(j/5)*.38-.2;
-      pieza(bola,'#557645',x+dx,.52,z+dz,.44,.31,.33);
-      pieza(bola,j%2?'#bf4274':'#e87598',x+dx,.78,z+dz,.21,.16,.19);
-    }
-  }
+  orto.colorSpace = T.SRGBColorSpace;
+  orto.anisotropy = 8;
+  texturas.push(orto);
+  const { noroeste: n, sureste: e } = plano;
+  const terreno = new T.PlaneGeometry(n.x - e.x, n.z - e.z);
+  terreno.rotateX(-Math.PI / 2);
+  terreno.rotateY(Math.PI);
+  const base = new T.Mesh(terreno, new T.MeshStandardMaterial({ map: orto, roughness: 1 }));
+  base.position.set((n.x + e.x) / 2, -0.1, (n.z + e.z) / 2);
+  base.receiveShadow = true;
+  scene.add(base);
+  // El punto de OSM corresponde al local. El mostrador da hacia Francia.
+  sentido = -1;
+  origen = { x: plano.pepe.x - 9, z: plano.pepe.z + 11.53 };
   // Hamburguesería con mostrador abierto, toldo a rayas y terraza.
   pieza(cubo, cal, -9, 1.9, 9, 8, 3.8, 5);
   pieza(cubo, teja, -9, 3.85, 9, 8.4, 0.25, 5.4);
@@ -118,13 +100,45 @@ export async function maspalomas() {
     pieza(poste, jade, x, 0.55, 13.3, 0.13, 1.1, 0.13);
     pieza(poste, '#d4a96a', x, 1.12, 13.3, 1.5, 0.11, 1.5);
   }
+  // Balcones de los pisos del Rey Carlos sobre el local de la esquina.
+  pieza(cubo, '#eee3c5', -9, 5.6, 7.7, 10, 4, 5.8);
+  for (const y of [4.45, 5.8, 7.12])
+    for (let k = 0; k < 6; k++) {
+      const x = -13 + k * 1.6;
+      pieza(cubo, '#5b6155', x, y + 0.2, 10.64, 1.23, 0.89, 0.12);
+      pieza(cubo, '#e6d2a6', x, y - 0.22, 10.94, 1.6, 0.39, 0.63);
+    }
+  origen = { x: plano.cita.x + 10, z: plano.cita.z + 6.1 };
   // Escaparates del CITA, sus figuras y celosía de la torre.
   pieza(cubo, '#e6aa87', 10, 2, 3, 10, 4, 6);
   for (let i = 0; i < 5; i++) {
     pieza(cubo, jade, 6 + i * 2, 1.4, 6.05, 1.45, 2.45, 0.12);
     pieza(cubo, cal, 6 + i * 2, 2.8, 6.3, 1.8, 0.21, 0.7);
   }
-  cartel(MASPALOMAS.cita, 10, 3.7, 6.1, 5, 0.95, '#345e65');
+  for (const x of [5.6, 14.4]) {
+    pieza(poste, '#b49379', x, 3.4, 6.0, 1.45, 3.6, 1.45);
+    for (let j = 0; j < 6; j++) {
+      const a = (j * Math.PI) / 3;
+      pieza(cubo, '#ceac8c', x + 0.59 * Math.cos(a), 5.31, 6 + 0.59 * Math.sin(a), 0.33, 0.46, 0.32);
+    }
+  }
+  for (const x of [7.2, 10, 12.8]) {
+    for (let j = 0; j < 13; j++) {
+      const a = ((j + 0.5) * Math.PI) / 13;
+      pieza(
+        cubo,
+        j % 2 ? '#e3c9a6' : '#c4a78a',
+        x + 1.32 * Math.cos(a),
+        2.1 + 1.32 * Math.sin(a),
+        6.49,
+        0.38,
+        0.31,
+        0.5,
+        a - Math.PI / 2,
+      );
+    }
+  }
+  cartel(MASPALOMAS.cita, 10, 4.1, 6.35, 5.8, 1, '#953f36');
   for (const x of [6.5, 13.5]) {
     pieza(bola, '#d88e44', x, 1.65, 7.3, 0.61, 0.85, 0.48);
     pieza(bola, '#f4b896', x, 2.66, 7.3, 0.55, 0.5, 0.46);
@@ -165,6 +179,8 @@ export async function maspalomas() {
       }
     }
   pieza(poste, '#70534a', 10, 10.18, 3, 0.12, 1.5, 0.12);
+  origen = { x: 0, z: 0 };
+  sentido = 1;
   // Las alas del hotel enmarcan la galería pública hacia el mirador.
   for (const lado of [-1, 1]) {
     pieza(cubo, cal, lado * 9, 3, -9.5, 13.4, 6, 7);
@@ -179,9 +195,9 @@ export async function maspalomas() {
   }
   pieza(cubo, cal, 0, 4.9, -9.5, 4.8, 2.2, 7);
   cartel(MASPALOMAS.riu, 0, 5, -5.91, 4.4, 0.8, '#9e4743');
-  for (const z of [15, 4, -3, -16])
+  for (const z of [60, 49, 38, 27, 16, 5, -16])
     for (const lado of [-1, 1]) {
-      const x = lado * 4.95;
+      const x = lado * 4.95 + Math.max(0, z) * 0.064;
       pieza(poste, '#9a7555', x, 2, z, 0.4, 4, 0.38);
       for (let i = 0; i < 10; i++) {
         const a = i * 2.4;
@@ -199,10 +215,15 @@ export async function maspalomas() {
         );
       }
     }
+  const cruce = tirajana[0];
+  cartel(MASPALOMAS.francia, cruce.x - 1, 2.3, cruce.z, 4.4, 0.55, '#355d62');
+  cartel(MASPALOMAS.tirajana, cruce.x, 1.65, cruce.z, 4.8, 0.55, '#355d62');
+  pieza(poste, '#787b70', cruce.x, 0.98, cruce.z, 0.12, 2, 0.12);
+  origen = { x: plano.mirador.x, z: plano.mirador.z + 19 };
   // Dunas modeladas como crestas continuas. El sendero central queda a ras de los pies.
   const arena = new T.PlaneGeometry(140, 72, 120, 80);
   arena.rotateX(-Math.PI / 2);
-  arena.translate(0, -0.06, -51);
+  arena.translate(origen.x, -0.06, -51 + origen.z);
   const pos = arena.attributes.position,
     colores = [];
   const color = new T.Color();
@@ -211,7 +232,9 @@ export async function maspalomas() {
       z = pos.getZ(i);
     const ola = 0.5 + 0.5 * Math.sin(z * 0.39 + x * 0.14 + 1.6 * Math.sin(x * 0.1));
     const altura =
-      Math.min(1, Math.max(0, (Math.abs(x) - 6) / 6), Math.max(0, (-z - 19) / 5)) * 4.2 * ola ** 2;
+      Math.min(1, Math.max(0, (Math.abs(x - origen.x) - 6) / 6), Math.max(0, (-z + origen.z - 19) / 5)) *
+      4.2 *
+      ola ** 2;
     pos.setY(i, altura - 0.06);
     color.set('#dca25c').lerp(new T.Color('#ffe1a0'), ola * 0.8);
     colores.push(color.r, color.g, color.b);
