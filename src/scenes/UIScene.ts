@@ -56,8 +56,9 @@ export class UIScene extends Phaser.Scene {
 
     // Eventos globales del juego
     const eventos = this.game.events;
-    const alDialogo = ({ clave, alTerminar }: { clave: string; alTerminar?: () => void }) =>
-      this.abrirDialogo(clave, alTerminar);
+    const alDialogo = ({ clave, alTerminar }: { clave: string; alTerminar?: () => void }) => {
+      if (this.scene.isActive()) this.abrirDialogo(clave, alTerminar);
+    };
     const alDano = () => this.recibirDano();
     /** Sin cantidad cura del todo; los corazones que sueltan los enemigos curan 2 (uno entero). */
     const alCurar = (datos?: { cantidad?: number }) => {

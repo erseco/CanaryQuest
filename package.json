@@ -14,10 +14,12 @@
     "fix": "eslint . --fix"
   },
   "dependencies": {
-    "phaser": "^4.2.1"
+    "phaser": "^4.2.1",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/three": "^0.184.0",
     "eslint": "^10.15.0",
     "globals": "^17.14.0",
     "typescript": "~5.9.0",

@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { PuertoScene } from './scenes/PuertoScene';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { TitleScene } from './scenes/TitleScene';
@@ -17,7 +18,7 @@ const game = new Phaser.Game({
   backgroundColor: '#0a1a3a',
   physics: { default: 'arcade', arcade: { debug: false } },
   scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
-  scene: [BootScene, PreloadScene, TitleScene, IslandScene, DetailScene, TravelMapScene, UIScene, PausaScene],
+  scene: [BootScene, PreloadScene, TitleScene, PuertoScene, IslandScene, DetailScene, TravelMapScene, UIScene, PausaScene],
 });
 
 // Acceso para depuración y tests de integración.

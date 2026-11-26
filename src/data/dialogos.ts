@@ -132,3 +132,16 @@ export const AYUDA: string[] = [
   '• Viaja entre islas en barco (⚓) o en avión (✈).',
   '• Los enemigos a veces sueltan corazones. ¡Reúne los 8 símbolos guanches!',
 ];
+
+export const PUERTO = {
+  titulo: 'Puerto de Mogán', lugar: 'Gran Canaria', marca: 'CanaryQuest',
+  jornada: 'Diario de viaje', encargo: 'El rebaño del Roque Nublo',
+  buscar: 'Busca al pastor junto al puente.', acercar: 'Acercarse al pastor',
+  hablar: 'Hablar con el pastor', pastor: 'El pastor', seguir: 'Continuar', cerrar: 'Cerrar',
+  objetivo: 'Encuentra las cabras en las dunas de Maspalomas.',
+  alimana: 'Espanta a la alimaña de las dunas.', entrega: 'Vuelve a hablar con el pastor.', completada: 'Has reunido al rebaño.',
+  mapa: 'Mapa de la isla', dia: 'Día', noche: 'Noche', luz: 'Luz del puerto',
+  controles: 'Controles', ayuda: 'Toca el paseo para caminar. Arrastra para girar la vista. Con teclado, muévete con WASD o las flechas, gira con Q y R y habla con E.',
+  izquierda: 'Girar a la izquierda', derecha: 'Girar a la derecha', cerca: 'Acercar la vista', lejos: 'Alejar la vista',
+  escena: 'Puerto de Mogán en tres dimensiones', salir: 'Volver al mapa',
+};

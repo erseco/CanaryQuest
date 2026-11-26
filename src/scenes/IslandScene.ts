@@ -201,6 +201,10 @@ export class IslandScene extends Phaser.Scene {
       this.saliendo = true;
       this.cameras.main.fadeOut(250);
       this.cameras.main.once('camerafadeoutcomplete', () => {
+        if (poi.nombre === 'pueblo') {
+          this.scene.start('Puerto', { entrada: { x: poi.x, y: poi.y + 50 } });
+          return;
+        }
         this.scene.start('Detail', {
           mapaId: poi.nombre,
           retorno: { islaId: this.islaId, x: poi.x, y: poi.y + 50 },

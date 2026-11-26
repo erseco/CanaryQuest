@@ -87,3 +87,11 @@ NPC (qué línea toca según el estado), que es lo único genuinamente ad-hoc.
 Lecciones directas de la autopsia de los 5 intentos (ver spec §10): commit
 tras cada feature jugable; ningún sistema se construye antes de que una
 misión lo necesite; las decisiones cerradas no se revisitan.
+
+## ADR-8. Puerto de Mogán en 3D
+
+La prueba necesita girar la cámara alrededor de edificios y caminar detrás de
+ellos. Las ilustraciones y tilemaps del ADR-3 representan una sola vista.
+PuertoScene carga Three.js bajo demanda para dibujar este lugar en volumen.
+Las misiones, el guardado y el resto de las islas siguen en el mismo juego.
+Cuando el navegador carece de WebGL 2, se abre el mapa Tiled del pueblo.

@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { NPCS_BQ, SPRITES_BQ } from '../data/enemigos';
+import { iniciarOrquestador } from '../sistemas/Orquestador';
+import { SaveManager } from '../sistemas/SaveManager';
 import { ISLAS } from '../data/islas';
 
 interface SpriteBq {
@@ -116,7 +118,13 @@ export class PreloadScene extends Phaser.Scene {
   create(): void {
     this.crearAnimaciones();
     this.crearTexturasGeneradas();
-    this.scene.start('Title');
+    if (SaveManager.cargar()) {
+      this.scene.start('Title');
+      return;
+    }
+    this.registry.set('partida', SaveManager.nueva());
+    iniciarOrquestador(this.game);
+    this.scene.start('Puerto');
   }
 
   private crearAnimaciones(): void {

@@ -88,3 +88,12 @@ terrenos y árboles de [Liberated Pixel Cup](https://opengameart.org/content/lib
 del proyecto [Tuxemon](https://github.com/Tuxemon/Tuxemon) (CC-BY-SA 4.0). Las
 ilustraciones de las islas y los tilesets de PixelLab son propios. Detalle
 completo en [`docs/creditos.md`](docs/creditos.md).
+
+### Puerto de Mogán en 3D
+
+La primera partida empieza en el muelle. Toca el paseo para caminar o usa
+WASD y las flechas. Arrastra para girar la cámara, o usa Q y R. Acércate al
+pastor para aceptar su encargo y abre **Mapa de la isla** para seguirlo hasta
+las dunas. Desde Gran Canaria puedes regresar por la estrella de Puerto de
+Mogán. Los botones del puerto permiten acercar la vista y cambiar entre día
+y noche.
