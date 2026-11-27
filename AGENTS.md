@@ -18,7 +18,7 @@ Añade `?debug=1` a la URL para ver los polígonos de colisión de las islas.
 
 ## Stack (decisiones cerradas — no cambiar sin leer docs/decisiones.md)
 
-- **Phaser 4 + TypeScript strict + Vite** para el juego 2D existente. **Babylon.js** es el motor elegido para la aventura 3D que se está incorporando; no iniciar nuevas escenas 3D en Three.js ni PlayCanvas.
+- **Phaser 4 + TypeScript strict + Vite** para el juego 2D existente. **Three.js** para los lugares 3D (pueblos para pasear y hablar, al estilo de una aventura gráfica), cargado bajo demanda desde una escena de Phaser; no iniciar escenas 3D en Babylon.js ni PlayCanvas (ADR-9).
 - **Tiles de 32 px** para los mapas de detalle (pueblos/mazmorras).
 - **Mapas híbridos**: las islas son ilustraciones (JPG) con polígonos de
   colisión definidos en formato Tiled; los pueblos/mazmorras son tilemaps

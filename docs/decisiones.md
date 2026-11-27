@@ -96,19 +96,32 @@ PuertoScene carga Three.js bajo demanda para dibujar este lugar en volumen.
 Las misiones, el guardado y el resto de las islas siguen en el mismo juego.
 Cuando el navegador carece de WebGL 2, se abre el mapa Tiled del pueblo.
 
-## Prueba comparativa del puerto de Mogán
+## ADR-9: Three.js para los lugares 3D (no Babylon.js ni PlayCanvas)
 
-Abrir `mogan.html` con el servidor de Vite. El selector carga PlayCanvas o
-Babylon.js. Ambos usan el mismo GLB con los edificios, el viajero, los barcos y
-el interior originales. La cámara sigue al personaje y los dos motores usan el
-mismo cálculo de rutas. Tocar el paseo para caminar. Aceptar el encargo en el
-muelle, entrar en la casa del pescador, recoger la red y volver al muelle.
+**Contexto.** El puerto de Mogán del juego (`src/puerto`) está hecho en
+Three.js. En noviembre de 2026 se montó una página de prueba, `mogan.html`,
+que cargaba el mismo pueblo exportado a GLB en Babylon.js y en PlayCanvas, y
+se llegó a anotar Babylon.js como motor de la aventura 3D. La prueba nunca
+igualó al puerto del juego: le faltaban el fondo pintado, los reflejos del
+agua, la cámara en perspectiva, el día y la noche y los paneles.
 
-PlayCanvas ofrece un editor visual para montar nuevos pueblos. Babylon.js encaja
-con el flujo de TypeScript y Git del proyecto. La escena se importó desde
-Three.js para comparar la ejecución; queda por comparar la edición de un pueblo
-y medir la carga y la fluidez en Android e iOS. Godot sigue siendo candidato
-si las versiones instalables pasan a ser prioritarias. Esta prueba se distribuye
-como página independiente del juego.
+**Decisión.** Los lugares 3D se hacen en Three.js, cargado bajo demanda desde
+una escena de Phaser como en el ADR-8. Se retiran Babylon.js, PlayCanvas, la
+página de prueba, su GLB y el exportador.
 
-Para la aventura 3D se elige Babylon.js. La entrada mogan.html abre este motor por defecto. El puerto incorpora agua animada y sombras solares. La comparación anterior sigue disponible con ?motor=playcanvas.
+**Por qué.** El 3D de CanaryQuest son pueblos para pasear y hablar, al estilo
+de una aventura gráfica, sin combate. Para eso Three.js ya da el resultado que
+se busca. Todo lo que hace bonito el puerto tiene equivalente en Babylon.js,
+así que portarlo costaría reescribir unas 2.400 líneas para obtener el mismo
+aspecto. Lo que Babylon.js trae de más (rutas para multitudes, física, mezcla
+de animaciones) sirve a un juego de acción, que no es este. Además el puerto
+se construye por código: Three.js añade 147 KB gzip y los recursos no llegan
+a 1 MB, frente a los 391 KB gzip de Babylon.js o los 528 KB de PlayCanvas más
+un GLB de 9,7 MB.
+
+**Consecuencias.** Un solo motor 3D en `package.json`. No iniciar escenas en
+Babylon.js ni PlayCanvas. La prueba comparativa queda en el historial de git
+(commits `c500343` y `3b100b1`). Godot solo vuelve a ser candidato si las
+versiones instalables pasan a ser prioritarias. También se descartó, tras ver
+una maqueta, un 2.5D de recortables pixel-art sobre suelo 3D: la referencia
+estética de los lugares 3D es el puerto de Mogán.

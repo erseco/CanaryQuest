@@ -81,7 +81,3 @@ El viajero de las escenas 3D comparte modelo con Mogán. La hoja
 - Recortes PNOA de referencia en `public/assets/visitas/` (coordenadas longitud/latitud): `mogan-pnoa.webp` (−15.7684, 27.8164 a −15.7614, 27.8217), `agaete-pnoa.webp` (−15.7145, 28.0982 a −15.7067, 28.1046), `la-caleta-pnoa.webp` (−17.8890, 27.7997 a −17.8863, 27.8015), `las-palmas-pnoa.webp` (−15.4170, 28.09955 a −15.41385, 28.1014), `orchilla-pnoa.webp` (−18.1498, 27.7052 a −18.1453, 27.7082), `la-restinga-pnoa.webp` (−17.9834, 27.6381 a −17.9782, 27.6423) y `maspalomas-pnoa.webp` (−15.5804, 27.7430 a −15.5722, 27.7540). Recopilados el 26 de noviembre de 2026 para contrastar las visitas; las seis primeras quedan como referencias para integrar en sus maquetas.
 - La cadena sitúa el local de Playa del Inglés en el bajo 4 del hotel Rey Carlos, esquina de Tirajana con Francia. [Directorio oficial](https://pepechiringo.es/restaurantes/).
 - Referencias fotográficas para modelar arcadas, torretas y rótulo del CITA y contrastar el aspecto del hotel. [Fotografías del CITA](https://www.dunasmap.com/post/cita-shopping-centre-playa-del-ingles) · [RIU Palace, fotografía de 2025](https://commons.wikimedia.org/wiki/File:Riu_Palace_Maspalomas,_2025-01.jpg). La maqueta agrupa los motivos decorativos del centro.
-
-El archivo `public/assets/puerto/mogan.glb` reúne la maqueta original, el
-viajero, el interior y los barcos acreditados en «Puerto de Mogán en 3D».
-Se exportó desde la escena Three.js con `scripts/exportar-mogan.html`.
