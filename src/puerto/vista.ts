@@ -13,7 +13,8 @@ import {
   type PuntoPuerto,
 } from './paseo';
 import { PUERTO as t, PASEO as guia } from '../data/dialogos';
-import { PUEBLOS, otroPueblo, type Pueblo, type CasaPuerto } from '../data/pueblos';
+import { PUEBLOS, type Pueblo, type CasaPuerto } from '../data/pueblos';
+import { ISLAS } from '../data/islas';
 import { crearInterior, sueloInterior } from './interior';
 import './puerto.css';
 
@@ -26,8 +27,9 @@ export async function abrirPuerto(
   llegada?: PuntoPuerto,
 ) {
   const barrio = PUEBLOS[pueblo];
-  /** Mogán creció hacia la playa y el espigón: la cámara, las sombras y el horizonte abarcan más. */
-  const grande = pueblo === 'mogan';
+  const { plano, salidas } = barrio;
+  /** Con playa o tercer barrio, la cámara, las sombras y el horizonte abarcan más. */
+  const grande = !!plano.playa || plano.orillas.length > 2;
   const recursos = await cargarRecursos(pueblo);
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
@@ -35,7 +37,7 @@ export async function abrirPuerto(
   root.innerHTML = `<header><div class="marca"><span class="rosa" aria-hidden="true">✥</span>${t.marca}</div>
     <div class="acciones"><button data-accion="luz" aria-label="${t.luz}">☀ ${t.dia}</button><button data-accion="mapa">${t.mapa} ↗</button>
     <details><summary aria-label="${t.controles}">?</summary><p>${t.ayuda}</p></details></div></header>
-    <aside><small>${t.lugar}</small><h1>${barrio.nombre}</h1></aside>
+    <aside><small>${ISLAS[barrio.isla].nombre}</small><h1>${barrio.nombre}</h1></aside>
     <select class="destinos" aria-label="${guia.lugares}"><option value="">${guia.lugares}</option></select>
     <footer><article aria-live="polite"><small>${t.jornada}</small><h2>${t.encargo}</h2><p></p><button data-accion="accion"></button></article>
     <div class="camara"><button aria-label="${t.izquierda}" data-accion="izq">↶</button><button aria-label="${t.derecha}" data-accion="der">↷</button>
@@ -102,7 +104,9 @@ export async function abrirPuerto(
         textureMatrix: { value: null },
         tiempo: { value: 0 },
         oscuridad: { value: 0 },
-        orilla: { value: grande ? new T.Vector2(-31, 33) : new T.Vector2(-8, 8) },
+        orilla: {
+          value: grande ? new T.Vector2(-31, Math.max(...plano.orillas) + 8.1) : new T.Vector2(-8, 8),
+        },
       },
       vertexShader: `uniform mat4 textureMatrix; varying vec4 reflejado; varying vec3 pos; void main(){reflejado=textureMatrix*vec4(position,1.);vec4 p=modelMatrix*vec4(position,1.);pos=p.xyz;gl_Position=projectionMatrix*viewMatrix*p;}`,
       fragmentShader: `uniform sampler2D tDiffuse; varying vec4 reflejado; varying vec3 pos; uniform float tiempo; uniform float oscuridad; uniform vec2 orilla;
@@ -192,17 +196,24 @@ export async function abrirPuerto(
   barrio.casas.forEach((c) =>
     lugares.push({ nombre: guia.entrar + ' ' + c.nombre, punto: umbral(c), activar: () => entrar(c) }),
   );
-  const indiceBarco = lugares.length;
-  lugares.push({
-    nombre: pueblo === 'mogan' ? guia.lancha : guia.ferry,
-    punto: MUELLE,
-    activar: () => viajar(pueblo === 'mogan' ? 'agaete' : 'ferry', true),
-  });
-  lugares.push({
-    nombre: guia.ir + ' ' + PUEBLOS[otroPueblo(pueblo)].nombre,
-    punto: camino(pueblo),
-    activar: () => viajar(otroPueblo(pueblo)),
-  });
+  // Salidas del pueblo, cada una con su cartel: el barco del muelle y la carretera.
+  const carteles: { indice: number; texto: string }[] = [];
+  let indiceBarco = -1;
+  const { mar: porMar, tierra } = salidas;
+  if (porMar) {
+    indiceBarco = lugares.length;
+    const texto = porMar === 'ferry' ? guia.ferry : guia.lancha;
+    carteles.push({ indice: indiceBarco, texto });
+    lugares.push({ nombre: texto, punto: MUELLE, activar: () => viajar(porMar, true) });
+  }
+  if (tierra) {
+    carteles.push({ indice: lugares.length, texto: PUEBLOS[tierra].nombre + ' →' });
+    lugares.push({
+      nombre: guia.ir + ' ' + PUEBLOS[tierra].nombre,
+      punto: camino(pueblo),
+      activar: () => viajar(tierra),
+    });
+  }
   // Rincones a los que se pasea: al llegar se describen, como en una aventura gráfica.
   for (const r of barrio.rincones)
     lugares.push({
@@ -216,8 +227,8 @@ export async function abrirPuerto(
     });
   if (pastor.visible)
     lugares.push({ nombre: t.hablar, punto: { x: PASTOR.x - 0.75, z: PASTOR.z }, activar: hablar });
-  const senales = [indiceBarco, indiceBarco + 1].map((i) => {
-    const l = lugares[i],
+  const senales = carteles.map(({ indice, texto }) => {
+    const l = lugares[indice],
       lienzo = document.createElement('canvas');
     lienzo.width = 512;
     lienzo.height = 92;
@@ -230,16 +241,7 @@ export async function abrirPuerto(
     ctx.fillStyle = '#fff0ce';
     ctx.font = '600 32px Georgia';
     ctx.textAlign = 'center';
-    ctx.fillText(
-      i === indiceBarco
-        ? pueblo === 'agaete'
-          ? guia.ferry
-          : guia.lancha
-        : PUEBLOS[otroPueblo(pueblo)].nombre + ' →',
-      256,
-      57,
-      472,
-    );
+    ctx.fillText(texto, 256, 57, 472);
     const mapa = new T.CanvasTexture(lienzo);
     mapa.colorSpace = T.SRGBColorSpace;
     const cartel = new T.Sprite(new T.SpriteMaterial({ map: mapa }));
@@ -427,10 +429,10 @@ export async function abrirPuerto(
             return;
           }
           if (senales.includes(obj as T.Sprite)) {
-            visitar(indiceBarco + senales.indexOf(obj as T.Sprite));
+            visitar(carteles[senales.indexOf(obj as T.Sprite)].indice);
             return;
           }
-          if (obj === barcos[0]) {
+          if (obj === barcos[0] && indiceBarco >= 0) {
             visitar(indiceBarco);
             return;
           }
@@ -515,7 +517,7 @@ export async function abrirPuerto(
     }
     if (antes !== cercano()) refrescar();
     pos.y =
-      (casaActual ? 0 : alturaPaseo(pos.x, pos.z)) +
+      (casaActual ? 0 : alturaPaseo(pos.x, pos.z, pueblo)) +
       (dx || dz ? Math.abs(Math.sin(tiempo * 11)) * 0.055 : 0);
     marca.position.y = 1.83 + Math.sin(tiempo * 2.4) * 0.07;
     marca.rotation.y = tiempo;

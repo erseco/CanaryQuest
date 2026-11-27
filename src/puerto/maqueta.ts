@@ -3,7 +3,7 @@ import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { cargarRecursos } from './recursos';
 import { PUEBLOS, type Pueblo } from '../data/pueblos';
-import { CANALES, ESPIGON, INICIO, PASTOR, alturaPaseo } from './paseo';
+import { INICIO, PASTOR, alturaPaseo } from './paseo';
 
 // La maqueta se hornea en mallas con color por vértice para dibujar el pueblo en pocas llamadas.
 export function crearMaqueta(
@@ -17,8 +17,12 @@ export function crearMaqueta(
     roughness: 1,
     side: T.DoubleSide,
   });
-  /** Mogán es el pueblo grande: un tercer barrio, la playa y el espigón. */
-  const grande = pueblo === 'mogan';
+  const { plano } = PUEBLOS[pueblo];
+  // Extremos del muelle: el relieve del fondo, el matorral y las rocas de la costa los acompañan.
+  const oeste = plano.playa ? -31 : Math.min(...plano.orillas) - 6.7,
+    este = Math.max(...plano.orillas) + 6.7,
+    medio = (oeste + este) / 2,
+    largo = este - oeste;
   const cristal = mate.clone();
   cristal.emissive.setHex(0xffa748);
   cristal.emissiveIntensity = 0.16;
@@ -103,11 +107,13 @@ export function crearMaqueta(
     madera = '#77513b',
     piedra = '#c9a685';
   // Relieve de barranco, con laderas trianguladas y estratos de basalto y almagre.
+  const ladera = plano.lava ? basalto.clone() : basalto;
+  if (plano.lava) ladera.color.set('#7d6a66');
   for (let fila = 0; fila < 3; fila++) {
     const vertices: number[] = [];
     const crestas: T.Vector3[][] = [];
-    for (let i = 0; i < (grande ? 36 : 22); i++) {
-      const x = i * 2.6 - (grande ? 44 : 27);
+    for (let i = 0; i < Math.ceil(largo / 2.6) + 11; i++) {
+      const x = oeste - 12 + i * 2.6;
       const cima =
         (3 + fila * 1.6 + 2.4 * Math.sin(i * 0.72 + fila) + azar() * 2) *
         (0.55 + Math.min(0.55, Math.abs(x - 1) / 19));
@@ -127,11 +133,11 @@ export function crearMaqueta(
     const geo = new T.BufferGeometry();
     geo.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
     geo.computeVertexNormals();
-    superficie(geo, basalto, 0, 0, 0, 1, 0.62, 1, 7.5);
+    superficie(geo, ladera, 0, 0, 0, 1, 0.62, 1, 7.5);
     geo.dispose();
   }
   // Dos orillas de mampostería y un paseo de losas.
-  for (const x of grande ? [-8.3, 8.3, 24.9] : [-8.3, 8.3]) {
+  for (const x of plano.orillas) {
     pieza(caja, '#977860', x, -0.76, -4.2, 13.4, 1.35, 15.8);
     superficie(caja, adoquin, x, -0.09, -4.2, 13.4, 0.18, 15.8, 3.4);
     for (let i = 0; i < 17; i++) {
@@ -139,10 +145,10 @@ export function crearMaqueta(
       pieza(caja, '#ebd4af', x - 6.4 + i * 0.8, 0.02, 3.68, 0.78, 0.13, 0.35);
     }
   }
-  for (const canal of CANALES[pueblo]) {
+  for (const canal of plano.canales) {
     for (let i = -8; i <= 8; i++) {
       const x = canal + i * 0.25,
-        y = alturaPaseo(x, 1);
+        y = alturaPaseo(x, 1, pueblo);
       pieza(caja, '#e2c99c', x, y - 0.11, 1, 0.26, 0.22, 1.8);
       for (const z of [0.08, 1.92]) {
         pieza(caja, piedra, x, y + 0.17, z, 0.26, 0.48, 0.15);
@@ -320,38 +326,20 @@ export function crearMaqueta(
       geo.dispose();
     }
   }
-  for (const [x, z, h] of [
-    [-9.3, 0, 3.6],
-    [9.2, 0, 4.4],
-    [-2.5, -4.7, 4.1],
-    [5, -5.5, 4.8],
-    [-9, -8.5, 4],
-    ...(grande
-      ? [
-          [19.6, 0.2, 4.2],
-          [30.4, 0, 3.8],
-          [27.3, -8.9, 4.4],
-          [-17.6, -2.4, 4.6],
-          [-25.2, -3.4, 4],
-          [-29, -0.8, 4.4],
-          [-23.4, -6.4, 3.8],
-        ]
-      : []),
-  ])
-    palmera(x, z, h);
-  for (let i = 0; i < (grande ? 80 : 36); i++) {
-    const x = (azar() - 0.5) * (grande ? 80 : 35),
+  for (const [x, z, h] of plano.palmeras) palmera(x, z, h);
+  for (let i = 0; i < Math.round(largo * 1.2); i++) {
+    const x = medio + (azar() - 0.5) * (largo + 5),
       z = -9 - azar() * 2.5;
     pieza(esfera, i % 2 ? '#818956' : '#667c50', x, 0.55, z, 0.6 + azar(), 0.7 + azar(), 0.65);
   }
-  for (const x of grande ? [-8.5, -3, 3, 8.5, 20.4, 29.6] : [-8.5, -3, 3, 8.5]) {
+  for (const x of [-8.5, -3, 3, 8.5, 20.4, 29.6].filter((f) => f < este)) {
     pieza(poste, '#345558', x, 0.95, 3.42, 0.095, 1.9, 0.095);
     pieza(caja, '#375759', x, 1.92, 3.42, 0.32, 0.09, 0.32);
     ventanas.push([x, 2.08, 3.42, 0.23, 0.31, 0.23]);
     pieza(piramide, '#345558', x, 2.32, 3.42, 0.31, 0.25, 0.31, 0, Math.PI / 4);
   }
   // Guirnalda entre fachadas sobre el canal.
-  for (const canal of CANALES[pueblo])
+  for (const canal of plano.canales)
     for (let i = 0; i <= 22; i++) {
       const dx = -3 + i * 0.27,
         x = canal + dx,
@@ -381,15 +369,11 @@ export function crearMaqueta(
     [2.35, -0.65],
     [4.7, -0.7],
     [8.65, -0.5],
-    ...(grande
-      ? [
-          [18.75, -0.6],
-          [22.5, -0.75],
-          [26.75, -0.7],
-          [30.9, -0.55],
-        ]
-      : []),
-  ]) {
+    [18.75, -0.6],
+    [22.5, -0.75],
+    [26.75, -0.7],
+    [30.9, -0.55],
+  ].filter(([x]) => x < este)) {
     pieza(poste, '#a85e48', x, 0.22, z, 0.48, 0.42, 0.48);
     pieza(poste, '#cd8460', x, 0.42, z, 0.54, 0.1, 0.54);
     for (let j = 0; j < 11; j++) {
@@ -410,7 +394,7 @@ export function crearMaqueta(
     }
   }
   // Escalinata desde el canal hacia las viviendas altas.
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < (plano.canales.includes(0) ? 9 : 0); i++) {
     const z = -0.8 - i * 0.36;
     superficie(caja, adoquin, 1.98, 0.044 * i, z, 0.8, 0.1 + i * 0.087, 0.38, 2.8);
     pieza(caja, blanco, 2.45, 0.3 + i * 0.084, z, 0.15, 0.5, 0.38);
@@ -476,14 +460,14 @@ export function crearMaqueta(
   }
   // Costa irregular: bolos de basalto, matorral sobre las laderas y espuma al pie.
   for (let i = 0; i < 90; i++) {
-    const lado = i % 2 ? 1 : -1,
-      z = -9 + azar() * 10,
-      x = lado * (15.2 + azar() * 3.1 + (grande ? 16.6 : 0));
+    const z = -9 + azar() * 10,
+      x = i % 2 ? este + 0.2 + azar() * 3.1 : oeste - 0.2 - azar() * 3.1;
     const r = 0.34 + azar() * 0.83;
-    pieza(esfera, i % 3 ? '#8b7a69' : '#aa9680', x, -0.69, z, r, 0.46 + azar() * 0.58, r * 0.84);
+    const tono = plano.lava ? (i % 3 ? '#3f3733' : '#544842') : i % 3 ? '#8b7a69' : '#aa9680';
+    pieza(esfera, tono, x, -0.69, z, r, 0.46 + azar() * 0.58, r * 0.84);
   }
-  for (let i = 0; i < (grande ? 270 : 125); i++) {
-    const x = (azar() - 0.5) * (grande ? 82 : 37),
+  for (let i = 0; i < Math.round(largo * 4.2); i++) {
+    const x = medio + (azar() - 0.5) * (largo + 7),
       z = -10 - azar() * 2.5;
     pieza(
       esfera,
@@ -496,9 +480,9 @@ export function crearMaqueta(
       0.45,
     );
   }
-  if (grande) {
-    // Arcos de buganvilla sobre la calle, la estampa del puerto.
-    for (const x of [-7.6, 6.35, 22.4, 26.8]) {
+  // Arcos de buganvilla sobre la calle, la estampa de Mogán.
+  for (const x of plano.arcos ?? []) {
+    {
       const z0 = -4.28,
         z1 = -6.3;
       for (const z of [z0, z1]) pieza(caja, blanco, x, 1.3, z, 0.22, 2.6, 0.22);
@@ -522,6 +506,8 @@ export function crearMaqueta(
         }
       }
     }
+  }
+  if (plano.playa) {
     // Playa: la arena sale a ras del muelle y baja hasta meterse en el agua.
     const arena = cal.clone();
     arena.color.set('#f1cd92');
@@ -537,7 +523,7 @@ export function crearMaqueta(
       [-23.9, 3.4],
       [-27.5, 3.1],
     ].entries()) {
-      const y = alturaPaseo(x, z);
+      const y = alturaPaseo(x, z, pueblo);
       pieza(poste, '#f4ead2', x, y + 0.95, z, 0.07, 1.9, 0.07);
       pieza(cono, ['#e0694f', '#f3e3b5', '#2f8f8f', '#e8a93d'][i % 4], x, y + 1.98, z, 1.08, 0.36, 1.08);
       // Hamacas a la sombra, inclinadas con la arena.
@@ -556,10 +542,12 @@ export function crearMaqueta(
       pieza(poste, '#e9d5ab', x, 0.68, -1.3, 0.82, 0.06, 0.82);
       for (const dx of [-0.55, 0.55]) pieza(poste, '#9a6c49', x + dx, 0.2, -1.3, 0.3, 0.4, 0.3);
     }
+  }
+  if (plano.espigon !== undefined) {
     // Espigón de piedra con su faro en la punta.
-    const ex = ESPIGON.x;
-    pieza(caja, '#977860', ex, -0.76, 8.45, ESPIGON.ancho, 1.35, 9.5);
-    superficie(caja, adoquin, ex, -0.09, 8.45, ESPIGON.ancho, 0.18, 9.5, 3.4);
+    const ex = plano.espigon;
+    pieza(caja, '#977860', ex, -0.76, 8.45, 2.2, 1.35, 9.5);
+    superficie(caja, adoquin, ex, -0.09, 8.45, 2.2, 0.18, 9.5, 3.4);
     for (let i = 0; i < 12; i++)
       for (const lado of [-1, 1])
         pieza(caja, i % 2 ? '#c9ac8c' : '#ebd4af', ex + lado * 1.03, 0.03, 4.15 + i * 0.8, 0.3, 0.13, 0.78);
@@ -597,12 +585,12 @@ export function crearMaqueta(
     escena.add(barco);
     return barco;
   });
-  // Veleros y botes amarrados a los lados del espigón.
-  if (grande)
+  // Barcos amarrados a los lados del espigón: veleros, o pesqueros donde se vive de la pesca.
+  if (plano.espigon !== undefined)
     for (const [origen, x, z] of [
-      [1, 20.4, 7.4],
-      [2, 28, 6.1],
-      [1, 29.6, 10.8],
+      [plano.lava ? 0 : 1, plano.espigon - 3.6, 10.8],
+      [2, plano.espigon + 3.1, 6.1],
+      [plano.lava ? 0 : 1, plano.espigon + 4.7, 10.8],
     ]) {
       const amarrado = barcos[origen].clone();
       amarrado.position.set(x, -0.85, z);

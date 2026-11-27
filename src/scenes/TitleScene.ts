@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { SaveManager } from '../sistemas/SaveManager';
+import { PUEBLOS } from '../data/pueblos';
 import { Musica } from '../sistemas/Musica';
 import { iniciarOrquestador } from '../sistemas/Orquestador';
 
@@ -109,7 +110,7 @@ export class TitleScene extends Phaser.Scene {
     iniciarOrquestador(this.game);
     this.cameras.main.fadeOut(300);
     this.cameras.main.once('camerafadeoutcomplete', () => {
-      if (partida.islaActual === 'gran-canaria' && (partida.pueblo === 'mogan' || partida.pueblo === 'agaete')) {
+      if (partida.pueblo && PUEBLOS[partida.pueblo]?.isla === partida.islaActual) {
         this.scene.start('Puerto', { pueblo: partida.pueblo });
         return;
       }

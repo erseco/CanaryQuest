@@ -9,37 +9,43 @@ export type PuntoPuerto = typeof INICIO;
 export const umbral = (c: CasaPuerto) => ({ x: c.x, z: c.z + c.fondo / 2 + 0.52 });
 
 type Rect = [number, number, number, number];
-/** Centro de cada canal; su puente lo cruza a la altura de z = 1. */
-export const CANALES: Record<Pueblo, number[]> = { mogan: [0, 16.6], agaete: [0] };
-/** Rectángulo que abarca todo lo pisable de cada pueblo. Mogán suma la playa y el espigón. */
-const ZONA: Record<Pueblo, Rect> = { mogan: [-30.4, -9.8, 31.1, 12.9], agaete: [-14.5, -9.8, 14.5, 3.4] };
-export const ESPIGON = { x: 24.9, ancho: 2.2 };
+const PUEBLO_IDS = Object.keys(PUEBLOS) as Pueblo[];
+/** Rectángulo que abarca todo lo pisable: las orillas, más la playa y el espigón donde los hay. */
+function zona(pueblo: Pueblo): Rect {
+  const { orillas, playa, espigon } = PUEBLOS[pueblo].plano;
+  return [
+    playa ? -30.4 : Math.min(...orillas) - 6.2,
+    -9.8,
+    Math.max(...orillas) + 6.2,
+    espigon !== undefined ? 12.9 : playa ? 4.85 : 3.4,
+  ];
+}
 function obstaculos(pueblo: Pueblo): Rect[] {
-  const casas: Rect[] = PUEBLOS[pueblo].casas.map((c) => [
+  const { casas, plano } = PUEBLOS[pueblo];
+  const rects: Rect[] = casas.map((c) => [
     c.x - c.ancho / 2 - 0.17,
     c.z - c.fondo / 2 - 0.17,
     c.x + c.ancho / 2 + 0.17,
     c.z + c.fondo / 2 + 0.17,
   ]);
-  const canales = CANALES[pueblo].flatMap((c): Rect[] => [
-    [c - 1.75, -5.1, c + 1.75, 0.35],
-    [c - 1.75, 1.65, c + 1.75, 4],
-  ]);
-  if (pueblo === 'agaete') return [...casas, ...canales];
-  const borde = ESPIGON.ancho / 2 - 0.15;
-  return [
-    ...casas,
-    ...canales,
-    [-14.4, 3.45, ESPIGON.x - borde, 99], // mar entre la playa y el espigón
-    [ESPIGON.x + borde, 3.45, 99, 99], // mar al este del espigón
-    [-99, 4.85, -14.4, 99], // mar frente a la playa
-    [-15, -0.3, -14.4, 4.85], // muro del muelle: la arena queda más baja
-    [-99, -99, -14.6, -6.05], // matorral tras la playa
-  ];
+  for (const c of plano.canales) rects.push([c - 1.75, -5.1, c + 1.75, 0.35], [c - 1.75, 1.65, c + 1.75, 4]);
+  // Mar frente al muelle: todo salvo el ancho del espigón.
+  const oeste = plano.playa ? -14.4 : -99;
+  if (plano.espigon !== undefined)
+    rects.push([oeste, 3.45, plano.espigon - 0.95, 99], [plano.espigon + 0.95, 3.45, 99, 99]);
+  else if (plano.playa) rects.push([oeste, 3.45, 99, 99]);
+  if (plano.playa)
+    rects.push(
+      [-99, 4.85, -14.4, 99], // mar frente a la playa
+      [-15, -0.3, -14.4, 4.85], // muro del muelle: la arena queda más baja
+      [-99, -99, -14.6, -6.05], // matorral tras la playa
+    );
+  return rects;
 }
-const limites = { mogan: obstaculos('mogan'), agaete: obstaculos('agaete') };
+const zonas = Object.fromEntries(PUEBLO_IDS.map((p) => [p, zona(p)])) as Record<Pueblo, Rect>;
+const limites = Object.fromEntries(PUEBLO_IDS.map((p) => [p, obstaculos(p)])) as Record<Pueblo, Rect[]>;
 export function transitable(x: number, z: number, pueblo: Pueblo = 'mogan') {
-  const [x0, z0, x1, z1] = ZONA[pueblo];
+  const [x0, z0, x1, z1] = zonas[pueblo];
   return (
     x >= x0 &&
     x <= x1 &&
@@ -111,10 +117,11 @@ export function rutaPuerto(
   return [];
 }
 /** Altura del suelo: la joroba de cada puente y la arena de la playa bajando hacia el agua. */
-export function alturaPaseo(x: number, z: number): number {
-  if (x < -14.5) return z > 0 ? -0.16 * z : 0;
+export function alturaPaseo(x: number, z: number, pueblo: Pueblo = 'mogan'): number {
+  const { canales, playa } = PUEBLOS[pueblo].plano;
+  if (playa && x < -14.5) return z > 0 ? -0.16 * z : 0;
   if (Math.abs(z - 1) > 0.85) return 0;
-  const canal = CANALES.mogan.find((c) => Math.abs(x - c) < 2.2);
+  const canal = canales.find((c) => Math.abs(x - c) < 2.2);
   return canal === undefined ? 0 : 0.38 * Math.cos(((x - canal) * Math.PI) / 4.4);
 }
 

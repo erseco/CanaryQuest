@@ -1,10 +1,9 @@
 import * as T from 'three';
 
-export type Extremo = 'orchilla' | 'la-restinga';
+export type Extremo = 'orchilla';
 
-export function caminoExtremo(sitio: Extremo, x: number, z: number) {
-  if (sitio === 'orchilla') return Math.abs(x) < 15 && z > -7 && z < 12 && (z > 0 || x < -7 || x > 7);
-  return (Math.abs(x) < 17 && z >= -4 && z <= 1.5) || (Math.abs(x - 8) < 1.1 && z > 1 && z < 12);
+export function caminoExtremo(_sitio: Extremo, x: number, z: number) {
+  return Math.abs(x) < 15 && z > -7 && z < 12 && (z > 0 || x < -7 || x > 7);
 }
 
 export async function extremo(sitio: Extremo) {
@@ -95,29 +94,6 @@ export async function extremo(sitio: Extremo) {
       if (caminoExtremo(sitio, x, z) || (Math.abs(x) < 6 && Math.abs(z + 4) < 4)) continue;
       pieza(roca, i % 2 ? '#604d46' : '#755749', x, 0.19, z, 1.25, 0.67, 1.14);
     }
-  } else {
-    for (let i = 0; i < 8; i++)
-      casa(-16 + i * 4.6, -7, 4.35, 3 + (i % 3) * 0.62, ['#477e79', '#ae755b', '#647e92'][i % 3]);
-    pieza(caja, '#ba9b73', 8, -0.18, 6.8, 2.4, 0.36, 10.8);
-    pieza(caja, '#7f7970', -3, -0.7, 18, 35, 2, 2.1);
-    for (let i = 0; i < 7; i++) {
-      const x = -15 + i * 4.7,
-        z = 6 + (i % 2) * 3;
-      if (Math.abs(x - 8) < 2) continue;
-      const casco = pieza(
-        new T.SphereGeometry(1, 12, 8),
-        i % 2 ? '#a45442' : '#f6e5bb',
-        x,
-        -0.96,
-        z,
-        0.88,
-        0.58,
-        2.25,
-      );
-      const cabina = pieza(caja, '#f7eed9', x, -0.35, z - 0.3, 1, 0.85, 1.24);
-      barcos.push(casco, cabina);
-    }
-    for (let i = 0; i < 4; i++) pieza(cilindro, '#715d51', 8.95, 0.32, 2.8 + i * 2.7, 0.2, 0.64, 0.2);
   }
   return {
     scene,

@@ -1,12 +1,18 @@
 import Phaser from 'phaser';
 import { CARTA, VISITAS } from '../data/dialogos';
 import { SITIOS, type Sitio } from '../atlas/carta';
+import { PUEBLOS, type Pueblo } from '../data/pueblos';
 
 export class VisitaScene extends Phaser.Scene {
   constructor() {
     super('Visita');
   }
   async create({ sitio }: { sitio: Sitio }) {
+    // Los lugares que ya son pueblos se abren con la maqueta del puerto.
+    if (Object.hasOwn(PUEBLOS, sitio)) {
+      this.scene.start('Puerto', { pueblo: sitio as Pueblo });
+      return;
+    }
     const { isla: islaId } = SITIOS[sitio];
     const poi = this.make
       .tilemap({ key: 'map-' + islaId })

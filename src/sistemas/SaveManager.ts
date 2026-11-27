@@ -1,4 +1,5 @@
 import type { IslaId } from '../data/islas';
+import type { Pueblo } from '../data/pueblos';
 
 export interface EstadoMision {
   estado: 'pendiente' | 'activa' | 'completada';
@@ -10,7 +11,7 @@ export interface EstadoMision {
 export interface Partida {
   version: 1;
   islaActual: IslaId;
-  pueblo?: 'mogan' | 'agaete';
+  pueblo?: Pueblo;
   simbolos: IslaId[];
   misiones: Record<string, EstadoMision>;
   inventario: string[];

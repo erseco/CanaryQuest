@@ -3,7 +3,7 @@ import { DIALOGOS, PUERTO } from '../data/dialogos';
 import type { QuestManager } from '../sistemas/QuestManager';
 import type { abrirPuerto } from '../puerto/vista';
 import type { Partida } from '../sistemas/SaveManager';
-import type { Pueblo } from '../data/pueblos';
+import { PUEBLOS, type Pueblo } from '../data/pueblos';
 import { camino, MUELLE, type PuntoPuerto } from '../puerto/paseo';
 import type { Punto } from '../data/islas';
 
@@ -13,9 +13,9 @@ export class PuertoScene extends Phaser.Scene {
   }
 
   async create(datos: { entrada?: Punto; pueblo?: Pueblo; llegada?: PuntoPuerto }): Promise<void> {
-    const islaId = 'gran-canaria';
     const qm = this.registry.get('quest-manager') as QuestManager;
     const pueblo = datos.pueblo ?? 'mogan';
+    const { isla: islaId, poi } = PUEBLOS[pueblo];
     const partida = this.registry.get('partida') as Partida;
     partida.pueblo = pueblo;
     partida.islaActual = islaId;
@@ -42,7 +42,7 @@ export class PuertoScene extends Phaser.Scene {
         () => this.game.events.emit('npc-hablar', { npc: 'pastor' }),
         () => {
           iniciarUI();
-          this.scene.start('Island', {islaId, lugar: pueblo === 'agaete' ? 'gc-agaete' : 'pueblo'});
+          this.scene.start('Island', { islaId, lugar: poi });
         },
         objetivo,
         pueblo,
@@ -64,6 +64,10 @@ export class PuertoScene extends Phaser.Scene {
         return;
       }
       iniciarUI();
+      if (pueblo !== 'mogan') {
+        this.scene.start('Island', { islaId, lugar: poi });
+        return;
+      }
       const puntoPueblo = this.make
         .tilemap({ key: 'map-gran-canaria' })
         .getObjectLayer('pois')

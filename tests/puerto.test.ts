@@ -26,9 +26,10 @@ import { PUEBLOS } from '../src/data/pueblos';
 import { camino, MUELLE, umbral } from '../src/puerto/paseo';
 import { destinosDesde } from '../src/sistemas/viajes';
 import { sueloInterior } from '../src/puerto/interior';
-for (const pueblo of ['mogan', 'agaete'] as const) {
+for (const pueblo of Object.keys(PUEBLOS) as (keyof typeof PUEBLOS)[]) {
   it('comunica todas las puertas, el camino y el embarcadero de ' + pueblo, () => {
-    const destinos = [...PUEBLOS[pueblo].casas.map(umbral), ...PUEBLOS[pueblo].rincones, camino(pueblo), MUELLE];
+    const { casas, rincones, salidas } = PUEBLOS[pueblo];
+    const destinos = [...casas.map(umbral), ...rincones, ...(salidas.tierra ? [camino(pueblo)] : []), MUELLE];
     let origen = INICIO;
     for (const destino of destinos) {
       const ruta = rutaPuerto(origen, destino, pueblo);
@@ -60,6 +61,14 @@ it('Mogán llega hasta la playa y el espigón sin pisar el agua', () => {
   // Agaete conserva su tamaño: nada de esto existe allí.
   expect(transitable(-23, 1.6, 'agaete')).toBe(false);
   expect(transitable(24.9, 12, 'agaete')).toBe(false);
+});
+it('La Restinga es un muelle corrido, sin canal, con su pantalán', () => {
+  expect(transitable(0, -2, 'la-restinga')).toBe(false); // ahí hay una casa, no un canal
+  expect(transitable(0, 2, 'la-restinga')).toBe(true); // el muelle no se interrumpe
+  expect(alturaPaseo(0, 1, 'la-restinga')).toBe(0); // ni hay puente que subir
+  expect(transitable(11.2, 12, 'la-restinga')).toBe(true);
+  expect(transitable(5, 8, 'la-restinga')).toBe(false);
+  expect(transitable(14, 0, 'la-restinga')).toBe(false);
 });
 it('da acceso a la salida de la habitación y al ferry de regreso', () => {
   expect(sueloInterior(0, 2.7)).toBe(true);

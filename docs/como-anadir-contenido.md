@@ -64,6 +64,24 @@ usan las mismas coordenadas. Los muelles se ajustan al punto de tierra cercano.
    con el nombre del mapa, y amplía `activarPoi()` de IslandScene si hace
    falta un caso nuevo.
 
+## Añadir un pueblo 3D (como el Puerto de Mogán)
+
+Los pueblos 3D se montan por datos con la maqueta del puerto; no hace falta
+tocar Three.js para un pueblo nuevo.
+
+1. Añade su entrada en `src/data/pueblos.ts`: `isla`, `poi` (el punto del
+   mapa de la isla por el que se entra y se sale), `plano` (orillas, canales,
+   playa, espigón, arcos, palmeras), `salidas`, `casas` y `rincones` (lugares
+   a los que se pasea y que se describen al llegar).
+2. Amplía el tipo `Pueblo` con su identificador.
+3. Si el lugar ya existía como visita de la carta (`SITIOS`), `VisitaScene`
+   lo abre como pueblo en cuanto aparece en `PUEBLOS`.
+4. `npm test`: `tests/puerto.test.ts` comprueba que todas las puertas, los
+   rincones y el embarcadero quedan comunicados sin pisar el agua.
+
+Un edificio singular (campanario, ermita) se modela en
+`src/puerto/maqueta.ts`, en el bloque de su pueblo.
+
 ## Checklist antes de commitear contenido
 
 - [ ] `npm test` y `npm run build` en verde.

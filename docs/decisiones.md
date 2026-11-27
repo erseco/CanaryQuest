@@ -125,3 +125,20 @@ Babylon.js ni PlayCanvas. La prueba comparativa queda en el historial de git
 versiones instalables pasan a ser prioritarias. También se descartó, tras ver
 una maqueta, un 2.5D de recortables pixel-art sobre suelo 3D: la referencia
 estética de los lugares 3D es el puerto de Mogán.
+
+## ADR-10: los lugares 3D son pueblos montados por datos
+
+**Contexto.** El Puerto de Mogán es la referencia de aspecto del juego. Las
+demás visitas 3D (`src/atlas`) usaban una ortofoto como suelo y edificios de
+caja lisa, y desentonaban.
+
+**Decisión.** Cada lugar se describe en `src/data/pueblos.ts` (trazado, casas,
+rincones, salidas) y se dibuja con la maqueta del puerto: mismas fachadas,
+agua con reflejos, horizonte pintado, luz, interiores y paneles. Mogán creció
+así hasta la playa, un segundo canal y el espigón con faro, y La Restinga fue
+la primera visita convertida.
+
+**Consecuencias.** Un pueblo nuevo es sobre todo datos. Quedan por convertir
+Las Palmas, La Caleta, el faro de Orchilla y las dunas de Maspalomas; los
+tres últimos no son pueblos de muelle y necesitarán piezas propias (charcos,
+malpaís, dunas) dentro de la misma maqueta.

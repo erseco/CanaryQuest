@@ -78,3 +78,7 @@ vertical slice, completado). Pendiente en `docs/prompts-assets.md`: arte de
 La Graciosa y sprites propios. Las islas sin `.tmj` propio usan colisiones
 rectangulares genéricas — afinar con Tiled copiando el patrón de
 `public/assets/maps/islas/gran-canaria.tmj`.
+
+Los lugares 3D se están unificando con el aspecto del Puerto de Mogán
+(ADR-10): Mogán, Agaete y La Restinga ya son pueblos de `src/data/pueblos.ts`;
+faltan Las Palmas, La Caleta, Orchilla y las dunas, que siguen en `src/atlas`.

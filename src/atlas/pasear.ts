@@ -20,7 +20,7 @@ export async function pasear(
   const caleta = sitio === 'la-caleta',
     ficha = VISITAS[sitio];
   const renderer = new T.WebGLRenderer({ antialias: true });
-  const nuevo = sitio === 'orchilla' || sitio === 'la-restinga';
+  const nuevo = sitio === 'orchilla';
   const maqueta = await (sitio==='dunas' ? maspalomas() : nuevo ? extremo(sitio) : maquetaVisita(caleta)).catch((error) => {
     renderer.dispose();
     renderer.forceContextLoss();
