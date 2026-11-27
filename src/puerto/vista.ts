@@ -5,7 +5,7 @@ import { crearMaqueta } from './maqueta';
 import {
   alturaPaseo,
   PASTOR,
-  CAMINO,
+  camino,
   MUELLE,
   umbral,
   rutaPuerto,
@@ -26,6 +26,8 @@ export async function abrirPuerto(
   llegada?: PuntoPuerto,
 ) {
   const barrio = PUEBLOS[pueblo];
+  /** Mogán creció hacia la playa y el espigón: la cámara, las sombras y el horizonte abarcan más. */
+  const grande = pueblo === 'mogan';
   const recursos = await cargarRecursos(pueblo);
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
@@ -49,13 +51,20 @@ export async function abrirPuerto(
     noche = new T.Color('#344e70');
   const cielo = new T.Color();
   escena.background = cielo;
-  escena.fog = new T.Fog(cielo, 26, 68);
+  escena.fog = new T.Fog(cielo, grande ? 44 : 26, grande ? 150 : 68);
   const ambiente = new T.HemisphereLight(0xffedd4, 0x8199ae, 1.5);
   const sol = new T.DirectionalLight(0xffdcaa, 2.4);
-  sol.position.set(-16, 13, 8);
   sol.castShadow = true;
-  Object.assign(sol.shadow.camera, { left: -19, right: 19, top: 16, bottom: -16, far: 65 });
-  sol.shadow.mapSize.set(1024, 1024);
+  if (grande) {
+    // Más lejos en la misma dirección, para que la playa también quede delante del foco.
+    sol.position.set(-41.6, 33.8, 20.8);
+    Object.assign(sol.shadow.camera, { left: -42, right: 42, top: 26, bottom: -26, far: 140 });
+    sol.shadow.mapSize.set(2048, 2048);
+  } else {
+    sol.position.set(-16, 13, 8);
+    Object.assign(sol.shadow.camera, { left: -19, right: 19, top: 16, bottom: -16, far: 65 });
+    sol.shadow.mapSize.set(1024, 1024);
+  }
   sol.shadow.normalBias = 0.035;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = T.PCFShadowMap;
@@ -66,7 +75,8 @@ export async function abrirPuerto(
   escena.add(habitacion.grupo);
   const paisaje = new T.MeshBasicMaterial({ map: recursos.horizonte, side: T.BackSide, fog: false });
   const horizonte = new T.Mesh(new T.CylinderGeometry(50, 50, 44, 96, 1, true), paisaje);
-  horizonte.position.y = 15;
+  horizonte.scale.setScalar(grande ? 1.6 : 1);
+  horizonte.position.y = grande ? 24 : 15;
   horizonte.rotation.y = -0.82;
   exterior.add(horizonte);
   const luces = [-8.5, -3, 3, 8.5].map((x) => {
@@ -92,12 +102,13 @@ export async function abrirPuerto(
         textureMatrix: { value: null },
         tiempo: { value: 0 },
         oscuridad: { value: 0 },
+        orilla: { value: grande ? new T.Vector2(-31, 33) : new T.Vector2(-8, 8) },
       },
       vertexShader: `uniform mat4 textureMatrix; varying vec4 reflejado; varying vec3 pos; void main(){reflejado=textureMatrix*vec4(position,1.);vec4 p=modelMatrix*vec4(position,1.);pos=p.xyz;gl_Position=projectionMatrix*viewMatrix*p;}`,
-      fragmentShader: `uniform sampler2D tDiffuse; varying vec4 reflejado; varying vec3 pos; uniform float tiempo; uniform float oscuridad;
+      fragmentShader: `uniform sampler2D tDiffuse; varying vec4 reflejado; varying vec3 pos; uniform float tiempo; uniform float oscuridad; uniform vec2 orilla;
       void main(){vec2 p=pos.xz; float a=sin(p.y*5.+sin(p.x*1.8+tiempo*.5)*.6-tiempo*.85);
         float b=sin(p.y*8.+p.x*.4+sin(p.x*3.-tiempo*.33)-tiempo);
-        float costa=exp(-max(0.,p.y-3.7)*.28)*(1.-smoothstep(8.,12.,abs(p.x)));
+        float costa=exp(-max(0.,p.y-3.7)*.28)*smoothstep(orilla.x-4.,orilla.x,p.x)*(1.-smoothstep(orilla.y,orilla.y+4.,p.x));
         vec3 c=mix(vec3(.025,.34,.39),vec3(.12,.60,.55),costa*.72+.16*sin(p.x*.18+p.y*.21));
         c+=vec3(.19,.22,.18)*smoothstep(.88,1.,a)*smoothstep(.45,.95,b);
         c=mix(c,c*vec3(.23,.34,.49),oscuridad);
@@ -135,6 +146,7 @@ export async function abrirPuerto(
     tiempo = 0;
   let ruta: PuntoPuerto[] = [],
     alLlegar: (() => void) | undefined,
+    quienHabla = t.pastor,
     dialogo: string[] = [],
     finDialogo: (() => void) | undefined;
   const centro = new T.Vector3(0, 2.2, -1.9);
@@ -188,9 +200,20 @@ export async function abrirPuerto(
   });
   lugares.push({
     nombre: guia.ir + ' ' + PUEBLOS[otroPueblo(pueblo)].nombre,
-    punto: CAMINO,
+    punto: camino(pueblo),
     activar: () => viajar(otroPueblo(pueblo)),
   });
+  // Rincones a los que se pasea: al llegar se describen, como en una aventura gráfica.
+  for (const r of barrio.rincones)
+    lugares.push({
+      nombre: r.nombre,
+      punto: r,
+      activar: () => {
+        quienHabla = r.nombre;
+        dialogo = [r.texto];
+        refrescar();
+      },
+    });
   if (pastor.visible)
     lugares.push({ nombre: t.hablar, punto: { x: PASTOR.x - 0.75, z: PASTOR.z }, activar: hablar });
   const senales = [indiceBarco, indiceBarco + 1].map((i) => {
@@ -245,7 +268,7 @@ export async function abrirPuerto(
   function refrescar() {
     const i = cercano();
     titulo.textContent = dialogo.length
-      ? t.pastor
+      ? quienHabla
       : casaActual
         ? casaActual.nombre
         : pastor.visible
@@ -327,7 +350,7 @@ export async function abrirPuerto(
           angulo += Math.PI / 8;
           break;
         case 'menos':
-          distancia = Math.min(42, distancia + 3);
+          distancia = Math.min(grande ? 58 : 42, distancia + 3);
           break;
         case 'mas':
           distancia = Math.max(16, distancia - 3);
@@ -515,7 +538,7 @@ export async function abrirPuerto(
     const radio = (casaActual ? distancia/3 : distancia) * (camara.aspect < 1 ? 1.13 : 1);
     centro.x = T.MathUtils.damp(
       centro.x,
-      casaActual ? pos.x * 0.2 : pos.x * (camara.aspect < 1 ? 0.78 : 0.5),
+      casaActual ? pos.x * 0.2 : pos.x * (grande ? 0.86 : camara.aspect < 1 ? 0.78 : 0.5),
       5,
       dt,
     );
@@ -539,6 +562,7 @@ export async function abrirPuerto(
     mostrar(lineas: string[], alTerminar?: () => void) {
       ruta = [];
       alLlegar = undefined;
+      quienHabla = t.pastor;
       dialogo = [...lineas];
       finDialogo = alTerminar;
       refrescar();

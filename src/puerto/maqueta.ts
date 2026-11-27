@@ -3,7 +3,7 @@ import * as T from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { cargarRecursos } from './recursos';
 import { PUEBLOS, type Pueblo } from '../data/pueblos';
-import { INICIO, PASTOR, alturaPaseo } from './paseo';
+import { CANALES, ESPIGON, INICIO, PASTOR, alturaPaseo } from './paseo';
 
 // La maqueta se hornea en mallas con color por vértice para dibujar el pueblo en pocas llamadas.
 export function crearMaqueta(
@@ -17,6 +17,8 @@ export function crearMaqueta(
     roughness: 1,
     side: T.DoubleSide,
   });
+  /** Mogán es el pueblo grande: un tercer barrio, la playa y el espigón. */
+  const grande = pueblo === 'mogan';
   const cristal = mate.clone();
   cristal.emissive.setHex(0xffa748);
   cristal.emissiveIntensity = 0.16;
@@ -104,8 +106,8 @@ export function crearMaqueta(
   for (let fila = 0; fila < 3; fila++) {
     const vertices: number[] = [];
     const crestas: T.Vector3[][] = [];
-    for (let i = 0; i < 22; i++) {
-      const x = i * 2.6 - 27;
+    for (let i = 0; i < (grande ? 36 : 22); i++) {
+      const x = i * 2.6 - (grande ? 44 : 27);
       const cima =
         (3 + fila * 1.6 + 2.4 * Math.sin(i * 0.72 + fila) + azar() * 2) *
         (0.55 + Math.min(0.55, Math.abs(x - 1) / 19));
@@ -129,8 +131,7 @@ export function crearMaqueta(
     geo.dispose();
   }
   // Dos orillas de mampostería y un paseo de losas.
-  for (const lado of [-1, 1]) {
-    const x = lado * 8.3;
+  for (const x of grande ? [-8.3, 8.3, 24.9] : [-8.3, 8.3]) {
     pieza(caja, '#977860', x, -0.76, -4.2, 13.4, 1.35, 15.8);
     superficie(caja, adoquin, x, -0.09, -4.2, 13.4, 0.18, 15.8, 3.4);
     for (let i = 0; i < 17; i++) {
@@ -138,16 +139,18 @@ export function crearMaqueta(
       pieza(caja, '#ebd4af', x - 6.4 + i * 0.8, 0.02, 3.68, 0.78, 0.13, 0.35);
     }
   }
-  for (let i = -8; i <= 8; i++) {
-    const x = i * 0.25,
-      y = alturaPaseo(x, 1);
-    pieza(caja, '#e2c99c', x, y - 0.11, 1, 0.26, 0.22, 1.8);
-    for (const z of [0.08, 1.92]) {
-      pieza(caja, piedra, x, y + 0.17, z, 0.26, 0.48, 0.15);
-      pieza(caja, blanco, x, y + 0.43, z, 0.26, 0.07, 0.21);
+  for (const canal of CANALES[pueblo]) {
+    for (let i = -8; i <= 8; i++) {
+      const x = canal + i * 0.25,
+        y = alturaPaseo(x, 1);
+      pieza(caja, '#e2c99c', x, y - 0.11, 1, 0.26, 0.22, 1.8);
+      for (const z of [0.08, 1.92]) {
+        pieza(caja, piedra, x, y + 0.17, z, 0.26, 0.48, 0.15);
+        pieza(caja, blanco, x, y + 0.43, z, 0.26, 0.07, 0.21);
+      }
     }
+    superficie(caja, adoquin, canal, -0.09, -8.65, 3.3, 0.18, 7.1, 3.4);
   }
-  superficie(caja, adoquin, 0, -0.09, -8.65, 3.3, 0.18, 7.1, 3.4);
   const fachadas: T.Mesh[] = [];
   const ventanas: number[][] = [];
   function casa(x: number, z: number, w: number, h: number, d: number, tinte: string, base = 0) {
@@ -323,39 +326,52 @@ export function crearMaqueta(
     [-2.5, -4.7, 4.1],
     [5, -5.5, 4.8],
     [-9, -8.5, 4],
+    ...(grande
+      ? [
+          [19.6, 0.2, 4.2],
+          [30.4, 0, 3.8],
+          [27.3, -8.9, 4.4],
+          [-17.6, -2.4, 4.6],
+          [-25.2, -3.4, 4],
+          [-29, -0.8, 4.4],
+          [-23.4, -6.4, 3.8],
+        ]
+      : []),
   ])
     palmera(x, z, h);
-  for (let i = 0; i < 36; i++) {
-    const x = (azar() - 0.5) * 35,
+  for (let i = 0; i < (grande ? 80 : 36); i++) {
+    const x = (azar() - 0.5) * (grande ? 80 : 35),
       z = -9 - azar() * 2.5;
     pieza(esfera, i % 2 ? '#818956' : '#667c50', x, 0.55, z, 0.6 + azar(), 0.7 + azar(), 0.65);
   }
-  for (const x of [-8.5, -3, 3, 8.5]) {
+  for (const x of grande ? [-8.5, -3, 3, 8.5, 20.4, 29.6] : [-8.5, -3, 3, 8.5]) {
     pieza(poste, '#345558', x, 0.95, 3.42, 0.095, 1.9, 0.095);
     pieza(caja, '#375759', x, 1.92, 3.42, 0.32, 0.09, 0.32);
     ventanas.push([x, 2.08, 3.42, 0.23, 0.31, 0.23]);
     pieza(piramide, '#345558', x, 2.32, 3.42, 0.31, 0.25, 0.31, 0, Math.PI / 4);
   }
   // Guirnalda entre fachadas sobre el canal.
-  for (let i = 0; i <= 22; i++) {
-    const x = -3 + i * 0.27,
-      y = 3.12 + 0.034 * x * x;
-    pieza(caja, madera, x, y, -1.1, 0.28, 0.025, 0.025);
-    if (i % 2 === 0)
-      pieza(
-        piramide,
-        ['#218f92', '#da9355', '#c86365'][i % 3],
-        x,
-        y - 0.17,
-        -1.1,
-        0.18,
-        0.32,
-        0.035,
-        0,
-        0,
-        Math.PI,
-      );
-  }
+  for (const canal of CANALES[pueblo])
+    for (let i = 0; i <= 22; i++) {
+      const dx = -3 + i * 0.27,
+        x = canal + dx,
+        y = 3.12 + 0.034 * dx * dx;
+      pieza(caja, madera, x, y, -1.1, 0.28, 0.025, 0.025);
+      if (i % 2 === 0)
+        pieza(
+          piramide,
+          ['#218f92', '#da9355', '#c86365'][i % 3],
+          x,
+          y - 0.17,
+          -1.1,
+          0.18,
+          0.32,
+          0.035,
+          0,
+          0,
+          Math.PI,
+        );
+    }
   // Flores, postigos y enseres junto al canal dan escala a las fachadas.
   for (const [x, z] of [
     [-8.8, -0.5],
@@ -365,6 +381,14 @@ export function crearMaqueta(
     [2.35, -0.65],
     [4.7, -0.7],
     [8.65, -0.5],
+    ...(grande
+      ? [
+          [18.75, -0.6],
+          [22.5, -0.75],
+          [26.75, -0.7],
+          [30.9, -0.55],
+        ]
+      : []),
   ]) {
     pieza(poste, '#a85e48', x, 0.22, z, 0.48, 0.42, 0.48);
     pieza(poste, '#cd8460', x, 0.42, z, 0.54, 0.1, 0.54);
@@ -454,12 +478,12 @@ export function crearMaqueta(
   for (let i = 0; i < 90; i++) {
     const lado = i % 2 ? 1 : -1,
       z = -9 + azar() * 10,
-      x = lado * (15.2 + azar() * 3.1);
+      x = lado * (15.2 + azar() * 3.1 + (grande ? 16.6 : 0));
     const r = 0.34 + azar() * 0.83;
     pieza(esfera, i % 3 ? '#8b7a69' : '#aa9680', x, -0.69, z, r, 0.46 + azar() * 0.58, r * 0.84);
   }
-  for (let i = 0; i < 125; i++) {
-    const x = (azar() - 0.5) * 37,
+  for (let i = 0; i < (grande ? 270 : 125); i++) {
+    const x = (azar() - 0.5) * (grande ? 82 : 37),
       z = -10 - azar() * 2.5;
     pieza(
       esfera,
@@ -471,6 +495,88 @@ export function crearMaqueta(
       0.3,
       0.45,
     );
+  }
+  if (grande) {
+    // Arcos de buganvilla sobre la calle, la estampa del puerto.
+    for (const x of [-7.6, 6.35, 22.4, 26.8]) {
+      const z0 = -4.28,
+        z1 = -6.3;
+      for (const z of [z0, z1]) pieza(caja, blanco, x, 1.3, z, 0.22, 2.6, 0.22);
+      for (let k = 0; k <= 12; k++) {
+        const t = k / 12,
+          z = z0 + (z1 - z0) * t,
+          y = 2.55 + 0.55 * Math.sin(t * Math.PI);
+        pieza(caja, blanco, x, y, z, 0.2, 0.16, 0.24);
+        for (let j = 0; j < 8; j++) {
+          const r = 0.1 + azar() * 0.11;
+          pieza(
+            esfera,
+            ['#3d6846', '#a52c5f', '#d34580', '#f17399', '#608046'][(k + j) % 5],
+            x + (azar() - 0.5) * 0.55,
+            y + 0.1 + (azar() - 0.35) * 0.34,
+            z + (azar() - 0.5) * 0.2,
+            r * 1.15,
+            r,
+            r,
+          );
+        }
+      }
+    }
+    // Playa: la arena sale a ras del muelle y baja hasta meterse en el agua.
+    const arena = cal.clone();
+    arena.color.set('#f1cd92');
+    superficie(caja, arena, -23, -0.76, -5, 16, 1.52, 10, 4);
+    superficie(caja, arena, -23, -0.896, 3.7, 16, 0.6, 7.6, 4, 0.159);
+    const cono = new T.ConeGeometry(1, 1, 10);
+    for (const [i, [x, z]] of [
+      [-18.4, 1.3],
+      [-22, 1],
+      [-25.7, 1.4],
+      [-29, 1.1],
+      [-20.2, 3.2],
+      [-23.9, 3.4],
+      [-27.5, 3.1],
+    ].entries()) {
+      const y = alturaPaseo(x, z);
+      pieza(poste, '#f4ead2', x, y + 0.95, z, 0.07, 1.9, 0.07);
+      pieza(cono, ['#e0694f', '#f3e3b5', '#2f8f8f', '#e8a93d'][i % 4], x, y + 1.98, z, 1.08, 0.36, 1.08);
+      // Hamacas a la sombra, inclinadas con la arena.
+      for (const dx of [-0.5, 0.5]) {
+        pieza(caja, '#fbf1d8', x + dx, y + 0.2, z + 0.25, 0.5, 0.07, 1.45, 0.159);
+        pieza(caja, i % 2 ? '#4d9993' : '#e0694f', x + dx, y + 0.29, z - 0.3, 0.42, 0.06, 0.4, 0.5);
+      }
+    }
+    cono.dispose();
+    // Chiringuito: toldo de rayas y dos veladores sobre la arena.
+    for (let i = 0; i < 9; i++)
+      pieza(caja, i % 2 ? '#f8e2b7' : '#2f8f8f', -22.1 + i * 0.4, 2.02, -2.42, 0.41, 0.085, 1.1, 0.16);
+    for (const x of [-22.1, -18.9]) pieza(poste, madera, x, 0.95, -1.95, 0.06, 1.9, 0.06);
+    for (const x of [-21.6, -19.4]) {
+      pieza(poste, madera, x, 0.33, -1.3, 0.07, 0.66, 0.07);
+      pieza(poste, '#e9d5ab', x, 0.68, -1.3, 0.82, 0.06, 0.82);
+      for (const dx of [-0.55, 0.55]) pieza(poste, '#9a6c49', x + dx, 0.2, -1.3, 0.3, 0.4, 0.3);
+    }
+    // Espigón de piedra con su faro en la punta.
+    const ex = ESPIGON.x;
+    pieza(caja, '#977860', ex, -0.76, 8.45, ESPIGON.ancho, 1.35, 9.5);
+    superficie(caja, adoquin, ex, -0.09, 8.45, ESPIGON.ancho, 0.18, 9.5, 3.4);
+    for (let i = 0; i < 12; i++)
+      for (const lado of [-1, 1])
+        pieza(caja, i % 2 ? '#c9ac8c' : '#ebd4af', ex + lado * 1.03, 0.03, 4.15 + i * 0.8, 0.3, 0.13, 0.78);
+    for (const z of [5.4, 8.6, 11.8])
+      for (const lado of [-1, 1]) {
+        pieza(poste, '#795c47', ex + lado * 0.78, 0.2, z, 0.2, 0.42, 0.2);
+        pieza(poste, '#bca479', ex + lado * 0.78, 0.36, z, 0.24, 0.05, 0.24);
+      }
+    pieza(poste, '#977860', ex, -0.72, 14.4, 4.7, 1.5, 4.7);
+    pieza(poste, '#dcc7a2', ex, 0.04, 14.4, 4.4, 0.12, 4.4);
+    for (let j = 0; j < 6; j++)
+      pieza(poste, j % 2 ? '#c8553f' : blanco, ex, 0.41 + j * 0.62, 14.4, 1.3 - j * 0.07, 0.62, 1.3 - j * 0.07);
+    pieza(poste, '#345558', ex, 3.87, 14.4, 1.7, 0.1, 1.7);
+    for (const dx of [-0.3, 0.3])
+      for (const dz of [-0.3, 0.3]) pieza(caja, '#345558', ex + dx, 4.25, 14.4 + dz, 0.06, 0.7, 0.06);
+    ventanas.push([ex, 4.25, 14.4, 0.52, 0.62, 0.52]);
+    pieza(piramide, '#345558', ex, 4.86, 14.4, 0.62, 0.56, 0.62, 0, Math.PI / 4);
   }
   hornear(escena);
   for (const [x, y, z, w, h, d] of ventanas) pieza(caja, '#ffc572', x, y, z, w, h, d);
@@ -491,6 +597,18 @@ export function crearMaqueta(
     escena.add(barco);
     return barco;
   });
+  // Veleros y botes amarrados a los lados del espigón.
+  if (grande)
+    for (const [origen, x, z] of [
+      [1, 20.4, 7.4],
+      [2, 28, 6.1],
+      [1, 29.6, 10.8],
+    ]) {
+      const amarrado = barcos[origen].clone();
+      amarrado.position.set(x, -0.85, z);
+      escena.add(amarrado);
+      barcos.push(amarrado);
+    }
   const jugador = persona(INICIO.x, INICIO.z, false),
     pastor = persona(PASTOR.x, PASTOR.z, true);
   escena.add(jugador, pastor);
