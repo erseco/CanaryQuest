@@ -30,3 +30,7 @@ declare global {
   }
 }
 window.game = game;
+
+// Menú para saltar entre localizaciones: en desarrollo, o con ?debug=1 en el juego publicado.
+if (import.meta.env.DEV || new URLSearchParams(location.search).get('debug') === '1')
+  void import('./dev/menu').then((m) => m.montarMenu(game));

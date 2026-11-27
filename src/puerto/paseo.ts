@@ -13,6 +13,7 @@ const PUEBLO_IDS = Object.keys(PUEBLOS) as Pueblo[];
 /** Rectángulo que abarca todo lo pisable: las orillas, más la playa y el espigón donde los hay. */
 function zona(pueblo: Pueblo): Rect {
   const { orillas, playa, espigon } = PUEBLOS[pueblo].plano;
+  if (!orillas.length) return [0, 0, 0, 0]; // trazado propio: manda `suelos`
   return [
     playa ? -30.4 : Math.min(...orillas) - 6.2,
     -9.8,
@@ -28,6 +29,7 @@ function obstaculos(pueblo: Pueblo): Rect[] {
     c.x + c.ancho / 2 + 0.17,
     c.z + c.fondo / 2 + 0.17,
   ]);
+  rects.push(...(plano.vallas ?? []));
   for (const c of plano.canales) rects.push([c - 1.75, -5.1, c + 1.75, 0.35], [c - 1.75, 1.65, c + 1.75, 4]);
   // Mar frente al muelle: todo salvo el ancho del espigón.
   const oeste = plano.playa ? -14.4 : -99;
@@ -44,17 +46,15 @@ function obstaculos(pueblo: Pueblo): Rect[] {
 }
 const zonas = Object.fromEntries(PUEBLO_IDS.map((p) => [p, zona(p)])) as Record<Pueblo, Rect>;
 const limites = Object.fromEntries(PUEBLO_IDS.map((p) => [p, obstaculos(p)])) as Record<Pueblo, Rect[]>;
+const dentro = ([a, b, c, d]: Rect, x: number, z: number) => x >= a && x <= c && z >= b && z <= d;
 export function transitable(x: number, z: number, pueblo: Pueblo = 'mogan') {
-  const [x0, z0, x1, z1] = zonas[pueblo];
-  return (
-    x >= x0 &&
-    x <= x1 &&
-    z >= z0 &&
-    z <= z1 &&
-    !limites[pueblo].some(([a, b, c, d]) => x >= a && x <= c && z >= b && z <= d)
-  );
+  const { suelos } = PUEBLOS[pueblo].plano;
+  // Trazado propio: se pisa donde hay suelo; en los demás, dentro del rectángulo del pueblo.
+  const enSuelo = suelos ? suelos.some((s) => dentro(s.r, x, z)) : dentro(zonas[pueblo], x, z);
+  return enSuelo && !limites[pueblo].some((r) => dentro(r, x, z));
 }
-function cruza(a: PuntoPuerto, b: PuntoPuerto, [x0, z0, x1, z1]: Rect) {
+/** Tramo del segmento a→b que cae dentro del rectángulo, como fracciones de 0 a 1. */
+function tramo(a: PuntoPuerto, b: PuntoPuerto, [x0, z0, x1, z1]: Rect): [number, number] | null {
   let entrada = 0,
     salida = 1;
   for (const [valor, delta, min, max] of [
@@ -62,63 +62,86 @@ function cruza(a: PuntoPuerto, b: PuntoPuerto, [x0, z0, x1, z1]: Rect) {
     [a.z, b.z - a.z, z0, z1],
   ]) {
     if (delta === 0) {
-      if (valor < min || valor > max) return false;
+      if (valor < min || valor > max) return null;
       continue;
     }
     const t0 = (min - valor) / delta,
       t1 = (max - valor) / delta;
     entrada = Math.max(entrada, Math.min(t0, t1));
     salida = Math.min(salida, Math.max(t0, t1));
-    if (entrada > salida) return false;
+    if (entrada > salida) return null;
   }
-  return true;
+  return [entrada, salida];
 }
-// El camino directo sirve en la plaza. En callejones, la cuadrícula busca rodeos
-// y la comprobación final elimina los recodos que el jugador puede atravesar en línea recta.
+/** El segmento entero se puede caminar: no toca obstáculos ni se sale del suelo. */
+function despejado(a: PuntoPuerto, b: PuntoPuerto, pueblo: Pueblo) {
+  if (!transitable(b.x, b.z, pueblo) || limites[pueblo].some((r) => tramo(a, b, r))) return false;
+  const { suelos } = PUEBLOS[pueblo].plano;
+  if (!suelos) return true; // el rectángulo del pueblo es convexo: bastan los extremos
+  // Los tramos que pisan cada zona, puestos en fila, han de cubrir el segmento sin huecos.
+  let cubierto = 0;
+  for (const [t0, t1] of suelos
+    .map((s) => tramo(a, b, s.r))
+    .filter((t) => t !== null)
+    .sort((p, q) => p[0] - q[0])) {
+    if (t0 > cubierto + 1e-9) return false;
+    cubierto = Math.max(cubierto, t1);
+  }
+  return cubierto >= 1 - 1e-9;
+}
+// El camino directo sirve en una plaza. En callejones y muelles la cuadrícula busca el rodeo
+// y después se quitan los recodos que el viajero puede atravesar en línea recta.
 export function rutaPuerto(
   desde: PuntoPuerto,
   hasta: PuntoPuerto,
   pueblo: Pueblo = 'mogan',
 ): PuntoPuerto[] {
   if (!transitable(hasta.x, hasta.z, pueblo)) return [];
-  const libre = (a: PuntoPuerto, b: PuntoPuerto) =>
-    transitable(b.x, b.z, pueblo) && !limites[pueblo].some((rect) => cruza(a, b, rect));
+  const libre = (a: PuntoPuerto, b: PuntoPuerto) => despejado(a, b, pueblo);
   if (libre(desde, hasta)) return [hasta];
   const cola = [desde],
     padres = [-1],
     vistos = new Set<string>();
-  for (let i = 0; i < cola.length; i++) {
+  let fin = -1;
+  for (let i = 0; i < cola.length && fin < 0; i++) {
     const p = cola[i];
-    if (libre(p, hasta)) {
-      const ruta = [hasta];
-      for (let j = i; j > 0; j = padres[j]) ruta.unshift(cola[j]);
-      let anterior = desde;
-      return ruta.filter((pt, k) => {
-        if (k + 1 < ruta.length && libre(anterior, ruta[k + 1])) return false;
-        anterior = pt;
-        return true;
-      });
-    }
-    for (const [dx, dz] of [
-      [0.5, 0],
-      [-0.5, 0],
-      [0, 0.5],
-      [0, -0.5],
-    ]) {
-      const q = { x: Math.round(p.x * 2) / 2 + dx, z: Math.round(p.z * 2) / 2 + dz },
-        clave = q.x + ',' + q.z;
-      if (!vistos.has(clave) && libre(p, q)) {
-        vistos.add(clave);
-        cola.push(q);
-        padres.push(i);
+    if (Math.hypot(p.x - hasta.x, p.z - hasta.z) < 0.8 && libre(p, hasta)) fin = i;
+    else
+      for (const [dx, dz] of [
+        [0.5, 0],
+        [-0.5, 0],
+        [0, 0.5],
+        [0, -0.5],
+      ]) {
+        const q = { x: Math.round(p.x * 2) / 2 + dx, z: Math.round(p.z * 2) / 2 + dz },
+          clave = q.x + ',' + q.z;
+        if (!vistos.has(clave) && libre(p, q)) {
+          vistos.add(clave);
+          cola.push(q);
+          padres.push(i);
+        }
       }
-    }
   }
-  return [];
+  if (fin < 0) return [];
+  const pasos = [hasta];
+  for (let j = fin; j > 0; j = padres[j]) pasos.unshift(cola[j]);
+  const ruta: PuntoPuerto[] = [];
+  let ancla = desde;
+  for (let k = 0; k < pasos.length; ) {
+    let m = k;
+    while (m + 1 < pasos.length && libre(ancla, pasos[m + 1])) m++;
+    ruta.push((ancla = pasos[m]));
+    k = m + 1;
+  }
+  return ruta;
 }
-/** Altura del suelo: la joroba de cada puente y la arena de la playa bajando hacia el agua. */
+/** Altura del suelo: la joroba de cada puente, la arena que baja al agua, un pantalán flotante. */
 export function alturaPaseo(x: number, z: number, pueblo: Pueblo = 'mogan'): number {
-  const { canales, playa } = PUEBLOS[pueblo].plano;
+  const { canales, playa, suelos } = PUEBLOS[pueblo].plano;
+  if (suelos) {
+    const s = suelos.find((s) => dentro(s.r, x, z));
+    return s ? (s.y ?? 0) - (s.baja ?? 0) * Math.max(0, z - 3.7) : 0;
+  }
   if (playa && x < -14.5) return z > 0 ? -0.16 * z : 0;
   if (Math.abs(z - 1) > 0.85) return 0;
   const canal = canales.find((c) => Math.abs(x - c) < 2.2);

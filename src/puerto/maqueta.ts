@@ -4,6 +4,55 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { cargarRecursos } from './recursos';
 import { PUEBLOS, type Pueblo } from '../data/pueblos';
 import { INICIO, PASTOR, alturaPaseo } from './paseo';
+import { trazarRestinga } from './sitios/restinga';
+
+/** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
+export interface Taller {
+  pieza: (
+    forma: T.BufferGeometry,
+    color: string,
+    x: number,
+    y: number,
+    z: number,
+    w: number,
+    h: number,
+    d: number,
+    rx?: number,
+    ry?: number,
+    rz?: number,
+  ) => void;
+  superficie: (
+    forma: T.BufferGeometry,
+    material: T.MeshStandardMaterial,
+    x: number,
+    y: number,
+    z: number,
+    w: number,
+    h: number,
+    d: number,
+    escala: number,
+    giro?: number,
+  ) => T.Mesh;
+  casa: (x: number, z: number, w: number, h: number, d: number, tinte: string, base?: number) => T.Mesh;
+  farol: (x: number, z: number) => void;
+  maceta: (x: number, z: number) => void;
+  /** Laderas trianguladas de fondo entre x0 y x1, a partir de la z `frente`. */
+  relieve: (x0: number, x1: number, frente: number) => void;
+  azar: () => number;
+  /** Cristales que se encienden de noche: x, y, z, ancho, alto, fondo. */
+  ventanas: number[][];
+  formas: Record<'caja' | 'esfera' | 'poste' | 'piramide', T.BufferGeometry>;
+  materiales: Record<'cal' | 'adoquin' | 'basalto' | 'teja', T.MeshStandardMaterial>;
+  blanco: string;
+  madera: string;
+}
+/** Lo que un trazado propio devuelve además de sus piezas: dónde van los barcos. */
+export interface Sitio {
+  /** Barcos a flote, que cabecean: modelo, x, z. */
+  amarres: [number, number, number][];
+  /** Barcos en tierra: modelo, x, y, z y giro. */
+  enSeco: [number, number, number, number, number][];
+}
 
 // La maqueta se hornea en mallas con color por vértice para dibujar el pueblo en pocas llamadas.
 export function crearMaqueta(
@@ -103,24 +152,29 @@ export function crearMaqueta(
     escena.add(m);
     return m;
   }
-  const blanco = '#fff1d0',
+  /** Casas blancas de azotea y por plantas, sin teja ni buganvilla. */
+  const blanca = plano.estilo === 'blanca';
+  const blanco = blanca ? '#fbf7ee' : '#fff1d0',
     madera = '#77513b',
     piedra = '#c9a685';
+  const pared = blanca ? cal.clone() : cal;
+  if (blanca) pared.color.setRGB(1.5, 1.55, 1.68); // por encima de 1: aclara la cal hasta el blanco
   // Relieve de barranco, con laderas trianguladas y estratos de basalto y almagre.
   const ladera = plano.lava ? basalto.clone() : basalto;
-  if (plano.lava) ladera.color.set('#7d6a66');
-  for (let fila = 0; fila < 3; fila++) {
+  if (plano.lava) ladera.color.set('#5c5b61');
+  function relieve(x0: number, x1: number, frente: number) {
+   for (let fila = 0; fila < 3; fila++) {
     const vertices: number[] = [];
     const crestas: T.Vector3[][] = [];
-    for (let i = 0; i < Math.ceil(largo / 2.6) + 11; i++) {
-      const x = oeste - 12 + i * 2.6;
+    for (let i = 0; i < Math.ceil((x1 - x0) / 2.6); i++) {
+      const x = x0 + i * 2.6;
       const cima =
         (3 + fila * 1.6 + 2.4 * Math.sin(i * 0.72 + fila) + azar() * 2) *
         (0.55 + Math.min(0.55, Math.abs(x - 1) / 19));
       crestas.push(
         [0, 0.35, 0.64, 1].map(
           (k, j) =>
-            new T.Vector3(x + azar() * 1.2, -0.6 + cima * k, -9 - fila * 4 - j * 1.6 - azar() * 1.4),
+            new T.Vector3(x + azar() * 1.2, -0.6 + cima * k, frente - fila * 4 - j * 1.6 - azar() * 1.4),
         ),
       );
     }
@@ -135,7 +189,9 @@ export function crearMaqueta(
     geo.computeVertexNormals();
     superficie(geo, ladera, 0, 0, 0, 1, 0.62, 1, 7.5);
     geo.dispose();
+   }
   }
+  if (!plano.sitio) relieve(oeste - 12, este + 16.6, -9);
   // Dos orillas de mampostería y un paseo de losas.
   for (const x of plano.orillas) {
     pieza(caja, '#977860', x, -0.76, -4.2, 13.4, 1.35, 15.8);
@@ -161,15 +217,23 @@ export function crearMaqueta(
   const ventanas: number[][] = [];
   function casa(x: number, z: number, w: number, h: number, d: number, tinte: string, base = 0) {
     const frente = z + d / 2;
-    fachadas.push(superficie(caja, cal, x, base + h / 2, z, w, h, d, 2.6));
+    const muro = superficie(caja, pared, x, base + h / 2, z, w, h, d, 2.6);
     pieza(caja, tinte, x, base + 0.14, z, w + 0.03, 0.28, d + 0.04);
-    pieza(caja, '#ebc8a1', x, base + h + 0.04, z, w + 0.14, 0.15, d + 0.14);
-    pieza(caja, '#ba8060', x, base + h + 0.13, z, w - 0.1, 0.1, d - 0.1);
+    pieza(caja, blanca ? blanco : '#ebc8a1', x, base + h + 0.04, z, w + 0.14, 0.15, d + 0.14);
+    // Las azoteas de La Restinga van pintadas: almagre, gris o blanco.
+    const azotea = ['#b6553d', '#d6d0c4', '#c46f45', '#e4dfd4'][Math.abs(Math.round(x * 3 + z)) % 4];
+    pieza(caja, blanca ? azotea : '#ba8060', x, base + h + 0.13, z, w - 0.1, 0.1, d - 0.1);
     for (const sign of [-1, 1]) {
       pieza(caja, blanco, x, base + h + 0.21, z + (sign * d) / 2, w, 0.32, 0.14);
       pieza(caja, blanco, x + (sign * w) / 2, base + h + 0.21, z, 0.14, 0.32, d);
     }
-    if (h < 2.9 || base > 0) {
+    if (blanca) {
+      // Azotea: caseta de la escalera, depósito de agua y una placa solar.
+      pieza(caja, blanco, x - w * 0.24, base + h + 0.68, z - d * 0.2, 1.05, 0.95, 1.05);
+      pieza(caja, tinte, x - w * 0.24, base + h + 0.6, z - d * 0.2 + 0.54, 0.4, 0.75, 0.05);
+      pieza(poste, '#e9e6de', x + w * 0.27, base + h + 0.6, z - d * 0.18, 0.6, 0.72, 0.6);
+      pieza(caja, '#2c4a6e', x + w * 0.05, base + h + 0.42, z + d * 0.16, 0.95, 0.05, 0.6, 0.35);
+    } else if (h < 2.9 || base > 0) {
       for (const lado of [-1, 1])
         superficie(
           caja,
@@ -216,24 +280,38 @@ export function crearMaqueta(
         }
       }
     }
+    // Una fila de ventanas por planta en las casas blancas; baja y alta en las demás.
+    const filas = blanca
+      ? Array.from({ length: Math.floor((h - 1.36) / 1.72) + 1 }, (_, k) => 0.91 + k * 1.72)
+      : h > 2.7
+        ? [0.91, h - 0.78]
+        : [0.91];
     pieza(caja, tinte, x, base + 0.63, frente + 0.03, 0.68, 1.26, 0.11);
     pieza(caja, madera, x, base + 0.58, frente + 0.1, 0.47, 1.16, 0.07);
     for (const s of [-1, 1]) {
       const wx = x + s * w * 0.31;
-      for (const y of h > 2.7 ? [0.91, h - 0.78] : [0.91]) {
+      for (const y of filas) {
         pieza(caja, tinte, wx, y + base, frente + 0.05, 0.61, 0.83, 0.1);
         ventanas.push([wx, y + base, frente + 0.11, 0.38, 0.58, 0.05]);
         pieza(caja, madera, wx, y + base, frente + 0.15, 0.04, 0.62, 0.035);
         pieza(caja, blanco, wx, y + base - 0.44, frente + 0.12, 0.78, 0.11, 0.27);
       }
     }
-    if (h > 2.7) {
+    if (blanca) {
+      // Balcón corrido de obra en cada planta alta, con barandilla del color de la carpintería.
+      for (const y of filas.slice(1)) {
+        pieza(caja, blanco, x, base + y - 0.47, frente + 0.3, w * 0.88, 0.1, 0.6);
+        pieza(caja, tinte, x, base + y - 0.02, frente + 0.58, w * 0.88, 0.06, 0.05);
+        for (let i = -4; i <= 4; i++)
+          pieza(caja, tinte, x + i * w * 0.108, base + y - 0.22, frente + 0.58, 0.04, 0.4, 0.04);
+      }
+    } else if (h > 2.7) {
       pieza(caja, madera, x, base + h - 1.12, frente + 0.26, w * 0.82, 0.13, 0.65);
       pieza(caja, tinte, x, base + h - 0.63, frente + 0.55, w * 0.82, 0.09, 0.09);
       for (let i = -4; i <= 4; i++)
         pieza(caja, tinte, x + i * w * 0.09, base + h - 0.89, frente + 0.55, 0.045, 0.47, 0.05);
     }
-    for (let i = 0; i < 140; i++) {
+    for (let i = 0; i < (blanca ? 0 : 140); i++) {
       const t = azar(),
         esquina = i % 3 === 0;
       const fx = esquina ? x - w * 0.48 + Math.sin(t * 8) * 0.12 : x - w * 0.47 + t * w * 0.62;
@@ -250,8 +328,54 @@ export function crearMaqueta(
         radio,
       );
     }
+    return muro;
   }
-  for (const c of PUEBLOS[pueblo].casas) casa(c.x, c.z, c.ancho, c.alto, c.fondo, c.color);
+  function farol(x: number, z: number) {
+    pieza(poste, '#345558', x, 0.95, z, 0.095, 1.9, 0.095);
+    pieza(caja, '#375759', x, 1.92, z, 0.32, 0.09, 0.32);
+    ventanas.push([x, 2.08, z, 0.23, 0.31, 0.23]);
+    pieza(piramide, '#345558', x, 2.32, z, 0.31, 0.25, 0.31, 0, Math.PI / 4);
+  }
+  function maceta(x: number, z: number) {
+    pieza(poste, '#a85e48', x, 0.22, z, 0.48, 0.42, 0.48);
+    pieza(poste, '#cd8460', x, 0.42, z, 0.54, 0.1, 0.54);
+    for (let j = 0; j < 11; j++) {
+      const a = j * 2.4;
+      pieza(
+        esfera,
+        j % 3 ? '#678952' : '#9daa65',
+        x + 0.16 * Math.cos(a),
+        0.62,
+        z + 0.16 * Math.sin(a),
+        0.08,
+        0.29,
+        0.09,
+        0.5 * Math.sin(a),
+        0,
+        -0.5 * Math.cos(a),
+      );
+    }
+  }
+  for (const c of PUEBLOS[pueblo].casas) fachadas.push(casa(c.x, c.z, c.ancho, c.alto, c.fondo, c.color));
+  let sitio: Sitio | undefined;
+  if (plano.sitio === 'restinga')
+    sitio = trazarRestinga({
+      pieza,
+      superficie,
+      casa,
+      farol,
+      maceta,
+      relieve,
+      azar,
+      ventanas,
+      formas: { caja, esfera, poste, piramide },
+      materiales: { cal, adoquin, basalto, teja },
+      blanco,
+      madera,
+    });
+  else decorarCanales();
+  // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
+  function decorarCanales() {
   if (pueblo === 'agaete') {
     // La ermita y sus torres azules marcan el paseo de Las Nieves.
     for (const x of [-3, -0.2]) {
@@ -272,72 +396,13 @@ export function crearMaqueta(
   }
   for (let i = 0; i < 8; i++)
     pieza(caja, i % 2 ? '#f8e2b7' : '#cc7455', 5.77 + i * 0.4, 2.24, -0.75, 0.41, 0.085, 1.18, 0.16);
-  // Palmera canaria: hojas lanceoladas con nervadura central y punta caída.
-  function palmera(x: number, z: number, h: number) {
-    for (let j = 0; j < 8; j++)
-      pieza(
-        poste,
-        j % 2 ? '#9a7952' : '#856449',
-        x + 0.18 * (j / 8) ** 2,
-        (h * (j + 0.5)) / 8,
-        z,
-        0.43 - j * 0.018,
-        h / 8 + 0.025,
-        0.45 - j * 0.018,
-      );
-    for (let j = 0; j < 15; j++) {
-      const a = j * 2.4,
-        largo = 1.5 + azar(),
-        subida = 0.4 + azar() * 0.7;
-      const vertices: number[] = [];
-      const curva = (t: number) => subida * Math.sin(t * Math.PI) - 0.46 * t * t;
-      for (let k = 0; k < 19; k++) {
-        const t = k / 19,
-          siguiente = (k + 1) / 19;
-        vertices.push(
-          -0.032,
-          curva(t),
-          t * largo,
-          0.032,
-          curva(t),
-          t * largo,
-          0,
-          curva(siguiente),
-          siguiente * largo,
-        );
-        const ancho = 0.43 * Math.sin(t * Math.PI) ** 0.6;
-        for (const lado of [-1, 1])
-          vertices.push(
-            0,
-            curva(t),
-            t * largo,
-            lado * ancho,
-            curva(t) - ancho * 0.48,
-            (t + 0.13) * largo,
-            0,
-            curva(siguiente),
-            siguiente * largo,
-          );
-      }
-      const geo = new T.BufferGeometry();
-      geo.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
-      geo.computeVertexNormals();
-      pieza(geo, j % 2 ? '#447e5b' : '#70944f', x + 0.18, h, z, 1, 1, 1, 0, a);
-      geo.dispose();
-    }
-  }
-  for (const [x, z, h] of plano.palmeras) palmera(x, z, h);
+  plantar();
   for (let i = 0; i < Math.round(largo * 1.2); i++) {
     const x = medio + (azar() - 0.5) * (largo + 5),
       z = -9 - azar() * 2.5;
     pieza(esfera, i % 2 ? '#818956' : '#667c50', x, 0.55, z, 0.6 + azar(), 0.7 + azar(), 0.65);
   }
-  for (const x of [-8.5, -3, 3, 8.5, 20.4, 29.6].filter((f) => f < este)) {
-    pieza(poste, '#345558', x, 0.95, 3.42, 0.095, 1.9, 0.095);
-    pieza(caja, '#375759', x, 1.92, 3.42, 0.32, 0.09, 0.32);
-    ventanas.push([x, 2.08, 3.42, 0.23, 0.31, 0.23]);
-    pieza(piramide, '#345558', x, 2.32, 3.42, 0.31, 0.25, 0.31, 0, Math.PI / 4);
-  }
+  for (const x of [-8.5, -3, 3, 8.5, 20.4, 29.6].filter((f) => f < este)) farol(x, 3.42);
   // Guirnalda entre fachadas sobre el canal.
   for (const canal of plano.canales)
     for (let i = 0; i <= 22; i++) {
@@ -373,26 +438,8 @@ export function crearMaqueta(
     [22.5, -0.75],
     [26.75, -0.7],
     [30.9, -0.55],
-  ].filter(([x]) => x < este)) {
-    pieza(poste, '#a85e48', x, 0.22, z, 0.48, 0.42, 0.48);
-    pieza(poste, '#cd8460', x, 0.42, z, 0.54, 0.1, 0.54);
-    for (let j = 0; j < 11; j++) {
-      const a = j * 2.4;
-      pieza(
-        esfera,
-        j % 3 ? '#678952' : '#9daa65',
-        x + 0.16 * Math.cos(a),
-        0.62,
-        z + 0.16 * Math.sin(a),
-        0.08,
-        0.29,
-        0.09,
-        0.5 * Math.sin(a),
-        0,
-        -0.5 * Math.cos(a),
-      );
-    }
-  }
+  ].filter(([x]) => x < este))
+    maceta(x, z);
   // Escalinata desde el canal hacia las viviendas altas.
   for (let i = 0; i < (plano.canales.includes(0) ? 9 : 0); i++) {
     const z = -0.8 - i * 0.36;
@@ -566,6 +613,65 @@ export function crearMaqueta(
     ventanas.push([ex, 4.25, 14.4, 0.52, 0.62, 0.52]);
     pieza(piramide, '#345558', ex, 4.86, 14.4, 0.62, 0.56, 0.62, 0, Math.PI / 4);
   }
+  }
+  // Palmera canaria: hojas lanceoladas con nervadura central y punta caída.
+  function palmera(x: number, z: number, h: number) {
+    for (let j = 0; j < 8; j++)
+      pieza(
+        poste,
+        j % 2 ? '#9a7952' : '#856449',
+        x + 0.18 * (j / 8) ** 2,
+        (h * (j + 0.5)) / 8,
+        z,
+        0.43 - j * 0.018,
+        h / 8 + 0.025,
+        0.45 - j * 0.018,
+      );
+    for (let j = 0; j < 15; j++) {
+      const a = j * 2.4,
+        largo = 1.5 + azar(),
+        subida = 0.4 + azar() * 0.7;
+      const vertices: number[] = [];
+      const curva = (t: number) => subida * Math.sin(t * Math.PI) - 0.46 * t * t;
+      for (let k = 0; k < 19; k++) {
+        const t = k / 19,
+          siguiente = (k + 1) / 19;
+        vertices.push(
+          -0.032,
+          curva(t),
+          t * largo,
+          0.032,
+          curva(t),
+          t * largo,
+          0,
+          curva(siguiente),
+          siguiente * largo,
+        );
+        const ancho = 0.43 * Math.sin(t * Math.PI) ** 0.6;
+        for (const lado of [-1, 1])
+          vertices.push(
+            0,
+            curva(t),
+            t * largo,
+            lado * ancho,
+            curva(t) - ancho * 0.48,
+            (t + 0.13) * largo,
+            0,
+            curva(siguiente),
+            siguiente * largo,
+          );
+      }
+      const geo = new T.BufferGeometry();
+      geo.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
+      geo.computeVertexNormals();
+      pieza(geo, j % 2 ? '#447e5b' : '#70944f', x + 0.18, h, z, 1, 1, 1, 0, a);
+      geo.dispose();
+    }
+  }
+  function plantar() {
+    for (const [x, z, h] of plano.palmeras) palmera(x, z, h);
+  }
+  if (sitio) plantar();
   hornear(escena);
   for (const [x, y, z, w, h, d] of ventanas) pieza(caja, '#ffc572', x, y, z, w, h, d);
   hornear(escena, cristal);
@@ -597,6 +703,26 @@ export function crearMaqueta(
       escena.add(amarrado);
       barcos.push(amarrado);
     }
+  if (sitio) {
+    const usados = new Set<number>();
+    for (const [origen, x, z] of sitio.amarres) {
+      const repetido = usados.has(origen);
+      const barco = repetido ? barcos[origen].clone() : barcos[origen];
+      usados.add(origen);
+      barco.position.set(x, -0.85, z);
+      if (repetido) {
+        escena.add(barco);
+        barcos.push(barco);
+      }
+    }
+    // En tierra no cabecean: quedan fuera de `barcos`, que es lo que la vista anima.
+    for (const [origen, x, y, z, giro] of sitio.enSeco) {
+      const barco = barcos[origen].clone();
+      barco.position.set(x, y, z);
+      barco.rotation.y = giro;
+      escena.add(barco);
+    }
+  }
   const jugador = persona(INICIO.x, INICIO.z, false),
     pastor = persona(PASTOR.x, PASTOR.z, true);
   escena.add(jugador, pastor);

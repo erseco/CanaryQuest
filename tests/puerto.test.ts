@@ -62,13 +62,22 @@ it('Mogán llega hasta la playa y el espigón sin pisar el agua', () => {
   expect(transitable(-23, 1.6, 'agaete')).toBe(false);
   expect(transitable(24.9, 12, 'agaete')).toBe(false);
 });
-it('La Restinga es un muelle corrido, sin canal, con su pantalán', () => {
-  expect(transitable(0, -2, 'la-restinga')).toBe(false); // ahí hay una casa, no un canal
-  expect(transitable(0, 2, 'la-restinga')).toBe(true); // el muelle no se interrumpe
-  expect(alturaPaseo(0, 1, 'la-restinga')).toBe(0); // ni hay puente que subir
-  expect(transitable(11.2, 12, 'la-restinga')).toBe(true);
-  expect(transitable(5, 8, 'la-restinga')).toBe(false);
-  expect(transitable(14, 0, 'la-restinga')).toBe(false);
+it('La Restinga se recorre de la avenida al dique sin cruzar la bahía', () => {
+  const pisa = (x: number, z: number) => transitable(x, z, 'la-restinga');
+  expect(pisa(-10, 2)).toBe(true); // avenida
+  expect(pisa(-10, 12)).toBe(false); // agua de la bahía
+  expect(pisa(1.2, 15)).toBe(true); // pantalán
+  expect(pisa(8, 6)).toBe(true); // playa
+  expect(pisa(-18, 12)).toBe(true); // muelle viejo
+  expect(pisa(0, 28)).toBe(true); // dique
+  expect(pisa(0, 32)).toBe(false); // escollera, al otro lado del muro
+  expect(pisa(27, 9)).toBe(false); // barcos en seco del varadero
+  expect(alturaPaseo(1.2, 15, 'la-restinga')).toBeLessThan(-0.5); // el pantalán flota bajo el muelle
+  expect(alturaPaseo(8, 8, 'la-restinga')).toBeLessThan(alturaPaseo(8, 5, 'la-restinga'));
+  // Del arranque a la punta del dique hay que rodear por la explanada del puerto.
+  const ruta = rutaPuerto(INICIO, { x: -21, z: 28 }, 'la-restinga');
+  expect(ruta.at(-1)).toEqual({ x: -21, z: 28 });
+  expect(ruta.some((p) => p.x >= 13)).toBe(true);
 });
 it('da acceso a la salida de la habitación y al ferry de regreso', () => {
   expect(sueloInterior(0, 2.7)).toBe(true);

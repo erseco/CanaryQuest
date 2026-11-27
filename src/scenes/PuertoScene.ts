@@ -8,6 +8,8 @@ import { camino, MUELLE, type PuntoPuerto } from '../puerto/paseo';
 import type { Punto } from '../data/islas';
 
 export class PuertoScene extends Phaser.Scene {
+  /** Cuenta las aperturas: una vista que termina de cargar tarde sabe que ya no es la vigente. */
+  private turno = 0;
   constructor() {
     super('Puerto');
   }
@@ -36,6 +38,8 @@ export class PuertoScene extends Phaser.Scene {
       return '';
     };
     let vista: Awaited<ReturnType<typeof abrirPuerto>>;
+    const turno = ++this.turno;
+    this.events.once('shutdown', () => this.turno++);
     try {
       const modulo = await import('../puerto/vista');
       vista = await modulo.abrirPuerto(
@@ -74,6 +78,10 @@ export class PuertoScene extends Phaser.Scene {
         ?.objects.find((o) => o.name === 'pueblo');
       const entrada = datos.entrada ?? { x: puntoPueblo!.x!, y: puntoPueblo!.y! };
       this.scene.start('Detail', { mapaId: 'pueblo', retorno: { islaId, ...entrada } });
+      return;
+    }
+    if (turno !== this.turno) {
+      vista.destruir();
       return;
     }
     const dialogo = (evento: { clave: string; alTerminar?: () => void }) => {

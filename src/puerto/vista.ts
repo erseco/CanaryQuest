@@ -29,7 +29,7 @@ export async function abrirPuerto(
   const barrio = PUEBLOS[pueblo];
   const { plano, salidas } = barrio;
   /** Con playa o tercer barrio, la cámara, las sombras y el horizonte abarcan más. */
-  const grande = !!plano.playa || plano.orillas.length > 2;
+  const grande = !!plano.playa || plano.orillas.length > 2 || !!plano.suelos;
   const recursos = await cargarRecursos(pueblo);
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
@@ -61,6 +61,12 @@ export async function abrirPuerto(
     // Más lejos en la misma dirección, para que la playa también quede delante del foco.
     sol.position.set(-41.6, 33.8, 20.8);
     Object.assign(sol.shadow.camera, { left: -42, right: 42, top: 26, bottom: -26, far: 140 });
+    if (plano.suelos) {
+      // Un trazado propio se extiende mar adentro: el foco apunta al centro de la bahía.
+      sol.target.position.set(4, 0, 12);
+      sol.position.set(-37.6, 33.8, 32.8);
+      Object.assign(sol.shadow.camera, { left: -50, right: 50, top: 38, bottom: -38, far: 170 });
+    }
     sol.shadow.mapSize.set(2048, 2048);
   } else {
     sol.position.set(-16, 13, 8);
@@ -70,7 +76,7 @@ export async function abrirPuerto(
   sol.shadow.normalBias = 0.035;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = T.PCFShadowMap;
-  escena.add(ambiente, sol);
+  escena.add(ambiente, sol, sol.target);
   const exterior = new T.Group();
   escena.add(exterior);
   const habitacion = crearInterior();
@@ -105,7 +111,11 @@ export async function abrirPuerto(
         tiempo: { value: 0 },
         oscuridad: { value: 0 },
         orilla: {
-          value: grande ? new T.Vector2(-31, Math.max(...plano.orillas) + 8.1) : new T.Vector2(-8, 8),
+          value: plano.suelos
+            ? new T.Vector2(-32, 14)
+            : grande
+              ? new T.Vector2(-31, Math.max(...plano.orillas) + 8.1)
+              : new T.Vector2(-8, 8),
         },
       },
       vertexShader: `uniform mat4 textureMatrix; varying vec4 reflejado; varying vec3 pos; void main(){reflejado=textureMatrix*vec4(position,1.);vec4 p=modelMatrix*vec4(position,1.);pos=p.xyz;gl_Position=projectionMatrix*viewMatrix*p;}`,

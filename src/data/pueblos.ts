@@ -17,6 +17,21 @@ export interface Plano {
   lava?: boolean;
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
+  /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
+  sitio?: 'restinga';
+  /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
+  estilo?: 'blanca';
+  /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
+  suelos?: Suelo[];
+  /** Recintos cerrados dentro de esas zonas: naves, vallados. */
+  vallas?: [number, number, number, number][];
+}
+export interface Suelo {
+  r: [number, number, number, number];
+  /** Altura del suelo; 0 si se omite. */
+  y?: number;
+  /** Pendiente con la que baja hacia el mar a partir del borde de la avenida (z = 3,7). */
+  baja?: number;
 }
 /** Pueblos vecinos a los que se sale por mar o por carretera. */
 export interface Salidas {
@@ -140,36 +155,57 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
     ],
     rincones: [],
   },
-  // Pueblo pesquero del sur de El Hierro: un muelle corrido, sin canal, sobre lava negra.
+  // El Hierro. Trazado sobre la ortofoto PNOA: avenida al norte, playa negra y pantalán en el
+  // fondo de la bahía, muelle viejo al oeste, varadero al este y el dique rompeolas cerrando el sur.
   'la-restinga': {
     nombre: 'La Restinga',
     isla: 'el-hierro',
     poi: 'la-restinga',
     plano: {
-      orillas: [-6.7, 6.7],
+      orillas: [],
       canales: [],
-      espigon: 11.2,
       lava: true,
+      sitio: 'restinga',
+      estilo: 'blanca',
       palmeras: [
-        [-11.7, 0.2, 3.6],
-        [-0.9, -5.2, 4.4],
-        [11.4, -5.6, 4],
+        [-24, 1.9, 3.8],
+        [-12.6, 2, 4.2],
+        [-1.4, 2.1, 3.6],
+        [10.8, 1.4, 4],
+      ],
+      suelos: [
+        { r: [-29.5, -3.1, 13, 3.4] }, // avenida marítima
+        { r: [3, 3.4, 12.7, 8.6], baja: 0.141 }, // playa de arena negra
+        { r: [0.1, 3.4, 2.3, 9.2], baja: 0.141 }, // rampa
+        { r: [0.6, 9.2, 1.8, 19.8], y: -0.6 }, // pantalán flotante
+        { r: [-3.5, 12.5, 0.6, 13.5], y: -0.6 }, // su brazo
+        { r: [-19, 3.4, -17, 17.6] }, // muelle viejo
+        { r: [13, -3.1, 36.5, 26.3] }, // explanada del puerto
+        { r: [-26.5, 26.3, 36.5, 28.7] }, // dique rompeolas, hasta las casetas del muro
+      ],
+      vallas: [
+        [19.5, 3, 34.5, 14.5], // varadero
+        [23.8, 16.3, 34.2, 21.7], // nave de la cofradía
       ],
     },
     salidas: {},
     casas: [
-      casa('Cofradía de pescadores', -9.6, -2.6, 3.6, 2.6, 3.1, '#1f6f8b'),
-      casa('Centro de buceo', -5.2, -2.7, 3.2, 3.4, 3.1, '#2a8a7a'),
-      casa('Casa del patrón', -0.9, -2.6, 3, 2.5, 3, '#c27a45'),
-      casa('Casa de las redes', 3.1, -2.7, 3, 3.3, 3.1, '#6d8f5e'),
-      casa('Bar del muelle', 7.3, -2.6, 3.4, 2.6, 3, '#1f6f8b'),
-      casa('Casa del volcán', -8.5, -7.7, 3.4, 2.8, 2.7, '#8a6a52'),
-      casa('Casa de la lapa', -3.6, -7.8, 3.2, 3.5, 2.7, '#2a8a7a'),
-      casa('Casa del mar de las Calmas', 1.6, -7.7, 3.4, 2.7, 2.6, '#1f6f8b'),
-      casa('Casa del faro viejo', 7.4, -7.8, 3.3, 3.4, 2.8, '#b3703f'),
+      casa('Bar de la avenida', -27, -4.8, 4.2, 3.6, 3.2, '#2f6f9f'),
+      casa('Apartamentos del faro', -22, -4.9, 4.6, 5.3, 3.4, '#3c8d7a'),
+      casa('Centro de buceo', -16.6, -4.8, 4.2, 3.7, 3.2, '#1f6f8b'),
+      casa('Casa del patrón', -11.8, -4.7, 3.6, 2.6, 3, '#b8863b'),
+      casa('Tasca del mar de las Calmas', -6.9, -4.9, 4.6, 5.2, 3.4, '#2f6f9f'),
+      casa('Pescadería', -1.9, -4.8, 3.8, 3.6, 3.2, '#3c8d7a'),
+      casa('Apartamentos de la playa', 3.4, -4.9, 4.8, 5.3, 3.4, '#1f6f8b'),
+      casa('Casa de las lapas', 8.6, -4.7, 3.8, 2.7, 3, '#b8863b'),
+      casa('Cofradía de pescadores', 19.5, 22.6, 4.2, 2.8, 3.2, '#2f6f9f'),
     ],
     rincones: [
-      { nombre: 'Pantalán de los pescadores', x: 11.2, z: 12.2, texto: 'Las barcas cabecean amarradas al pantalán. Más allá del faro se abre el mar de las Calmas.' },
+      { nombre: 'Playa de La Restinga', x: 8, z: 6, texto: 'Arena negra de volcán, al abrigo del dique. El agua aquí casi no se mueve.' },
+      { nombre: 'Pantalán', x: 1.2, z: 18.6, texto: 'Las barcas de pesca y las zodiacs de los buceadores se mecen amarradas a los dos lados.' },
+      { nombre: 'Muelle viejo', x: -18, z: 16.6, texto: 'El primer abrigo que tuvo el pueblo, antes de que levantaran el dique.' },
+      { nombre: 'Varadero', x: 17.6, z: 9, texto: 'Aquí sacan los barcos a tierra para carenarlos. El pórtico azul los levanta del agua.' },
+      { nombre: 'Dique rompeolas', x: -21, z: 28, texto: 'Al otro lado del muro rompe el mar abierto. Frente a esta punta nació en 2011 el volcán Tagoro.' },
     ],
   },
 };
