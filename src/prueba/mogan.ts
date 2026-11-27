@@ -23,7 +23,7 @@ boton.onclick = () => {
   ruta=[]; refrescar();
 };
 async function iniciar() {
-  const babylon = location.search.includes('motor=babylon');
+  const babylon = new URLSearchParams(location.search).get('motor') !== 'playcanvas';
   const motor = babylon ? await import('./babylon') : await import('./playcanvas');
   const vista = await motor.abrir(canvas, import.meta.env.BASE_URL+'assets/puerto/mogan.glb');
   document.title = 'Mogán · '+(babylon?'Babylon.js':'PlayCanvas');

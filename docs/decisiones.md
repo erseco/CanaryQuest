@@ -110,3 +110,5 @@ Three.js para comparar la ejecución; queda por comparar la edición de un puebl
 y medir la carga y la fluidez en Android e iOS. Godot sigue siendo candidato
 si las versiones instalables pasan a ser prioritarias. Esta prueba se distribuye
 como página independiente del juego.
+
+Para la aventura 3D se elige Babylon.js. La entrada mogan.html abre este motor por defecto. El puerto incorpora agua animada y sombras solares. La comparación anterior sigue disponible con ?motor=playcanvas.
