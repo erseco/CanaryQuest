@@ -18,7 +18,7 @@ Añade `?debug=1` a la URL para ver los polígonos de colisión de las islas.
 
 ## Stack (decisiones cerradas — no cambiar sin leer docs/decisiones.md)
 
-- **Phaser 4 + TypeScript strict + Vite**. Sin más librerías de juego.
+- **Phaser 4 + TypeScript strict + Vite** para el juego 2D existente. **Babylon.js** es el motor elegido para la aventura 3D que se está incorporando; no iniciar nuevas escenas 3D en Three.js ni PlayCanvas.
 - **Tiles de 32 px** para los mapas de detalle (pueblos/mazmorras).
 - **Mapas híbridos**: las islas son ilustraciones (JPG) con polígonos de
   colisión definidos en formato Tiled; los pueblos/mazmorras son tilemaps
@@ -51,6 +51,7 @@ tests/                   # Vitest para sistemas puros
 5. Textos de juego en `src/data/dialogos.ts` — nunca hardcodeados en escenas.
 6. Al añadir assets, registrar origen y licencia en `docs/creditos.md`.
 7. No añadir atribuciones de IA en commits ni código.
+8. Para las visitas 3D, priorizar una apariencia cálida y cuidada: luz solar dorada, sombras suaves, agua animada en puertos, arquitectura canaria reconocible y una cámara que mantenga al viajero y el lugar en cuadro. Probar los cambios en navegador y cuidar el rendimiento en móvil.
 
 ## Cómo probar el juego como agente
 
