@@ -4,7 +4,12 @@ export const PASTOR = { x: 4.5, z: 1 };
 export const INICIO = { x: -5, z: 2.8 };
 export const MUELLE = { x: -6.5, z: 3.35 };
 /** Salida por carretera hacia el otro pueblo: en Mogán queda al final del barrio del espigón. */
-export const camino = (pueblo: Pueblo) => ({ x: pueblo === 'mogan' ? 30.6 : 13.5, z: -5.3 });
+export const camino = (pueblo: Pueblo) =>
+  PUEBLOS[pueblo].carretera ?? { x: pueblo === 'mogan' ? 30.6 : 13.5, z: -5.3 };
+/** Donde se coge y se deja el barco. */
+export const muelle = (pueblo: Pueblo) => PUEBLOS[pueblo].embarcadero ?? MUELLE;
+/** Donde aparece el viajero al entrar sin venir de otro pueblo. */
+export const inicio = (pueblo: Pueblo) => PUEBLOS[pueblo].inicio ?? INICIO;
 export type PuntoPuerto = typeof INICIO;
 export const umbral = (c: CasaPuerto) => ({ x: c.x, z: c.z + c.fondo / 2 + 0.52 });
 
@@ -75,7 +80,9 @@ function tramo(a: PuntoPuerto, b: PuntoPuerto, [x0, z0, x1, z1]: Rect): [number,
 }
 /** El segmento entero se puede caminar: no toca obstáculos ni se sale del suelo. */
 function despejado(a: PuntoPuerto, b: PuntoPuerto, pueblo: Pueblo) {
-  if (!transitable(b.x, b.z, pueblo) || limites[pueblo].some((r) => tramo(a, b, r))) return false;
+  // Un pelo de holgura: rozar justo la esquina de un obstáculo también cuenta como tocarlo.
+  const roza = ([x0, z0, x1, z1]: Rect) => tramo(a, b, [x0 - 1e-6, z0 - 1e-6, x1 + 1e-6, z1 + 1e-6]);
+  if (!transitable(b.x, b.z, pueblo) || limites[pueblo].some(roza)) return false;
   const { suelos } = PUEBLOS[pueblo].plano;
   if (!suelos) return true; // el rectángulo del pueblo es convexo: bastan los extremos
   // Los tramos que pisan cada zona, puestos en fila, han de cubrir el segmento sin huecos.
@@ -140,7 +147,12 @@ export function alturaPaseo(x: number, z: number, pueblo: Pueblo = 'mogan'): num
   const { canales, playa, suelos } = PUEBLOS[pueblo].plano;
   if (suelos) {
     const s = suelos.find((s) => dentro(s.r, x, z));
-    return s ? (s.y ?? 0) - (s.baja ?? 0) * Math.max(0, z - 3.7) : 0;
+    if (!s) return 0;
+    if (s.y2 === undefined) return (s.y ?? 0) - (s.baja ?? 0) * Math.max(0, z - 3.7);
+    // Rampa: de `y` a `y2` a lo largo de su eje.
+    const [x0, z0, x1, z1] = s.r;
+    const t = s.eje === 'x' ? (x - x0) / (x1 - x0) : (z - z0) / (z1 - z0);
+    return (s.y ?? 0) + (s.y2 - (s.y ?? 0)) * t;
   }
   if (playa && x < -14.5) return z > 0 ? -0.16 * z : 0;
   if (Math.abs(z - 1) > 0.85) return 0;

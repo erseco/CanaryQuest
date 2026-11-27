@@ -6,7 +6,7 @@ import {
   alturaPaseo,
   PASTOR,
   camino,
-  MUELLE,
+  muelle,
   umbral,
   rutaPuerto,
   transitable,
@@ -30,6 +30,8 @@ export async function abrirPuerto(
   const { plano, salidas } = barrio;
   /** Con playa o tercer barrio, la cámara, las sombras y el horizonte abarcan más. */
   const grande = !!plano.playa || plano.orillas.length > 2 || !!plano.suelos;
+  /** Un lugar sin casas (un faro, unas piscinas) no es un pueblo: sus textos hablan de rincones. */
+  const textoLugares = barrio.casas.length ? guia.lugares : guia.rincones;
   const recursos = await cargarRecursos(pueblo);
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
@@ -38,7 +40,7 @@ export async function abrirPuerto(
     <div class="acciones"><button data-accion="luz" aria-label="${t.luz}">☀ ${t.dia}</button><button data-accion="mapa">${t.mapa} ↗</button>
     <details><summary aria-label="${t.controles}">?</summary><p>${t.ayuda}</p></details></div></header>
     <aside><small>${ISLAS[barrio.isla].nombre}</small><h1>${barrio.nombre}</h1></aside>
-    <select class="destinos" aria-label="${guia.lugares}"><option value="">${guia.lugares}</option></select>
+    <select class="destinos" aria-label="${textoLugares}"><option value="">${textoLugares}</option></select>
     <footer><article aria-live="polite"><small>${t.jornada}</small><h2>${t.encargo}</h2><p></p><button data-accion="accion"></button></article>
     <div class="camara"><button aria-label="${t.izquierda}" data-accion="izq">↶</button><button aria-label="${t.derecha}" data-accion="der">↷</button>
     <button aria-label="${t.lejos}" data-accion="menos">−</button><button aria-label="${t.cerca}" data-accion="mas">+</button></div></footer>`;
@@ -110,6 +112,7 @@ export async function abrirPuerto(
         textureMatrix: { value: null },
         tiempo: { value: 0 },
         oscuridad: { value: 0 },
+        costaZ: { value: plano.costa ?? 3.7 },
         orilla: {
           value: plano.suelos
             ? new T.Vector2(-32, 14)
@@ -119,10 +122,10 @@ export async function abrirPuerto(
         },
       },
       vertexShader: `uniform mat4 textureMatrix; varying vec4 reflejado; varying vec3 pos; void main(){reflejado=textureMatrix*vec4(position,1.);vec4 p=modelMatrix*vec4(position,1.);pos=p.xyz;gl_Position=projectionMatrix*viewMatrix*p;}`,
-      fragmentShader: `uniform sampler2D tDiffuse; varying vec4 reflejado; varying vec3 pos; uniform float tiempo; uniform float oscuridad; uniform vec2 orilla;
+      fragmentShader: `uniform sampler2D tDiffuse; varying vec4 reflejado; varying vec3 pos; uniform float tiempo; uniform float oscuridad; uniform vec2 orilla; uniform float costaZ;
       void main(){vec2 p=pos.xz; float a=sin(p.y*5.+sin(p.x*1.8+tiempo*.5)*.6-tiempo*.85);
         float b=sin(p.y*8.+p.x*.4+sin(p.x*3.-tiempo*.33)-tiempo);
-        float costa=exp(-max(0.,p.y-3.7)*.28)*smoothstep(orilla.x-4.,orilla.x,p.x)*(1.-smoothstep(orilla.y,orilla.y+4.,p.x));
+        float costa=exp(-max(0.,p.y-costaZ)*.28)*smoothstep(orilla.x-4.,orilla.x,p.x)*(1.-smoothstep(orilla.y,orilla.y+4.,p.x));
         vec3 c=mix(vec3(.025,.34,.39),vec3(.12,.60,.55),costa*.72+.16*sin(p.x*.18+p.y*.21));
         c+=vec3(.19,.22,.18)*smoothstep(.88,1.,a)*smoothstep(.45,.95,b);
         c=mix(c,c*vec3(.23,.34,.49),oscuridad);
@@ -142,6 +145,7 @@ export async function abrirPuerto(
   const aguaMaterial = mar.material as T.ShaderMaterial;
   mar.rotation.x = -Math.PI / 2;
   mar.position.y = -0.84;
+  mar.visible = !plano.sinMar;
   exterior.add(mar);
   // Una señal suspendida distingue al personaje con el que se puede hablar.
   const marca = new T.Mesh(new T.OctahedronGeometry(0.16), new T.MeshBasicMaterial({ color: 0xffd17c }));
@@ -214,7 +218,7 @@ export async function abrirPuerto(
     indiceBarco = lugares.length;
     const texto = porMar === 'ferry' ? guia.ferry : guia.lancha;
     carteles.push({ indice: indiceBarco, texto });
-    lugares.push({ nombre: texto, punto: MUELLE, activar: () => viajar(porMar, true) });
+    lugares.push({ nombre: texto, punto: muelle(pueblo), activar: () => viajar(porMar, true) });
   }
   if (tierra) {
     carteles.push({ indice: lugares.length, texto: PUEBLOS[tierra].nombre + ' →' });
@@ -285,9 +289,11 @@ export async function abrirPuerto(
         ? casaActual.nombre
         : pastor.visible
           ? t.encargo
-          : guia.muelle;
+          : plano.sitio
+            ? barrio.nombre
+            : guia.muelle;
     parrafo.textContent =
-      dialogo[0] ?? (casaActual ? guia.enCasa : pastor.visible ? objetivo() || t.buscar : guia.explorar);
+      dialogo[0] ?? (casaActual ? guia.enCasa : pastor.visible ? objetivo() || t.buscar : barrio.casas.length ? guia.explorar : guia.recorrer);
     accion.textContent = dialogo.length
       ? dialogo.length === 1
         ? t.cerrar
@@ -298,7 +304,7 @@ export async function abrirPuerto(
           ? lugares[i].nombre
           : pastor.visible && !objetivo()
             ? t.acercar
-            : guia.lugares;
+            : textoLugares;
     selector.disabled = !!dialogo.length;
   }
   function ir(p: PuntoPuerto, luego?: () => void) {
@@ -538,7 +544,7 @@ export async function abrirPuerto(
     });
     luz = T.MathUtils.damp(luz, casaActual ? 0 : destinoLuz, 2.8, dt);
     paisaje.color.setRGB(1, 1, 1).lerp(tinteNoche, luz);
-    for (const farol of luces) farol.intensity = luz * 11;
+    for (const farol of luces) farol.intensity = plano.sinFaroles ? 0 : luz * 11;
     cristal.emissiveIntensity = 0.2 + luz * 2.2;
     ambiente.intensity = 1.42 - luz * 1.05;
     sol.intensity = 2.45 - luz * 2.12;

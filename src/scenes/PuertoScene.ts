@@ -4,7 +4,7 @@ import type { QuestManager } from '../sistemas/QuestManager';
 import type { abrirPuerto } from '../puerto/vista';
 import type { Partida } from '../sistemas/SaveManager';
 import { PUEBLOS, type Pueblo } from '../data/pueblos';
-import { camino, MUELLE, type PuntoPuerto } from '../puerto/paseo';
+import { camino, muelle, type PuntoPuerto } from '../puerto/paseo';
 import type { Punto } from '../data/islas';
 
 export class PuertoScene extends Phaser.Scene {
@@ -56,7 +56,7 @@ export class PuertoScene extends Phaser.Scene {
             this.scene.start('TravelMap', { origen: islaId, terminal: 'gc-agaete', desdePueblo: true });
             return;
           }
-          this.scene.restart({ pueblo: destino, llegada: porMar ? MUELLE : camino(destino) });
+          this.scene.restart({ pueblo: destino, llegada: porMar ? muelle(destino) : camino(destino) });
         },
         datos.llegada,
       );

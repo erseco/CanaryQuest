@@ -57,13 +57,17 @@
 
 ## Faro de Orchilla y La Restinga
 
-Las dos visitas son maquetas originales. Las coordenadas de acceso se guardan en
-`src/data/geografia.json`. En Orchilla se representan la torre octogonal, la
-casa anexa y el malpaís. En La Restinga, el paseo, un pantalán y la dársena
-pesquera. Las distancias, las casas y los barcos se adaptan al paseo jugable.
+Las dos son maquetas originales hechas con las piezas del puerto de Mogán
+(`src/puerto/sitios/`). Su trazado sigue los recortes PNOA de
+`public/assets/visitas/`, comprimido a escala de juego. En Orchilla se
+representan la torre, la casa del farero en U, la pista que baja revolviendo
+al embarcadero y el monumento al meridiano cero. En La Restinga, la avenida
+marítima, la playa de arena negra, el pantalán, el muelle viejo, el varadero
+con su pórtico y el dique rompeolas con su escollera.
 
 - [Ficha de campo del IGN en Orchilla](https://www.ign.es/web/resources/gravimetria/absoluta/HIER_FARO.pdf) y [descripción del faro en CanariWiki](https://www3.gobiernodecanarias.org/medusa/wiki/index.php?title=Faro_de_Orchilla).
 - [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).
+- [Monumento al Meridiano Cero, El Hierro Travel](https://elhierro.travel/en/what-to-do/monumento-al-meridiano-cero) y [Embarcadero del Faro de Orchilla, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/embarcadero-del-faro-de-orchilla/).
 
 ## Paseo de Playa del Inglés
 

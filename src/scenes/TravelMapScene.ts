@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { fondoCarta } from '../atlas/carta';
 import { ISLAS, buscarTerminal, type IslaId, type Punto, type Terminal } from '../data/islas';
 import { destinosDesde, medioDe, type Destino, type MedioTransporte } from '../sistemas/viajes';
-import { MUELLE } from '../puerto/paseo';
+import { muelle } from '../puerto/paseo';
 import { PASEO } from '../data/dialogos';
 import { Musica } from '../sistemas/Musica';
 import type { Partida } from '../sistemas/SaveManager';
@@ -153,7 +153,7 @@ export class TravelMapScene extends Phaser.Scene {
   private volver(): void {
     if (this.viajando) return;
     if (this.datos.desdePueblo) {
-      this.scene.start('Puerto', { pueblo: 'agaete', llegada: MUELLE });
+      this.scene.start('Puerto', { pueblo: 'agaete', llegada: muelle('agaete') });
       return;
     }
     this.scene.start('Island', { islaId: this.datos.origen, lugar: this.origen.id });
@@ -183,7 +183,7 @@ export class TravelMapScene extends Phaser.Scene {
           const partida = this.registry.get('partida') as Partida;
           partida.islaActual = destino.isla;
           if (destino.terminal.id === 'gc-agaete') {
-            this.scene.start('Puerto', { pueblo: 'agaete', llegada: MUELLE });
+            this.scene.start('Puerto', { pueblo: 'agaete', llegada: muelle('agaete') });
             return;
           }
           // Se desembarca en la terminal de llegada

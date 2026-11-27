@@ -5,6 +5,7 @@ import type { cargarRecursos } from './recursos';
 import { PUEBLOS, type Pueblo } from '../data/pueblos';
 import { INICIO, PASTOR, alturaPaseo } from './paseo';
 import { trazarRestinga } from './sitios/restinga';
+import { trazarOrchilla } from './sitios/orchilla';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -66,7 +67,7 @@ export function crearMaqueta(
     roughness: 1,
     side: T.DoubleSide,
   });
-  const { plano } = PUEBLOS[pueblo];
+  const { plano, inicio = INICIO } = PUEBLOS[pueblo];
   // Extremos del muelle: el relieve del fondo, el matorral y las rocas de la costa los acompañan.
   const oeste = plano.playa ? -31 : Math.min(...plano.orillas) - 6.7,
     este = Math.max(...plano.orillas) + 6.7,
@@ -358,21 +359,22 @@ export function crearMaqueta(
   }
   for (const c of PUEBLOS[pueblo].casas) fachadas.push(casa(c.x, c.z, c.ancho, c.alto, c.fondo, c.color));
   let sitio: Sitio | undefined;
-  if (plano.sitio === 'restinga')
-    sitio = trazarRestinga({
-      pieza,
-      superficie,
-      casa,
-      farol,
-      maceta,
-      relieve,
-      azar,
-      ventanas,
-      formas: { caja, esfera, poste, piramide },
-      materiales: { cal, adoquin, basalto, teja },
-      blanco,
-      madera,
-    });
+  const taller: Taller = {
+    pieza,
+    superficie,
+    casa,
+    farol,
+    maceta,
+    relieve,
+    azar,
+    ventanas,
+    formas: { caja, esfera, poste, piramide },
+    materiales: { cal, adoquin, basalto, teja },
+    blanco,
+    madera,
+  };
+  if (plano.sitio === 'restinga') sitio = trazarRestinga(taller);
+  else if (plano.sitio === 'orchilla') sitio = trazarOrchilla(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {
@@ -723,7 +725,7 @@ export function crearMaqueta(
       escena.add(barco);
     }
   }
-  const jugador = persona(INICIO.x, INICIO.z, false),
+  const jugador = persona(inicio.x, inicio.z, false),
     pastor = persona(PASTOR.x, PASTOR.z, true);
   escena.add(jugador, pastor);
   for (const geo of [caja, esfera, poste, piramide]) geo.dispose();

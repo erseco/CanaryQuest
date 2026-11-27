@@ -1,6 +1,6 @@
 import type { IslaId } from './islas';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -18,18 +18,28 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga';
+  sitio?: 'restinga' | 'orchilla';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
   suelos?: Suelo[];
   /** Recintos cerrados dentro de esas zonas: naves, vallados. */
   vallas?: [number, number, number, number][];
+  /** z de la orilla, donde el agua clarea; 3,7 (el borde del muelle) si se omite. */
+  costa?: number;
+  /** Lugar sin alumbrado: de noche no se encienden farolas. */
+  sinFaroles?: boolean;
+  /** Lugar de interior (una plaza, un casco viejo): no se dibuja el agua del puerto. */
+  sinMar?: boolean;
 }
 export interface Suelo {
   r: [number, number, number, number];
-  /** Altura del suelo; 0 si se omite. */
+  /** Altura del suelo; 0 si se omite. Con `y2`, la del borde norte u oeste de una rampa. */
   y?: number;
+  /** Altura en el borde opuesto: el suelo sube o baja de uno a otro a lo largo de `eje`. */
+  y2?: number;
+  /** Eje de la rampa: 'z' (de norte a sur) si se omite. */
+  eje?: 'x' | 'z';
   /** Pendiente con la que baja hacia el mar a partir del borde de la avenida (z = 3,7). */
   baja?: number;
 }
@@ -74,6 +84,12 @@ export interface DatosPueblo {
   salidas: Salidas;
   casas: CasaPuerto[];
   rincones: Rincon[];
+  /** Dónde aparece el viajero; junto al embarcadero si se omite. */
+  inicio?: { x: number; z: number };
+  /** Punto del muelle donde se coge y se deja el barco de `salidas.mar`. */
+  embarcadero?: { x: number; z: number };
+  /** Punto por el que se sale por carretera hacia `salidas.tierra`, y se llega desde allí. */
+  carretera?: { x: number; z: number };
 }
 export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
   mogan: {
@@ -206,6 +222,45 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Muelle viejo', x: -18, z: 16.6, texto: 'El primer abrigo que tuvo el pueblo, antes de que levantaran el dique.' },
       { nombre: 'Varadero', x: 17.6, z: 9, texto: 'Aquí sacan los barcos a tierra para carenarlos. El pórtico azul los levanta del agua.' },
       { nombre: 'Dique rompeolas', x: -21, z: 28, texto: 'Al otro lado del muro rompe el mar abierto. Frente a esta punta nació en 2011 el volcán Tagoro.' },
+    ],
+  },
+  // El Hierro, punta oeste. El faro sobre el malpaís, la pista que baja al embarcadero por el
+  // que llegó su piedra y la senda al monumento del antiguo meridiano cero.
+  orchilla: {
+    nombre: 'Faro de Orchilla',
+    isla: 'el-hierro',
+    poi: 'orchilla',
+    plano: {
+      orillas: [],
+      canales: [],
+      lava: true,
+      sitio: 'orchilla',
+      palmeras: [],
+      costa: 12,
+      sinFaroles: true,
+      suelos: [
+        { r: [-9, -13, 9, -5], y: 3.2 }, // explanada del faro
+        { r: [6, -5, 9, 1], y: 3.2, y2: 2 }, // la pista baja hacia el sur
+        { r: [-8, 1, 9, 4], y: 1, y2: 2, eje: 'x' }, // revuelve al oeste
+        { r: [-11, 1, -8, 9], y: 1, y2: 0.3 }, // y vuelve a bajar
+        { r: [-11, 9, 2, 12], y: 0.3 }, // tramo de costa
+        { r: [-2, 12, 2, 17], y: 0.3 }, // embarcadero
+        { r: [-20, -10, -9, -7.5], y: 2.2, y2: 3.2, eje: 'x' }, // senda al monumento
+        { r: [-24, -11.5, -20, -6], y: 2.2 }, // plazoleta del meridiano
+      ],
+      vallas: [
+        [-6.3, -10.9, -2.7, -7.3], // torre del faro
+        [-2, -12.7, 7.3, -6.4], // casa del farero
+        [-22.9, -9.6, -21.1, -7.8], // monolito
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 8, z: -5.6 },
+    rincones: [
+      { nombre: 'Faro de Orchilla', x: -7.4, z: -6, texto: 'Piedra gris de cantería sobre la lava. Desde 1933 es la última luz de España hacia poniente.' },
+      { nombre: 'Monumento al Meridiano Cero', x: -20.6, z: -8.7, texto: 'Por aquí pasó durante siglos el meridiano cero de los mapas, antes de que se lo llevaran a Greenwich.' },
+      { nombre: 'Embarcadero de Orchilla', x: 0, z: 16, texto: 'Por este muellito desembarcaron la piedra y la linterna del faro. Hoy el agua quieta invita a bañarse.' },
     ],
   },
 };

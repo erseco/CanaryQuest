@@ -23,14 +23,19 @@ describe('paseo de Mogán', () => {
 });
 
 import { PUEBLOS } from '../src/data/pueblos';
-import { camino, MUELLE, umbral } from '../src/puerto/paseo';
+import { camino, inicio, muelle, umbral } from '../src/puerto/paseo';
 import { destinosDesde } from '../src/sistemas/viajes';
 import { sueloInterior } from '../src/puerto/interior';
 for (const pueblo of Object.keys(PUEBLOS) as (keyof typeof PUEBLOS)[]) {
   it('comunica todas las puertas, el camino y el embarcadero de ' + pueblo, () => {
     const { casas, rincones, salidas } = PUEBLOS[pueblo];
-    const destinos = [...casas.map(umbral), ...rincones, ...(salidas.tierra ? [camino(pueblo)] : []), MUELLE];
-    let origen = INICIO;
+    const destinos = [
+      ...casas.map(umbral),
+      ...rincones,
+      ...(salidas.tierra ? [camino(pueblo)] : []),
+      ...(salidas.mar ? [muelle(pueblo)] : []),
+    ];
+    let origen = inicio(pueblo);
     for (const destino of destinos) {
       const ruta = rutaPuerto(origen, destino, pueblo);
       expect(ruta.at(-1)).toEqual(destino);

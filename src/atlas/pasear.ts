@@ -5,7 +5,6 @@ import { maspalomas } from './maspalomas';
 import { MASPALOMAS } from '../data/dialogos';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { Sitio } from './carta';
-import { extremo, caminoExtremo } from './extremos';
 import { referencia, maquetaVisita } from './maquetas';
 import { paseable } from './recintos';
 import { CARTA, VISITAS } from '../data/dialogos';
@@ -20,8 +19,7 @@ export async function pasear(
   const caleta = sitio === 'la-caleta',
     ficha = VISITAS[sitio];
   const renderer = new T.WebGLRenderer({ antialias: true });
-  const nuevo = sitio === 'orchilla';
-  const maqueta = await (sitio==='dunas' ? maspalomas() : nuevo ? extremo(sitio) : maquetaVisita(caleta)).catch((error) => {
+  const maqueta = await (sitio==='dunas' ? maspalomas() : maquetaVisita(caleta)).catch((error) => {
     renderer.dispose();
     renderer.forceContextLoss();
     throw error;
@@ -31,7 +29,7 @@ export async function pasear(
   const root = document.createElement('section');
   root.className = 'puerto visita';
   root.innerHTML = `<header><span class="marca">CanaryQuest</span><div class="acciones"><button data-carta>${CARTA.titulo}</button><button data-isla>${CARTA.isla}</button></div></header>
-  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p>${nuevo ? '' : '<small>'+CARTA.ortofoto+'</small>'}${sitio==='dunas' ? '<button data-ciudad hidden>'+MASPALOMAS.sendero+' ↗</button>' : sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
+  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p><small>${CARTA.ortofoto}</small>${sitio==='dunas' ? '<button data-ciudad hidden>'+MASPALOMAS.sendero+' ↗</button>' : sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
   root.prepend(renderer.domElement);
   document.body.append(root);
   const canvas = renderer.domElement;
@@ -53,7 +51,7 @@ export async function pasear(
   camara.position.set(...((caleta ? [13, 20, 22] : [4, 12, 25]) as [number, number, number]));
   const jugador=persona(0,0,false);
   const sendero=root.querySelector<HTMLButtonElement>('[data-ciudad]');
-  const inicio = sitio==='dunas' ? [inicioDunas.x,inicioDunas.z] : nuevo ? [0, sitio === 'orchilla' ? 5 : 0] : geo.mundo(caleta ? [385, 328] : [368, 308]);
+  const inicio = sitio==='dunas' ? [inicioDunas.x,inicioDunas.z] : geo.mundo(caleta ? [385, 328] : [368, 308]);
   jugador.position.set(inicio[0], 0.14, inicio[1]);
   scene.add(jugador);
   if(sitio==='dunas'){orbita.target.set(inicioDunas.x,0,inicioDunas.z);camara.position.set(inicioDunas.x+8,12,inicioDunas.z-23)}
@@ -108,7 +106,7 @@ export async function pasear(
     },
     op,
   );
-  const libre = (x: number, z: number) => sitio==='dunas' ? caminoDunas(x,z) : nuevo ? caminoExtremo(sitio,x,z) : paseable(caleta, geo.foto(x, z));
+  const libre = (x: number, z: number) => sitio==='dunas' ? caminoDunas(x,z) : paseable(caleta, geo.foto(x, z));
   canvas.addEventListener(
     'pointerup',
     (e) => {

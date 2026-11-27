@@ -152,6 +152,7 @@ export const PASEO = {
   puerta: 'Volver a la calle', muelle:'Embarcadero', camino:'Camino de la costa',
   ferry:'Embarcar hacia Tenerife', lancha:'Tomar la lancha a Agaete', ir:'Viajar a',
   explorar:'Explora el pueblo o elige un lugar para caminar hasta él.',
+  rincones:'Rincones', recorrer:'Recorre el lugar o elige un rincón para caminar hasta él.',
   enCasa:'Puedes recorrer la habitación y volver al pueblo por la puerta.',
   volverMuelle:'Volver al embarcadero',
 };
