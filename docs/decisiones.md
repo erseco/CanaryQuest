@@ -95,3 +95,18 @@ ellos. Las ilustraciones y tilemaps del ADR-3 representan una sola vista.
 PuertoScene carga Three.js bajo demanda para dibujar este lugar en volumen.
 Las misiones, el guardado y el resto de las islas siguen en el mismo juego.
 Cuando el navegador carece de WebGL 2, se abre el mapa Tiled del pueblo.
+
+## Prueba comparativa del puerto de Mogán
+
+Abrir `mogan.html` con el servidor de Vite. El selector carga PlayCanvas o
+Babylon.js. Ambos usan el mismo GLB con los edificios, el viajero, los barcos y
+el interior originales. La cámara sigue al personaje y los dos motores usan el
+mismo cálculo de rutas. Tocar el paseo para caminar. Aceptar el encargo en el
+muelle, entrar en la casa del pescador, recoger la red y volver al muelle.
+
+PlayCanvas ofrece un editor visual para montar nuevos pueblos. Babylon.js encaja
+con el flujo de TypeScript y Git del proyecto. La escena se importó desde
+Three.js para comparar la ejecución; queda por comparar la edición de un pueblo
+y medir la carga y la fluidez en Android e iOS. Godot sigue siendo candidato
+si las versiones instalables pasan a ser prioritarias. Esta prueba se distribuye
+como página independiente del juego.

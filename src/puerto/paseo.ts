@@ -91,3 +91,12 @@ export function rutaPuerto(
 export function alturaPaseo(x: number, z: number): number {
   return Math.abs(z - 1) <= 0.85 && Math.abs(x) < 2.2 ? 0.38 * Math.cos((x * Math.PI) / 4.4) : 0;
 }
+
+export function sueloInterior(x: number, z: number) {
+  return (
+    Math.abs(x) <= 3.65 &&
+    Math.abs(z) <= 2.8 &&
+    !(x > 1.8 && z > -1.7 && z < 0.6) &&
+    !(x < -2.1 && z < 0)
+  );
+}

@@ -14,7 +14,10 @@
     "fix": "eslint . --fix"
   },
   "dependencies": {
+    "@babylonjs/core": "^9.38.0",
+    "@babylonjs/loaders": "^9.38.0",
     "phaser": "^4.2.1",
+    "playcanvas": "^2.24.3",
     "three": "^0.184.0"
   },
   "devDependencies": {

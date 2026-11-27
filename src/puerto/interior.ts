@@ -83,11 +83,4 @@ export function crearInterior() {
   };
 }
 
-export function sueloInterior(x: number, z: number) {
-  return (
-    Math.abs(x) <= 3.65 &&
-    Math.abs(z) <= 2.8 &&
-    !(x > 1.8 && z > -1.7 && z < 0.6) &&
-    !(x < -2.1 && z < 0)
-  );
-}
+export { sueloInterior } from './paseo';
