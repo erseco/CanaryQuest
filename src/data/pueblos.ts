@@ -1,6 +1,6 @@
 import type { IslaId } from './islas';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -18,7 +18,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla';
+  sitio?: 'restinga' | 'orchilla' | 'valverde';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -31,6 +31,13 @@ export interface Plano {
   sinFaroles?: boolean;
   /** Lugar de interior (una plaza, un casco viejo): no se dibuja el agua del puerto. */
   sinMar?: boolean;
+  /**
+   * Lugar en cuesta: la cámara mira más desde arriba y sigue de cerca al viajero, también en altura.
+   * `desnivel` baja el horizonte pintado: el mar queda lejos, abajo.
+   */
+  cuesta?: { desnivel: number };
+  /** Bruma propia: distancia a la que empieza la niebla y a la que ya lo cubre todo. */
+  bruma?: [number, number];
 }
 export interface Suelo {
   r: [number, number, number, number];
@@ -261,6 +268,61 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Faro de Orchilla', x: -7.4, z: -6, texto: 'Piedra gris de cantería sobre la lava. Desde 1933 es la última luz de España hacia poniente.' },
       { nombre: 'Monumento al Meridiano Cero', x: -20.6, z: -8.7, texto: 'Por aquí pasó durante siglos el meridiano cero de los mapas, antes de que se lo llevaran a Greenwich.' },
       { nombre: 'Embarcadero de Orchilla', x: 0, z: 16, texto: 'Por este muellito desembarcaron la piedra y la linterna del faro. Hoy el agua quieta invita a bañarse.' },
+    ],
+  },
+  // El Hierro, la capital: un pueblo de interior a unos 600 m, en una ladera que mira al nordeste,
+  // hacia el mar lejano. Trazado sobre la ortofoto PNOA y OpenStreetMap, comprimido: la calle
+  // principal sube de norte a sur, la iglesia y su plaza se asoman al barranco por el este y la
+  // calle de las Quinteras trepa hacia el oeste.
+  valverde: {
+    nombre: 'Valverde',
+    isla: 'el-hierro',
+    poi: 'valverde',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'valverde',
+      sinMar: true,
+      sinFaroles: true,
+      cuesta: { desnivel: 22 },
+      bruma: [30, 120],
+      palmeras: [
+        [-9.3, 9.3, 4.4],
+        [0.3, 9.3, 3.9],
+      ],
+      suelos: [
+        { r: [-6, -9, 2, 3] }, // atrio de la iglesia
+        { r: [-10, 3, 1, 10] }, // plaza del Ayuntamiento
+        { r: [2, 0.6, 17, 3] }, // paseo del mirador, al pie de la iglesia
+        { r: [-12.5, -4, -6, -1] }, // calle de la iglesia
+        { r: [-16, -4, -12.5, -1] }, // cruce frente al Cabildo
+        { r: [-16, -24, -12.5, -4], y: -3.2, y2: 0 }, // calle principal, que baja al norte hacia El Cabo
+        { r: [-16, -1, -12.5, 14], y: 0, y2: 2.4 }, // calle principal, que sube al sur
+        { r: [-12.5, 6, -10, 8], y: 1.28, y2: 0, eje: 'x' }, // escalinata de la plaza
+        { r: [-16, 14, -12.5, 17.5], y: 2.4 }, // cruce alto
+        { r: [-28, 14, -16, 17.5], y: 4.4, y2: 2.4, eje: 'x' }, // calle de las Quinteras
+        { r: [-36, 12, -28, 17.5], y: 4.4 }, // plazoleta de las Quinteras
+        { r: [-12.5, -20, -0.5, -17.5], y: -2.36 }, // calle baja
+        { r: [-3, -17.5, -0.5, -9], y: -2.36, y2: 0 }, // callejón que sube a la plaza
+      ],
+      vallas: [
+        [-5.1, -8, -3.9, -6.8], // laureles del atrio
+        [0, -8, 1.2, -6.8],
+        [-9, 3.4, -7.8, 4.6], // laureles de la plaza
+        [-1.2, 3.4, 0, 4.6],
+        [-9.7, 8.9, -8.9, 9.7], // palmeras
+        [-0.1, 8.9, 0.7, 9.7],
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: -3.5, z: -1.5 },
+    rincones: [
+      { nombre: 'Iglesia de la Concepción', x: -1.2, z: -3, texto: 'Cal en los muros y cantería en el arco y las esquinas. Desde la galería de la torre se vigilaba el mar por si asomaban velas piratas.' },
+      { nombre: 'Plaza y Ayuntamiento', x: -4.5, z: 8.4, texto: 'Frente a la iglesia, la casa consistorial y su balcón de madera. La levantaron en piedra después del incendio de 1899, que se llevó el archivo de la villa.' },
+      { nombre: 'Cabildo de El Hierro', x: -14.2, z: -7.6, texto: 'Aquí se gobierna la isla. Valverde es la única capital canaria que vive de espaldas al mar, a salvo de los piratas.' },
+      { nombre: 'Casa de las Quinteras', x: -32, z: 13.6, texto: 'Una casa de familia convertida en centro etnográfico: el telar, la fragua, la loza y los aperos del campo herreño.' },
+      { nombre: 'Mirador del barranco', x: 16, z: 1.8, texto: 'Bajo la plaza se abre el barranco. Cuando levanta la bruma se ve el mar del nordeste y, en los días claros, La Gomera.' },
     ],
   },
 };

@@ -69,6 +69,24 @@ con su pórtico y el dique rompeolas con su escollera.
 - [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).
 - [Monumento al Meridiano Cero, El Hierro Travel](https://elhierro.travel/en/what-to-do/monumento-al-meridiano-cero) y [Embarcadero del Faro de Orchilla, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/embarcadero-del-faro-de-orchilla/).
 
+## Valverde
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/valverde.ts`, sin
+assets nuevos. El trazado (calle Doctor Quintero Magdaleno de norte a sur, la
+iglesia y su plaza al borde del barranco, el Ayuntamiento al sur de la plaza,
+el Cabildo y la casa de las Quinteras hacia poniente) se tomó de un recorte de
+la ortofoto PNOA y de las posiciones de OpenStreetMap, y se comprimió a escala
+de juego. Para que las fachadas se vean desde la cámara, el Cabildo pasa a la
+acera de la iglesia y la casa de las Quinteras mira al sur. El recorte PNOA, de
+(−17.9180, 27.8050) a (−17.9124, 27.8090), se usó solo como consulta y no está
+en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
+- Posiciones de la iglesia, el Ayuntamiento, el Cabildo y la casa de las Quinteras: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API Overpass.
+- [Valverde (El Hierro), Hispanopedia](https://es.hispanopedia.com/wiki/Valverde_(El_Hierro)): fachada de cantería con arco de medio punto, campanario octogonal con cúpula e imagen de la Virgen, y casas consistoriales de piedra levantadas tras el incendio de 1899.
+- [Iglesia de Nuestra Señora de la Concepción, El Hierro Travel](https://elhierro.travel/en/museums-and-places-of-interest/el-hierro/iglesia-de-nuestra-senora-de-la-concepcion/) y [Lonely Planet](https://www.lonelyplanet.com/points-of-interest/iglesia-de-santa-maria-de-la-concepcion/1462646): torre con mirador en lo alto.
+- [La villa histórica de Valverde](https://www.hellocanaryislands.com/places-full-of-charm/el-hierro/the-historical-town-of-valverde/) y [Centro Etnográfico Casa de Las Quinteras](https://www.hellocanaryislands.com/museums-and-places-of-interest/el-hierro/centro-etnografico-casa-de-las-quinteras/), Hello Canary Islands.
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del

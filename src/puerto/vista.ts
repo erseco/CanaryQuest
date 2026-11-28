@@ -55,7 +55,7 @@ export async function abrirPuerto(
     noche = new T.Color('#344e70');
   const cielo = new T.Color();
   escena.background = cielo;
-  escena.fog = new T.Fog(cielo, grande ? 44 : 26, grande ? 150 : 68);
+  escena.fog = new T.Fog(cielo, plano.bruma?.[0] ?? (grande ? 44 : 26), plano.bruma?.[1] ?? (grande ? 150 : 68));
   const ambiente = new T.HemisphereLight(0xffedd4, 0x8199ae, 1.5);
   const sol = new T.DirectionalLight(0xffdcaa, 2.4);
   sol.castShadow = true;
@@ -86,7 +86,7 @@ export async function abrirPuerto(
   const paisaje = new T.MeshBasicMaterial({ map: recursos.horizonte, side: T.BackSide, fog: false });
   const horizonte = new T.Mesh(new T.CylinderGeometry(50, 50, 44, 96, 1, true), paisaje);
   horizonte.scale.setScalar(grande ? 1.6 : 1);
-  horizonte.position.y = grande ? 24 : 15;
+  horizonte.position.y = (grande ? 24 : 15) - (plano.cuesta?.desnivel ?? 0);
   horizonte.rotation.y = -0.82;
   exterior.add(horizonte);
   const luces = [-8.5, -3, 3, 8.5].map((x) => {
@@ -554,18 +554,24 @@ export async function abrirPuerto(
     aguaMaterial.uniforms.oscuridad.value = luz;
     if(casaActual)angulo=T.MathUtils.clamp(angulo,-0.85,0.85);
     const radio = (casaActual ? distancia/3 : distancia) * (camara.aspect < 1 ? 1.13 : 1);
+    // En un lugar en cuesta la cámara va pegada al viajero y sube y baja con la calle.
+    const cuesta = !casaActual && !!plano.cuesta;
     centro.x = T.MathUtils.damp(
       centro.x,
-      casaActual ? pos.x * 0.2 : pos.x * (grande ? 0.86 : camara.aspect < 1 ? 0.78 : 0.5),
+      casaActual ? pos.x * 0.2 : cuesta ? pos.x : pos.x * (grande ? 0.86 : camara.aspect < 1 ? 0.78 : 0.5),
       5,
       dt,
     );
-    centro.z = T.MathUtils.damp(centro.z, casaActual ? 0 : pos.z * 0.55 - 2.5, 5, dt);
-    centro.y = casaActual ? 0.75 : 2.2;
+    centro.z = T.MathUtils.damp(centro.z, casaActual ? 0 : cuesta ? pos.z : pos.z * 0.55 - 2.5, 5, dt);
+    centro.y = casaActual
+      ? 0.75
+      : cuesta
+        ? T.MathUtils.damp(centro.y, 5 + alturaPaseo(pos.x, pos.z, pueblo), 5, dt)
+        : 2.2;
     const giro = angulo;
     const elevacion = casaActual
       ? 0.77
-      : 0.32 + Math.max(0, -Math.cos(giro)) * 0.58 + Math.max(0, -pos.z) * 0.09;
+      : (cuesta ? 0.54 : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
     camara.position.set(
       centro.x + Math.sin(giro) * radio,
       centro.y + radio * elevacion,

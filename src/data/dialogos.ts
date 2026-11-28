@@ -179,4 +179,8 @@ export const VISITAS = {
     nombre: 'Las Palmas de Gran Canaria', zona: 'Vegueta · Gran Canaria',
     descripcion: 'Cruza la plaza de Santa Ana entre la catedral y las Casas Consistoriales.',
   },
+  valverde: {
+    nombre: 'Valverde', zona: 'Capital · El Hierro',
+    descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
+  },
 };
