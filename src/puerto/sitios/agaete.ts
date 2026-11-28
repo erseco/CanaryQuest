@@ -1,6 +1,6 @@
 import * as T from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import type { Sitio, Taller } from '../maqueta';
+import { ferry } from './ferry';
 
 /**
  * Puerto de las Nieves (Agaete, Gran Canaria), trazado sobre la ortofoto PNOA y comprimido a escala
@@ -454,95 +454,7 @@ export function trazarAgaete(t: Taller): Sitio {
       [0, -5.3, -0.25, 2.6, 1.75],
       [2, -5.6, -0.2, 6.8, 1.4],
     ],
-    ferry: ferry(),
+    // El ferry amarrado al costado del muelle, con la popa hacia la rampa.
+    ferry: ferry(18.5, 11.25, Math.PI / 2),
   };
-}
-
-/** Cuña con la roda inclinada: proa de un casco que mira a +z. */
-function proa() {
-  const [a, b, c, d] = [
-    [-1, -1, 0],
-    [1, -1, 0],
-    [1, 1, 0],
-    [-1, 1, 0],
-  ];
-  const [e, f] = [
-    [0, 1, 1],
-    [0, -1, 0.45],
-  ];
-  const geo = new T.BufferGeometry();
-  geo.setAttribute(
-    'position',
-    new T.Float32BufferAttribute([d, c, e, a, f, b, b, c, e, b, e, f, a, e, d, a, f, e].flat(), 3),
-  );
-  return geo;
-}
-
-/**
- * Ferry de la línea a Santa Cruz de Tenerife: casco blanco con franja azul y puente amarillo, como los
- * de la naviera. Va en un grupo propio porque cabecea en el agua; se monta a lo largo de +z y la vista
- * lo gira hacia `userData.rumbo`.
- */
-function ferry(): T.Group {
-  const partes: T.BufferGeometry[] = [];
-  const caja = new T.BoxGeometry(),
-    esfera = new T.IcosahedronGeometry(1, 1),
-    poste = new T.CylinderGeometry(0.48, 0.55, 1, 9),
-    cuna = proa();
-  function parte(forma: T.BufferGeometry, color: string, x: number, y: number, z: number, w: number, h: number, d: number) {
-    const geo = forma.index ? forma.toNonIndexed() : forma.clone();
-    geo.deleteAttribute('uv');
-    geo.deleteAttribute('normal');
-    geo.applyMatrix4(new T.Matrix4().compose(new T.Vector3(x, y, z), new T.Quaternion(), new T.Vector3(w, h, d)));
-    const rgb = new T.Color(color);
-    const colores = new Float32Array(geo.attributes.position.count * 3);
-    for (let i = 0; i < colores.length; i += 3) rgb.toArray(colores, i);
-    geo.setAttribute('color', new T.BufferAttribute(colores, 3));
-    partes.push(geo);
-  }
-  const casco = '#f4f3ee',
-    franja = '#1f4e9c',
-    amarillo = '#f2c230',
-    cristal = '#22303d';
-  // Casco: del agua (y = 0,19) a la cubierta, con la proa afilada.
-  parte(caja, casco, 0, 0.62, -1.75, 3.6, 2.15, 12.5);
-  parte(cuna, casco, 0, 0.62, 4.5, 1.8, 1.075, 3.5);
-  parte(caja, '#1d3557', 0, 0.2, -1.75, 3.64, 0.3, 12.5);
-  parte(cuna, '#1d3557', 0, 0.2, 4.5, 1.84, 0.15, 2.2);
-  for (const lado of [-1, 1]) parte(caja, franja, lado * 1.81, 1.12, -1.5, 0.04, 0.26, 11.6);
-  // Portalón de popa abierto, por el que entran los coches.
-  parte(caja, '#2a2d31', 0, 0.95, -8.01, 2.4, 1.1, 0.04);
-  // Cubierta de pasaje con su franja de ventanas.
-  parte(caja, casco, 0, 2.22, -1.3, 3.3, 1.05, 10.3);
-  for (const lado of [-1, 1]) parte(caja, cristal, lado * 1.66, 2.25, -1.3, 0.04, 0.45, 9.6);
-  parte(caja, cristal, 0, 2.25, 3.81, 2.8, 0.45, 0.04);
-  for (const lado of [-1, 1]) parte(caja, casco, lado * 1.62, 2.86, -1.3, 0.05, 0.22, 10.3);
-  // Puente de mando amarillo, con alerones y ventanales.
-  parte(caja, amarillo, 0, 3.15, 0.85, 2.9, 0.8, 4.7);
-  parte(caja, cristal, 0, 3.25, 3.21, 2.5, 0.35, 0.04);
-  for (const lado of [-1, 1]) {
-    parte(caja, cristal, lado * 1.46, 3.25, 1.4, 0.04, 0.35, 3);
-    parte(caja, amarillo, lado * 1.7, 3.42, 2.85, 0.6, 0.14, 0.5);
-  }
-  parte(caja, amarillo, 0, 3.75, 0.2, 1.8, 0.4, 2);
-  parte(poste, '#e9e6de', 0, 4.55, 0.4, 0.1, 1.3, 0.1);
-  parte(caja, '#e9e6de', 0, 5.05, 0.4, 0.9, 0.06, 0.12);
-  // Balsas salvavidas naranjas y las chimeneas de popa.
-  for (const lado of [-1, 1])
-    for (const z of [-5.6, -3.4]) parte(esfera, '#e8742a', lado * 1.45, 2.95, z, 0.32, 0.28, 0.75);
-  for (const lado of [-1, 1]) parte(poste, '#d9d6cf', lado * 0.8, 3.05, -6.2, 0.4, 0.6, 0.4);
-  const malla = new T.Mesh(
-    mergeGeometries(partes),
-    new T.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 0.75 }),
-  );
-  for (const geo of [...partes, caja, esfera, poste, cuna]) geo.dispose();
-  malla.castShadow = malla.receiveShadow = true;
-  const grupo = new T.Group();
-  grupo.add(malla);
-  // Amarrado al costado del muelle del ferry, con la popa hacia la rampa.
-  grupo.position.set(18.5, -1.03, 11.25);
-  // Más alto que las casas del pueblo, como se ve desde el paseo.
-  grupo.scale.y = 1.25;
-  grupo.userData.rumbo = Math.PI / 2;
-  return grupo;
 }
