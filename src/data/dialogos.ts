@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  'las-canteras': {
+    nombre: 'Playa de Las Canteras', zona: 'Las Palmas · Gran Canaria',
+    descripcion: 'Pasea de La Puntilla a la Peña de la Vieja, con La Barra calmando el mar frente a la arena dorada.',
+  },
 };

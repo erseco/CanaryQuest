@@ -1,7 +1,8 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
+import { PALMERAS as PALMERAS_CANTERAS, SUELOS as SUELOS_CANTERAS, VALLAS as VALLAS_CANTERAS } from '../puerto/sitios/canteras-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'las-canteras';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +20,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'canteras';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -504,6 +505,37 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Calle del Castillo', x: -27.6, z: 12.7, texto: 'Empedrado, fachadas de colores y balcones de madera de tea: así es Vegueta. Esta calle une la plaza de Santa Ana con la del Espíritu Santo; en una de sus casas vivió y murió el ilustrado Viera y Clavijo.', vista: -0.5 },
       { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
+    ],
+  },
+  // Gran Canaria, la playa de la ciudad: tres kilómetros de arena dorada en el istmo de Guanarteme,
+  // de La Puntilla al Auditorio Alfredo Kraus, con La Barra en paralelo a la orilla y una muralla
+  // de edificios detrás del paseo. Se camina de La Puntilla a la Peña de la Vieja; el arco de La
+  // Cícer y el Auditorio quedan al fondo. Trazado en `src/puerto/sitios/canteras-plano.ts`.
+  'las-canteras': {
+    nombre: 'Playa de Las Canteras',
+    isla: 'gran-canaria',
+    poi: 'las-canteras',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'canteras',
+      costa: 7.5,
+      sinFaroles: true,
+      palmeras: PALMERAS_CANTERAS,
+      suelos: SUELOS_CANTERAS,
+      vallas: VALLAS_CANTERAS,
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: -8, z: 1.6 },
+    carretera: { x: -54.2, z: -16.5 },
+    rincones: [
+      { nombre: 'La Puntilla', x: -50.8, z: 2.6, vista: -1.3, texto: 'El último refugio de los pescadores de la playa. Las barcas se varan en la arena, entre nasas de alambre, y otras quedan fondeadas en el remanso de la punta.' },
+      { nombre: 'Paseo de Las Canteras', x: -12, z: -5.4, texto: 'El paseo recorre la playa entera, del Auditorio a La Puntilla: ladrillo rojo, palmeras, terrazas y una muralla de hoteles y apartamentos que mira al mar.' },
+      { nombre: 'La Barra', x: 2, z: 5.6, vista: 1.2, texto: 'Un arrecife de arenisca de unos dos kilómetros corre en paralelo a la orilla, a unos doscientos metros. Frena las olas y convierte el agua en una laguna mansa; con la bajamar asoma. De su arenisca se sacaba piedra, y de esas canteras le viene el nombre a la playa.' },
+      { nombre: 'Playa Chica', x: 27.5, z: 2.2, vista: 1, texto: 'Una playa pequeña dentro de la grande, entre rocas y charcos. Es la zona de las familias y de los que bucean entre viejas y pejeverdes.' },
+      { nombre: 'Peña de la Vieja', x: 39, z: 4.4, vista: -1.3, texto: 'La peña más famosa de Las Canteras asoma a unos sesenta metros de la orilla. La playa mira a poniente: el sol se pone en el mar y, en los días claros, se ve el Teide al otro lado.' },
+      { nombre: 'Hacia La Cícer', x: 47, z: 3, vista: -1.7, texto: 'Al sur la playa se abre sin la barra y llegan las olas de los surfistas. Al fondo, el Auditorio Alfredo Kraus, de Óscar Tusquets, inaugurado en 1997: su autor lo pensó entre fortaleza y faro.' },
     ],
   },
 };
