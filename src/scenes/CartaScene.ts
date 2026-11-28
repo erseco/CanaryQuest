@@ -1,3 +1,4 @@
+import { CURSOR } from '../cursores';
 import Phaser from 'phaser';
 import { CARTA, VISITAS } from '../data/dialogos';
 import { ISLAS, type IslaId, type Punto } from '../data/islas';
@@ -34,11 +35,11 @@ export class CartaScene extends Phaser.Scene {
     this.add
       .text(936, 18, CARTA.volver, estilo)
       .setOrigin(1, 0)
-      .setInteractive({ useHandCursor: true })
+      .setInteractive({ cursor: CURSOR.usar })
       .on('pointerdown', volver);
     this.add
       .text(24, 65, ISLAS[regreso.islaId].nombre + ' ↗', estilo)
-      .setInteractive({ useHandCursor: true })
+      .setInteractive({ cursor: CURSOR.usar })
       .on('pointerdown', irIsla);
     this.input.keyboard?.once('keydown-ESC', volver);
     const sitios = Object.keys(SITIOS) as Sitio[];
@@ -50,11 +51,11 @@ export class CartaScene extends Phaser.Scene {
       this.add
         .circle(p.x, p.y, 9, 0xf9d689)
         .setStrokeStyle(3, 0x23545a)
-        .setInteractive({ useHandCursor: true })
+        .setInteractive({ cursor: CURSOR.usar })
         .on('pointerdown', () => visitar(sitio));
       const boton = this.add
         .text(18 + (i%3) * 309, 446 + Math.floor(i/3)*39, VISITAS[sitio].nombre + ' ↗', estilo)
-        .setInteractive({ useHandCursor: true })
+        .setInteractive({ cursor: CURSOR.usar })
         .on('pointerdown', () => visitar(sitio));
       botones.push(boton);
     }

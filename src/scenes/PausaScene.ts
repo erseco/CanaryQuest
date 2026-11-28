@@ -1,3 +1,4 @@
+import { CURSOR } from '../cursores';
 import Phaser from 'phaser';
 import { AYUDA } from '../data/dialogos';
 import { AjustesStore } from '../sistemas/Ajustes';
@@ -188,7 +189,7 @@ export class PausaScene extends Phaser.Scene {
       const b = this.add
         .text(this.scale.width / 2, y0 + i * 58, op.texto(), ESTILO)
         .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
+        .setInteractive({ cursor: CURSOR.usar })
         .on('pointerover', () => this.seleccionar(i))
         .on('pointerdown', () => {
           this.seleccionar(i);

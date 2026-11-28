@@ -16,6 +16,7 @@ import { PUERTO as t, PASEO as guia } from '../data/dialogos';
 import { PUEBLOS, type Pueblo, type CasaPuerto } from '../data/pueblos';
 import { ISLAS } from '../data/islas';
 import { crearInterior, sueloInterior } from './interior';
+import { CURSOR, type Gesto } from '../cursores';
 import './puerto.css';
 
 export async function abrirPuerto(
@@ -176,7 +177,7 @@ export async function abrirPuerto(
   const nombre = root.querySelector('h1')!,
     selector = root.querySelector('select')!;
   const pos = jugador.position;
-  const lugares: { nombre: string; punto: PuntoPuerto; activar: () => void }[] = [];
+  const lugares: { nombre: string; punto: PuntoPuerto; activar: () => void; gesto: Gesto }[] = [];
   let anguloCalle=angulo;
   let giroRincon: number | undefined;
   function entrar(c: CasaPuerto) {
@@ -209,7 +210,7 @@ export async function abrirPuerto(
     refrescar();
   }
   barrio.casas.forEach((c) =>
-    lugares.push({ nombre: guia.entrar + ' ' + c.nombre, punto: umbral(c), activar: () => entrar(c) }),
+    lugares.push({ nombre: guia.entrar + ' ' + c.nombre, punto: umbral(c), activar: () => entrar(c), gesto: 'usar' }),
   );
   // Salidas del pueblo, cada una con su cartel: el barco del muelle y la carretera.
   const carteles: { indice: number; texto: string }[] = [];
@@ -219,7 +220,7 @@ export async function abrirPuerto(
     indiceBarco = lugares.length;
     const texto = porMar === 'ferry' ? guia.ferry : guia.lancha;
     carteles.push({ indice: indiceBarco, texto });
-    lugares.push({ nombre: texto, punto: muelle(pueblo), activar: () => viajar(porMar, true) });
+    lugares.push({ nombre: texto, punto: muelle(pueblo), activar: () => viajar(porMar, true), gesto: 'salir' });
   }
   if (tierra) {
     carteles.push({ indice: lugares.length, texto: PUEBLOS[tierra].nombre + ' →' });
@@ -227,6 +228,7 @@ export async function abrirPuerto(
       nombre: guia.ir + ' ' + PUEBLOS[tierra].nombre,
       punto: camino(pueblo),
       activar: () => viajar(tierra),
+      gesto: 'salir',
     });
   }
   // Rincones a los que se pasea: al llegar se describen, como en una aventura gráfica.
@@ -241,9 +243,10 @@ export async function abrirPuerto(
         if (r.vista !== undefined) giroRincon = angulo + Math.atan2(Math.sin(r.vista - angulo), Math.cos(r.vista - angulo));
         refrescar();
       },
+      gesto: 'mirar',
     });
   if (pastor.visible)
-    lugares.push({ nombre: t.hablar, punto: { x: PASTOR.x - 0.75, z: PASTOR.z }, activar: hablar });
+    lugares.push({ nombre: t.hablar, punto: { x: PASTOR.x - 0.75, z: PASTOR.z }, activar: hablar, gesto: 'hablar' });
   const senales = carteles.map(({ indice, texto }) => {
     const l = lugares[indice],
       lienzo = document.createElement('canvas');
@@ -397,11 +400,75 @@ export async function abrirPuerto(
     },
     opts,
   );
+  /** Lo que hay bajo el puntero: el gesto del cursor y lo que hará el clic, como en una aventura gráfica. */
+  function apuntar(e: PointerEvent): { gesto: Gesto; hacer?: () => void } {
+    const rect = canvas.getBoundingClientRect();
+    ray.setFromCamera(
+      new T.Vector2(
+        ((e.clientX - rect.left) / rect.width) * 2 - 1,
+        1 - ((e.clientY - rect.top) / rect.height) * 2,
+      ),
+      camara,
+    );
+    const punto = ray.ray.intersectPlane(suelo, new T.Vector3());
+    if (casaActual) {
+      if (!punto || !sueloInterior(punto.x, punto.z)) return { gesto: 'andar' };
+      const puerta = Math.abs(punto.x) < 0.85 && punto.z > 2.45;
+      return {
+        gesto: puerta ? 'salir' : 'andar',
+        hacer: () => {
+          ruta = [{ x: 0, z: pos.z }, { x: 0, z: punto.z }, punto];
+          alLlegar = puerta ? volverCalle : undefined;
+        },
+      };
+    }
+    const elegido = ray.intersectObjects(
+      [...fachadas, barcos[0], ...senales, ...(pastor.visible ? [pastor] : [])],
+      true,
+    )[0];
+    for (let obj: T.Object3D | null = elegido?.object ?? null; obj; obj = obj.parent) {
+      const i = fachadas.indexOf(obj as T.Mesh);
+      const cartel = senales.indexOf(obj as T.Sprite);
+      const indice =
+        i >= 0
+          ? i
+          : cartel >= 0
+            ? carteles[cartel].indice
+            : obj === barcos[0]
+              ? indiceBarco
+              : obj === pastor
+                ? lugares.length - 1
+                : -1;
+      if (indice >= 0) return { gesto: lugares[indice].gesto, hacer: () => visitar(indice) };
+    }
+    if (!punto) return { gesto: 'andar' };
+    // Un rincón no tiene objeto propio: se señala el suelo de alrededor.
+    const rincon = lugares.findIndex(
+      (l) => l.gesto === 'mirar' && Math.hypot(punto.x - l.punto.x, punto.z - l.punto.z) < 1.3,
+    );
+    if (rincon >= 0) return { gesto: 'mirar', hacer: () => visitar(rincon) };
+    return transitable(punto.x, punto.z, pueblo) ? { gesto: 'andar', hacer: () => ir(punto) } : { gesto: 'andar' };
+  }
+  canvas.style.cursor = CURSOR.andar;
+  let sobre: PointerEvent | undefined;
   canvas.addEventListener(
     'pointermove',
     (e) => {
-      if (!canvas.hasPointerCapture(e.pointerId)) return;
-      if (Math.hypot(e.clientX - inicioX, e.clientY - inicioY) > 5) arrastre = true;
+      if (!canvas.hasPointerCapture(e.pointerId)) {
+        // El ratón cambia de gesto al pasar por encima; en pantallas táctiles no hay cursor.
+        if (e.pointerType !== 'mouse') return;
+        if (!sobre)
+          requestAnimationFrame(() => {
+            canvas.style.cursor = dialogo.length ? CURSOR.andar : CURSOR[apuntar(sobre!).gesto];
+            sobre = undefined;
+          });
+        sobre = e;
+        return;
+      }
+      if (Math.hypot(e.clientX - inicioX, e.clientY - inicioY) > 5) {
+        arrastre = true;
+        canvas.style.cursor = 'grabbing';
+      }
       if (arrastre) angulo -= (e.clientX - ultimoX) * 0.007;
       ultimoX = e.clientX;
     },
@@ -410,6 +477,7 @@ export async function abrirPuerto(
   canvas.addEventListener(
     'lostpointercapture',
     () => {
+      if (arrastre) canvas.style.cursor = CURSOR.andar;
       arrastre = false;
     },
     opts,
@@ -418,51 +486,7 @@ export async function abrirPuerto(
     'pointerup',
     (e) => {
       if (!canvas.hasPointerCapture(e.pointerId) || arrastre || dialogo.length) return;
-      const rect = canvas.getBoundingClientRect();
-      ray.setFromCamera(
-        new T.Vector2(
-          ((e.clientX - rect.left) / rect.width) * 2 - 1,
-          1 - ((e.clientY - rect.top) / rect.height) * 2,
-        ),
-        camara,
-      );
-      const punto = ray.ray.intersectPlane(suelo, new T.Vector3());
-      if (casaActual) {
-        if (punto && sueloInterior(punto.x, punto.z)) {
-          ruta = [{ x: 0, z: pos.z }, { x: 0, z: punto.z }, punto];
-          alLlegar = undefined;
-          if (Math.abs(punto.x) < 0.85 && punto.z > 2.45) alLlegar = volverCalle;
-        }
-        return;
-      }
-      const elegido = ray.intersectObjects(
-        [...fachadas, barcos[0], ...senales, ...(pastor.visible ? [pastor] : [])],
-        true,
-      )[0];
-      if (elegido) {
-        let obj: T.Object3D | null = elegido.object;
-        while (obj) {
-          const i = fachadas.indexOf(obj as T.Mesh);
-          if (i >= 0) {
-            visitar(i);
-            return;
-          }
-          if (senales.includes(obj as T.Sprite)) {
-            visitar(carteles[senales.indexOf(obj as T.Sprite)].indice);
-            return;
-          }
-          if (obj === barcos[0] && indiceBarco >= 0) {
-            visitar(indiceBarco);
-            return;
-          }
-          if (obj === pastor) {
-            visitar(lugares.length - 1);
-            return;
-          }
-          obj = obj.parent;
-        }
-      }
-      if (punto && transitable(punto.x, punto.z, pueblo)) ir(punto);
+      apuntar(e).hacer?.();
     },
     opts,
   );

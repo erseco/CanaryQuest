@@ -1,3 +1,4 @@
+import { CURSOR } from '../cursores';
 import Phaser from 'phaser';
 import { DialogueBox } from '../sistemas/DialogueBox';
 import { DIALOGOS } from '../data/dialogos';
@@ -203,7 +204,7 @@ export class UIScene extends Phaser.Scene {
       })
       .setOrigin(1, 0)
       .setDepth(300)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ cursor: CURSOR.usar });
     boton.on(
       'pointerdown',
       (_p: Phaser.Input.Pointer, _x: number, _y: number, event: Phaser.Types.Input.EventData) => {
@@ -220,7 +221,7 @@ export class UIScene extends Phaser.Scene {
       .text(this.scale.width - 12, 12, muted ? '🔇' : '🔊', { fontSize: '26px' })
       .setOrigin(1, 0)
       .setDepth(300)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ cursor: CURSOR.usar });
     boton.on(
       'pointerdown',
       (_p: Phaser.Input.Pointer, _x: number, _y: number, event: Phaser.Types.Input.EventData) => {

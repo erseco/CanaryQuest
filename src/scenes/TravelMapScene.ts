@@ -1,3 +1,4 @@
+import { CURSOR } from '../cursores';
 import Phaser from 'phaser';
 import { fondoCarta } from '../atlas/carta';
 import { ISLAS, buscarTerminal, type IslaId, type Punto, type Terminal } from '../data/islas';
@@ -83,7 +84,7 @@ export class TravelMapScene extends Phaser.Scene {
         .setDepth(45);
       const circulo = this.add.circle(0, 0, 11, 0xf4c542, 0.4).setStrokeStyle(2, 0xf4c542);
       const marcador = this.add.container(pos.x, pos.y, [circulo]).setDepth(50);
-      circulo.setInteractive({ useHandCursor: true });
+      circulo.setInteractive({ cursor: CURSOR.usar });
       circulo.on('pointerover', () => {
         this.seleccion = i;
         this.resaltarSeleccion();
@@ -117,7 +118,7 @@ export class TravelMapScene extends Phaser.Scene {
     if (this.datos.desdePueblo) {
       this.add.text(width - 12, 60, PASEO.volverMuelle, {
         fontFamily: 'Georgia, serif', fontSize: '16px', backgroundColor: '#173e42', padding: { x: 10, y: 8 },
-      }).setOrigin(1, 0).setDepth(100).setInteractive({ useHandCursor: true }).on('pointerdown', () => this.volver());
+      }).setOrigin(1, 0).setDepth(100).setInteractive({ cursor: CURSOR.usar }).on('pointerdown', () => this.volver());
     }
     this.resaltarSeleccion();
 

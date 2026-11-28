@@ -1,3 +1,4 @@
+import { CURSOR } from '../cursores';
 import Phaser from 'phaser';
 import { SaveManager } from '../sistemas/SaveManager';
 import { PUEBLOS } from '../data/pueblos';
@@ -57,7 +58,7 @@ export class TitleScene extends Phaser.Scene {
           padding: { x: 24, y: 10 },
         })
         .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true })
+        .setInteractive({ cursor: CURSOR.usar })
         .on('pointerover', () => this.seleccionar(i))
         .on('pointerdown', () => this.elegir(i)),
     );

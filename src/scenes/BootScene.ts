@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { CURSOR } from '../cursores';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -6,6 +7,7 @@ export class BootScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.input.setDefaultCursor(CURSOR.andar);
     this.scene.start('Preload');
   }
 }

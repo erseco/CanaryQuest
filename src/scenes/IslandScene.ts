@@ -1,3 +1,4 @@
+import { CURSOR } from '../cursores';
 import { SITIOS } from '../atlas/carta';
 import Phaser from 'phaser';
 import { CARTA } from '../data/dialogos';
@@ -148,7 +149,7 @@ export class IslandScene extends Phaser.Scene {
       .setOrigin(0.5, 0)
       .setScrollFactor(0)
       .setDepth(100)
-      .setInteractive({ useHandCursor: true })
+      .setInteractive({ cursor: CURSOR.usar })
       .on('pointerdown', abrirCarta);
     this.input.keyboard?.on('keydown-C', abrirCarta);
 
@@ -159,7 +160,7 @@ export class IslandScene extends Phaser.Scene {
       .setDisplaySize(120, 100)
       .setScrollFactor(0)
       .setDepth(90)
-      .setInteractive({ useHandCursor: true });
+      .setInteractive({ cursor: CURSOR.usar });
     this.localizador = this.add
       .circle(0, 0, 4, 0xffde7c)
       .setStrokeStyle(2, 0x315054)
@@ -240,7 +241,7 @@ export class IslandScene extends Phaser.Scene {
         this.aviso.removeAllListeners('pointerdown');
         this.aviso.disableInteractive();
         if (cercano.tipo !== 'paisaje')
-          this.aviso.setInteractive({ useHandCursor: true }).on('pointerdown', () => this.activarPoi());
+          this.aviso.setInteractive({ cursor: CURSOR.usar }).on('pointerdown', () => this.activarPoi());
       }
     }
   }
