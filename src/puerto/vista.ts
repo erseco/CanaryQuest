@@ -242,7 +242,7 @@ export async function abrirPuerto(
     refrescar();
   }
   barrio.casas.forEach((c) =>
-    lugares.push({ nombre: guia.entrar + ' ' + c.nombre, punto: umbral(c), activar: () => entrar(c), gesto: 'usar' }),
+    lugares.push({ nombre: guia.entrar + ' ' + c.nombre, punto: umbral(c), activar: () => entrar(c), gesto: c.anfitrion ? 'hablar' : 'usar' }),
   );
   // Salidas del pueblo, cada una con su cartel: el barco del muelle y la carretera.
   const carteles: { indice: number; texto: string }[] = [];
@@ -283,7 +283,7 @@ export async function abrirPuerto(
       };
     refrescar();
   }
-  for (const r of barrio.rincones) lugares.push({ nombre: r.nombre, punto: r, activar: () => contar(r), gesto: 'mirar' });
+  for (const r of barrio.rincones) lugares.push({ nombre: r.nombre, punto: r, activar: () => contar(r), gesto: r.npc ? 'hablar' : 'mirar' });
   // El rastro de la misión, con su cartel: al leerlo se sigue a las cabras.
   const { rastro } = barrio;
   if (rastro && seguirRastro) {
