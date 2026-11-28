@@ -1,7 +1,7 @@
 import * as T from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-export async function cargarRecursos(pueblo: import('../data/pueblos').Pueblo) {
+export async function cargarRecursos() {
   const base = import.meta.env.BASE_URL + 'assets/puerto/';
   const texturas = new T.TextureLoader().setPath(base);
   const modelos = new GLTFLoader().setPath(base);
@@ -16,7 +16,7 @@ export async function cargarRecursos(pueblo: import('../data/pueblos').Pueblo) {
       }),
     ),
     Promise.all(
-      [pueblo === 'agaete' ? 'ship-large' : 'boat-fishing-small', 'boat-sail-a', 'boat-row-small'].map(
+      ['boat-fishing-small', 'boat-sail-a', 'boat-row-small'].map(
         async (nombre) => (await modelos.loadAsync(nombre + '.glb')).scene,
       ),
     ),

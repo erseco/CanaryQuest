@@ -18,7 +18,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla';
+  sitio?: 'restinga' | 'orchilla' | 'agaete';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -144,32 +144,116 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Faro del espigón', x: 24.9, z: 12.2, texto: 'Desde la punta del espigón se ve todo el puerto, con sus arcos de buganvilla.' },
     ],
   },
+  // Gran Canaria, costa noroeste. Trazado sobre la ortofoto PNOA y girado para que el mar abierto quede
+  // delante: de izquierda a derecha (de norte a sur) las Salinas, el pueblo con su playa y la ermita, la
+  // dársena tras el dique, el ferry de Tenerife, el muelle viejo, la playa de las Nieves y el Dedo de Dios.
   agaete: {
     nombre: 'Puerto de las Nieves',
     isla: 'gran-canaria',
     poi: 'gc-agaete',
     plano: {
-      orillas: [-8.3, 8.3],
-      canales: [0],
+      orillas: [],
+      canales: [],
+      sitio: 'agaete',
+      estilo: 'blanca',
       palmeras: [
-        [-9.3, 0, 3.6],
-        [9.2, 0, 4.4],
-        [-2.5, -4.7, 4.1],
-        [5, -5.5, 4.8],
-        [-9, -8.5, 4],
+        [-10.7, -1.5, 4.2],
+        [-10.7, 3.5, 3.8],
+        [-10.7, 8.8, 4.4],
+        [-10.6, -7.8, 4.6],
+        [-2.6, -9, 4],
+        [-27.5, 12.2, 4],
+        [-21.8, 9.2, 4.6],
+        [-14.6, 12.2, 3.8],
+        [-46, -7.2, 4.4],
+        [-42.5, -6.8, 3.8],
+        [-38.8, -7.4, 4.8],
+        [-48.2, -12, 4],
+        [-34.5, -6.9, 4.6],
+      ],
+      suelos: [
+        { r: [-30, 13, 10, 17.5] }, // dique, con la avenida del puerto
+        { r: [9.6, 13.5, 26, 17.5] }, // muelle del ferry
+        { r: [26, 12.8, 29.5, 17.5] }, // morro del dique
+        { r: [8, 4.5, 9.6, 13.5] }, // contradique de la dársena
+        { r: [-30, 6, -11, 13] }, // explanada
+        { r: [-11, -4, -7, 13] }, // paseo de la playa
+        { r: [-11, -4, -3, 1.5] }, // plaza de la ermita
+        { r: [-3, 0, 6.5, 1.5] }, // muelle viejo
+        { r: [6.5, -0.3, 9, 1.8] }, // su punta
+        { r: [-30, -2, -11, 0.5] }, // calle de atrás
+        { r: [-22, -2, -19.5, 6] }, // travesía
+        { r: [-12.5, -13, -11, -2] }, // carretera de Agaete
+        { r: [-45.5, -5.5, -30, 6.5] }, // las Salinas
+        { r: [-3.8, -7.5, -2, -4] }, // bajada a la playa de las Nieves
+        { r: [-7, 0, -3, 9.5], y: 0, y2: -0.7, eje: 'x' }, // playa del puerto
+        { r: [-3, -7, 19.5, -3.5], y: 0.05, y2: -0.7 }, // playa de las Nieves
+      ],
+      vallas: [
+        [-45.5, 1.5, -41, 5.5], // piscinas de las Salinas
+        [-45.5, -4.5, -41, 0.5],
+        [-40, -4.5, -36.5, -0.5],
       ],
     },
     salidas: { mar: 'ferry', tierra: 'mogan' },
     casas: [
-      casa('Cofradía de pescadores', -8, -2.7, 4.3, 2.7, 3, '#245589'),
-      casa('Casa de la sal', -3.6, -3.5, 2.8, 2.1, 2.5, '#357899'),
-      casa('Lonja de Agaete', 6.5, -3, 5.4, 2.5, 3.4, '#245589'),
-      casa('Casa del marinero', 11.9, -3.4, 2.8, 3.4, 2.8, '#295784'),
-      casa('Casa del almendro', -9, -8, 3.2, 2.7, 2.7, '#357899'),
-      casa('Casa de la ermita', -1.6, -8, 3.4, 2.6, 3, '#225b8c'),
-      casa('Taller de cerámica', 5, -7.8, 3, 2.7, 2.5, '#39739b'),
+      casa('Estación marítima', -3.75, 11.25, 6, 2.9, 3.5, '#1d5aa8'),
+      casa('Casa de los callaos', -27.5, 4.2, 4.2, 3.4, 3.4, '#1f4f9a'),
+      casa('Pescadería de las Nieves', -23.7, 4.2, 3, 3.4, 3.4, '#2a5fa8'),
+      casa('Casa del patrón', -17, 4.2, 4, 5.1, 3.4, '#1b4a8c'),
+      casa('Heladería del paseo', -13.2, 4.2, 3.2, 3.4, 3.4, '#2f6db3'),
+      casa('Casa de la Rama', -27.5, -3.9, 4.2, 5.1, 3.4, '#2a5fa8'),
+      casa('Taller de redes', -23.7, -3.9, 3, 3.4, 3.4, '#1f4f9a'),
+      casa('Cofradía de pescadores', -16.6, -3.9, 4, 3.4, 3.4, '#1b4a8c'),
     ],
-    rincones: [],
+    inicio: { x: -5.5, z: -1.5 },
+    embarcadero: { x: 9.1, z: 11.3 },
+    carretera: { x: -11.75, z: -12 },
+    rincones: [
+      {
+        nombre: 'Dedo de Dios',
+        x: 18.5,
+        z: -5.4,
+        texto:
+          'El roque de basalto al pie del risco tuvo durante siglos un dedo que apuntaba al cielo. La tormenta tropical Delta lo partió en noviembre de 2005: hoy queda el muñón, y el dedo duerme en el agua a sus pies.',
+      },
+      {
+        nombre: 'Las Salinas',
+        x: -37.5,
+        z: 2.5,
+        texto: 'Tres piscinas de agua de mar excavadas en la lava y unidas por túneles volcánicos. Los pilares de roca, como almenas de un castillo, frenan las olas del norte.',
+      },
+      {
+        nombre: 'Ermita de las Nieves',
+        x: -7,
+        z: -3.3,
+        texto: 'Ermita blanca de dos torres con cúpula roja. Guarda un tríptico flamenco atribuido a Joos van Cleve, y en agosto, por las fiestas de la Virgen de las Nieves, se baja con ramas a golpear el mar para pedir lluvia.',
+      },
+      {
+        nombre: 'Muelle viejo',
+        x: 7.8,
+        z: 0.75,
+        texto: 'El muelle de piedra del puerto antiguo. Desde su punta se ve el Dedo de Dios y, los días claros, el Teide al otro lado del mar.',
+      },
+      {
+        nombre: 'Playa de las Nieves',
+        x: 6,
+        z: -5.3,
+        texto: 'Callaos negros, redondos y lisos de tanto rodar con las olas. Suenan bajo los pies cuando el mar se retira.',
+      },
+      {
+        nombre: 'Dársena',
+        x: 3.75,
+        z: 13.6,
+        texto: 'Barquillos de pesca y veleros amarrados al pantalán, al abrigo del dique.',
+      },
+      {
+        nombre: 'Punta del dique',
+        x: 28,
+        z: 15,
+        texto: 'Los riscos de Tamadaba caen a pico sobre el mar, cientos de metros de roca. Por aquí entra el ferry que cruza a Santa Cruz de Tenerife.',
+      },
+    ],
   },
   // El Hierro. Trazado sobre la ortofoto PNOA: avenida al norte, playa negra y pantalán en el
   // fondo de la bahía, muelle viejo al oeste, varadero al este y el dique rompeolas cerrando el sur.

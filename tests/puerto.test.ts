@@ -63,9 +63,29 @@ it('Mogán llega hasta la playa y el espigón sin pisar el agua', () => {
   expect(transitable(16.6, 1)).toBe(true); // su puente
   expect(alturaPaseo(16.6, 1)).toBeGreaterThan(0.3);
   expect(alturaPaseo(-23, 4)).toBeLessThan(-0.5); // la arena baja hacia la orilla
-  // Agaete conserva su tamaño: nada de esto existe allí.
-  expect(transitable(-23, 1.6, 'agaete')).toBe(false);
-  expect(transitable(24.9, 12, 'agaete')).toBe(false);
+});
+it('Agaete lleva del paseo al Dedo de Dios y al ferry sin pisar el agua', () => {
+  const pisa = (x: number, z: number) => transitable(x, z, 'agaete');
+  expect(pisa(-9, 6)).toBe(true); // paseo de la playa
+  expect(pisa(-20, 15)).toBe(true); // dique
+  expect(pisa(28, 15)).toBe(true); // morro del dique
+  expect(pisa(8.8, 8)).toBe(true); // contradique de la dársena
+  expect(pisa(5, 0.75)).toBe(true); // muelle viejo
+  expect(pisa(10, -5)).toBe(true); // playa de las Nieves
+  expect(pisa(-34, 2)).toBe(true); // las Salinas
+  expect(pisa(-43, 3.5)).toBe(false); // una de sus piscinas
+  expect(pisa(4, 8)).toBe(false); // agua de la dársena
+  expect(pisa(18, 11)).toBe(false); // el ferry amarrado
+  expect(pisa(22.6, -1.6)).toBe(false); // el Dedo de Dios, en el agua
+  expect(pisa(0, 20)).toBe(false); // mar abierto tras el dique
+  expect(alturaPaseo(10, -4, 'agaete')).toBeLessThan(alturaPaseo(10, -6.5, 'agaete')); // los callaos bajan al mar
+  const { inicio, embarcadero, rincones } = PUEBLOS.agaete;
+  const dedo = rincones.find((r) => r.nombre === 'Dedo de Dios')!;
+  // Al Dedo de Dios se llega rodeando la bahía por la plaza de la ermita y la playa.
+  const alDedo = rutaPuerto(inicio!, dedo, 'agaete');
+  expect(alDedo.at(-1)).toEqual(dedo);
+  expect(alDedo.some((p) => p.z < -3.5)).toBe(true);
+  expect(rutaPuerto(inicio!, embarcadero!, 'agaete').at(-1)).toEqual(embarcadero);
 });
 it('La Restinga se recorre de la avenida al dique sin cruzar la bahía', () => {
   const pisa = (x: number, z: number) => transitable(x, z, 'la-restinga');

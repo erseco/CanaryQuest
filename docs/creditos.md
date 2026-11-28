@@ -69,6 +69,23 @@ con su pórtico y el dique rompeolas con su escollera.
 - [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).
 - [Monumento al Meridiano Cero, El Hierro Travel](https://elhierro.travel/en/what-to-do/monumento-al-meridiano-cero) y [Embarcadero del Faro de Orchilla, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/embarcadero-del-faro-de-orchilla/).
 
+## Puerto de las Nieves (Agaete)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/agaete.ts`. El
+trazado sigue el recorte PNOA `agaete-pnoa.webp`, girado un cuarto de vuelta
+para que el mar abierto (al oeste) quede delante, y comprime las distancias:
+las Salinas al norte, el pueblo con su playa y la ermita, la dársena tras el
+dique, el ferry de Tenerife en el muelle del sur, el muelle viejo, la playa de
+las Nieves y el Dedo de Dios al pie de los riscos de Tamadaba, que en realidad
+queda al sur del puerto. El ferry se modela con los colores de la naviera de la
+línea (casco blanco con franja azul y puente amarillo); el barco de pasajeros de
+Kenney ya no se usa en esta visita.
+
+- Posición del Dedo de Dios (28,0964, −15,7081) y caída del pináculo con la tormenta Delta en 2005: [Wikipedia](https://es.wikipedia.org/wiki/Dedo_de_Dios) y [Gran Canaria, «El Dedo de Dios and the Roque Partido»](https://www.grancanaria.com/blog/en/article/el-dedo-de-dios-and-the-roque-partido-two-names-for-the-same-symbol).
+- Las Salinas de Agaete, tres piscinas unidas por túneles volcánicos y protegidas por columnas de roca: [Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/gran-canaria/las-salinas-de-agaete/) y [Turismo de Gran Canaria](https://grancanaria.com/turismo/en/beaches/natural-pools/las-salinas-de-agaete).
+- Ermita de Nuestra Señora de las Nieves y su tríptico atribuido a Joos van Cleve: [Lonely Planet](https://www.lonelyplanet.com/canary-islands/gran-canaria/agaete-and-puerto-de-las-nieves/attractions/ermita-nuestra-senora-de-las-nieves/a/poi-sig/1463261/355138) y [Destinia](https://destinia.com/que-ver-y-hacer-en-agaete/31718).
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [fachada de la ermita](https://commons.wikimedia.org/wiki/File:Fachada_de_la_Ermita_de_Las_Nieves.jpg), [la ermita y su jardín](https://commons.wikimedia.org/wiki/File:Puerto_de_las_Nieves_2016_11.jpg), [el Dedo de Dios desde el puerto](https://commons.wikimedia.org/wiki/File:El_Dedo_de_Dios_desde_el_Puerto_de_las_Nieves_(Agaete).jpg), [el Dedo de Dios antes de caer, septiembre de 2005](https://commons.wikimedia.org/wiki/File:Dedo_de_Dios_am_30.09.2005.jpg), [la terminal y el pueblo](https://commons.wikimedia.org/wiki/File:Puerto_de_las_Nieves_2010.jpg) y [el ferry ante los riscos de Tamadaba](https://commons.wikimedia.org/wiki/File:Ferry_a_Tenerife_(1264670907).jpg). Solo se usaron como referencia; no se incluyen en el juego.
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
