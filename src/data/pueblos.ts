@@ -1,7 +1,16 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
+import {
+  SUELOS as SUELOS_TERESITAS,
+  VALLAS as VALLAS_TERESITAS,
+  PALMERAS as PALMERAS_TERESITAS,
+  CASTILLO,
+  LARGO,
+  enPlaya,
+  enMuelle,
+} from '../puerto/sitios/teresitas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'las-teresitas';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +28,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'teresitas';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -506,4 +515,46 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
     ],
   },
+  // Tenerife, Santa Cruz. La media luna de arena del Sáhara con su rompeolas exento, los kioscos y
+  // las palmeras, al pie de los riscos de Anaga; en su punta suroeste, el pueblo de pescadores de
+  // San Andrés y las ruinas de su castillo junto al barranco. Trazado en `sitios/teresitas-plano.ts`.
+  'las-teresitas': {
+    nombre: 'Playa de Las Teresitas',
+    isla: 'tenerife',
+    poi: 'las-teresitas',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'teresitas',
+      estilo: 'blanca',
+      costa: 9,
+      palmeras: PALMERAS_TERESITAS,
+      suelos: SUELOS_TERESITAS,
+      vallas: VALLAS_TERESITAS,
+    },
+    salidas: {},
+    casas: [
+      casa('Casa de comidas', -63.1, 11.1, 4.4, 3.6, 4, '#2f6f8f'),
+      casa('Casa del pescador', -53.35, 11.1, 3.4, 3.4, 4, '#3d7a5a'),
+    ],
+    inicio: playa(33, 5.2),
+    rincones: [
+      { nombre: 'Playa de Las Teresitas', ...playa(36.5, 4), texto: 'Más de un kilómetro de arena rubia al pie de los riscos de Anaga. Donde hubo una playa de arena negra, en 1973 se volcaron unas 270.000 toneladas de arena traída del Sáhara.' },
+      { nombre: 'El rompeolas', ...playa(43, 5.9), texto: 'A unos 150 metros de la orilla corre un rompeolas de piedra de casi un kilómetro, con una boca en cada punta. Las obras empezaron en 1968, y gracias a él el agua de la playa está casi siempre mansa.' },
+      { nombre: 'Kioscos del paseo', ...playa(20.5, -0.9), texto: 'Los kioscos se asoman a la arena entre corros de palmeras canarias. Detrás del paseo azul, otra hilera de palmeras parte en dos el aparcamiento.' },
+      { nombre: 'Macizo de Anaga', ...playa(50, -2), texto: 'Detrás de la carretera se levantan a pico las montañas de Anaga, pardas en verano y verdes después de las lluvias. Todo el macizo es Reserva de la Biosfera desde 2015.' },
+      { nombre: 'Punta de los Órganos', ...playa(LARGO - 2, 3.5), texto: 'Aquí acaba la arena, contra el espigón que arranca de la punta de los Órganos. Más allá, la costa de Anaga sigue hacia el nordeste, toda de riscos.', vista: 1 },
+      { nombre: 'Muelle de los pescadores', ...punto(enMuelle(8.2)), texto: 'El muelle de la cofradía de San Andrés, en el extremo sur de la playa. Cada mes de julio, por la Virgen del Carmen, la imagen embarca aquí para salir en procesión por el mar.', vista: -1.1 },
+      { nombre: 'Castillo de San Andrés', x: CASTILLO.x, z: CASTILLO.z + 2.8, texto: 'Torre redonda de piedra que guardaba la playa de los piratas desde comienzos del siglo XVIII. Las avenidas del barranco se llevaron media torre; la otra mitad sigue en pie y es Bien de Interés Cultural. Se cuenta que en 1797 sus cañones alcanzaron a uno de los barcos de Nelson.', vista: -0.8 },
+      { nombre: 'San Andrés', x: -56, z: 15.2, texto: 'Pueblo de pescadores en la boca del barranco, con las casas de colores apretadas entre la montaña y el mar. En la avenida se come el pescado del día.' },
+    ],
+  },
 };
+/** Punto redondeado al centímetro, para los rincones de un trazado calculado. */
+function punto([x, z]: [number, number]) {
+  return { x: Math.round(x * 100) / 100, z: Math.round(z * 100) / 100 };
+}
+/** Punto de la playa de Las Teresitas a `s` de su punta suroeste y a `d` del paseo. */
+function playa(s: number, d: number) {
+  return punto(enPlaya(s, d));
+}

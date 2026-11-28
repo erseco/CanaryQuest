@@ -149,3 +149,19 @@ El viajero de las escenas 3D comparte modelo con Mogán. La hoja
 - Recortes PNOA de referencia en `public/assets/visitas/` (coordenadas longitud/latitud): `mogan-pnoa.webp` (−15.7684, 27.8164 a −15.7614, 27.8217), `agaete-pnoa.webp` (−15.7145, 28.0982 a −15.7067, 28.1046), `la-caleta-pnoa.webp` (−17.8890, 27.7997 a −17.8863, 27.8015), `las-palmas-pnoa.webp` (−15.4170, 28.09955 a −15.41385, 28.1014), `orchilla-pnoa.webp` (−18.1498, 27.7052 a −18.1453, 27.7082), `la-restinga-pnoa.webp` (−17.9834, 27.6381 a −17.9782, 27.6423) y `maspalomas-pnoa.webp` (−15.5804, 27.7430 a −15.5722, 27.7540). Recopilados el 26 de noviembre de 2026 para contrastar las visitas; las seis primeras quedan como referencias para integrar en sus maquetas.
 - La cadena sitúa el local de Playa del Inglés en el bajo 4 del hotel Rey Carlos, esquina de Tirajana con Francia. [Directorio oficial](https://pepechiringo.es/restaurantes/).
 - Referencias fotográficas para modelar arcadas, torretas y rótulo del CITA y contrastar el aspecto del hotel. [Fotografías del CITA](https://www.dunasmap.com/post/cita-shopping-centre-playa-del-ingles) · [RIU Palace, fotografía de 2025](https://commons.wikimedia.org/wiki/File:Riu_Palace_Maspalomas,_2025-01.jpg). La maqueta agrupa los motivos decorativos del centro.
+## Playa de Las Teresitas y San Andrés
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/teresitas.ts` y
+`teresitas-plano.ts`, sin assets nuevos. La media luna de la playa, el
+rompeolas exento con sus dos bocas, los espigones, el paseo azul, la mediana de
+palmeras, el aparcamiento, la cofradía, el cauce del barranco, el castillo y la
+avenida de San Andrés se trazaron sobre recortes de la ortofoto PNOA de
+(−16.205, 28.495) a (−16.175, 28.520), usados solo como consulta y fuera del
+repositorio. Licencias: la curva de la playa se aplana a la mitad de su hondura
+y se ensancha; el pueblo se comprime en manzanas rectas al oeste del barranco y
+el cauce se endereza; el castillo queda detrás de la avenida y no en su glorieta.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- [Playa de Las Teresitas, Wikipedia](https://es.wikipedia.org/wiki/Playa_de_Las_Teresitas): 1.300 m por 80, rompeolas de casi un kilómetro a unos 150 m con una boca en cada punta, espigones de la cofradía y de la punta de los Órganos, embarque de la Virgen del Carmen.
+- Diario de Avisos sobre [la arena del Sáhara](https://diariodeavisos.elespanol.com/2022/05/las-teresitas-sahara/) (obras desde 1968, unas 270.000 toneladas en 1973), [los kioscos](https://diariodeavisos.elespanol.com/2026/03/luz-verde-quioscos-las-teresitas/) y [el castillo](https://diariodeavisos.elespanol.com/2023/04/castillo-de-san-andres/).
+- [Castle of San Andrés, Wikipedia](https://en.wikipedia.org/wiki/Castle_of_San_Andr%C3%A9s): torre de hacia 1706, media torre derribada por el barranco, Bien de Interés Cultural, disparos sobre el HMS Theseus en 1797 (contado como tradición).

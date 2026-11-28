@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  'las-teresitas': {
+    nombre: 'Playa de Las Teresitas', zona: 'San Andrés · Tenerife',
+    descripcion: 'Pasea por la arena dorada entre palmeras, frente al rompeolas, hasta el castillo de San Andrés.',
+  },
 };
