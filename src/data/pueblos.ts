@@ -12,7 +12,7 @@ import {
 } from '../puerto/sitios/teresitas-plano';
 import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete' | 'san-sebastian';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete' | 'san-sebastian' | 'la-laguna';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -30,7 +30,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete' | 'san-sebastian';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete' | 'san-sebastian' | 'laguna';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -57,6 +57,8 @@ export interface Plano {
   cota?: (x: number, z: number) => number;
   /** Cuánto baja el horizonte pintado sin tocar la cámara: tierra adentro, los montes propios tapan su mar. */
   horizonte?: number;
+  /** Centro (x, z) del recuadro de sombras de un trazado propio; (4, 12) si se omite. */
+  foco?: [number, number];
 }
 export interface Suelo {
   r: [number, number, number, number];
@@ -1406,6 +1408,77 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
         texto: 'Al abrigo de este dique atracan los ferris que cruzan a Los Cristianos, en Tenerife. Desde la punta se ve toda la villa: la playa, la torre y el Parador en lo alto del risco.',
         vista: 0.05,
       },
+    ],
+  },
+  // Tenerife, el casco de San Cristóbal de La Laguna, trazado sobre la ortofoto PNOA y OpenStreetMap.
+  // La cuadrícula se gira para que La Carrera corra de sur a norte: la plaza del Adelantado queda
+  // abajo, junto a la cámara, y la calle sube hasta la torre de la Concepción, como en la postal.
+  // San Agustín corre paralela al este, y la catedral queda entre las dos. Trazado en `sitios/laguna.ts`.
+  'la-laguna': {
+    nombre: 'San Cristóbal de La Laguna',
+    isla: 'tenerife',
+    poi: 'la-laguna',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'laguna',
+      sinMar: true,
+      cuesta: { desnivel: 12, picado: 0.38 },
+      bruma: [30, 150],
+      foco: [4, 7], // la calle es larga: las sombras llegan de la plaza a la torre
+      // Palmeras canarias de la plaza del Doctor Olivera, a los dos lados de la iglesia.
+      palmeras: [-44.2, -40.6, -33.4, -29.8].flatMap((z, i): [number, number, number][] => [
+        [-16.3, z, 6.4 + (i % 2) * 0.8],
+        [-11.1, z, 7.2 - (i % 2) * 0.6],
+      ]),
+      suelos: [
+        { r: [-1.4, -23.6, 1.4, 44] }, // La Carrera, la calle Obispo Rey Redondo
+        { r: [-12, 44, 21.4, 62] }, // plaza del Adelantado
+        { r: [18.6, -26, 21.4, 44] }, // calle San Agustín y, junto a la plaza, Nava y Grimón
+        { r: [-14.8, -26, -12, 26] }, // calle Herradores
+        { r: [-14.8, 23.6, 18.6, 26] }, // calle Viana
+        { r: [-14.8, 1.2, 18.6, 3.6] }, // plaza de los Remedios y calle San Juan
+        { r: [1.4, 3.6, 13.4, 6.4] }, // plaza de la Catedral, ante la fachada
+        { r: [-14.8, -16.4, 18.6, -14] }, // calle Núñez de la Peña
+        { r: [-17, -26, 21.4, -23.6] }, // travesía al pie de la Concepción
+        { r: [-1.4, -46, 6, -23.6] }, // plaza de la Concepción
+        { r: [-17, -46, -10.4, -26] }, // plaza del Doctor Olivera
+        { r: [-17, -48.4, 6, -46] }, // trasera de la iglesia, bajo la torre
+      ],
+      vallas: [
+        [-3.4, -46.6, -0.4, -43.6], // torre de la Concepción
+        [3.2, 51.5, 6.2, 54.5], // fuente de la plaza del Adelantado
+        [-14.9, -38.2, -12.5, -35.8], // pilar de la plaza del Doctor Olivera
+        ...[-44.2, -40.6, -33.4, -29.8].flatMap((z): [number, number, number, number][] =>
+          [-16.3, -11.1].map((x) => [x - 0.35, z - 0.35, x + 0.35, z + 0.35]),
+        ),
+        ...[
+          [-9.4, 48],
+          [-9.4, 53],
+          [-9.4, 58],
+          [18.8, 48],
+          [18.8, 53],
+          [18.8, 58],
+        ].map(([x, z]): [number, number, number, number] => [x - 0.35, z - 0.35, x + 0.35, z + 0.35]), // árboles de la plaza
+        [3.1, 4.1, 4.1, 5.1], // dragos ante la catedral
+        [11.9, 4.1, 12.9, 5.1],
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 7.4, z: 57.4 },
+    rincones: [
+      { nombre: 'Plaza del Adelantado', x: 4.7, z: 55.4, texto: 'La plaza mayor de la Villa de Abajo debe su nombre a Alonso Fernández de Lugo, el Adelantado que conquistó Tenerife y fundó la ciudad. Fue escenario de fiestas y actos públicos; la fuente de mármol del centro se encargó a un taller francés y se colocó en 1870.', vista: -0.15 },
+      { nombre: 'Casas Consistoriales', x: -6.7, z: 45.6, texto: 'El Ayuntamiento. Su fachada de cantería gris, de 1822, se tiene por el mejor ejemplo de arquitectura civil neoclásica de Canarias: cinco arcos abajo y balcones de hierro arriba.', vista: 0.15 },
+      { nombre: 'Convento de Santa Catalina', x: 5.5, z: 45.6, texto: 'Monjas dominicas de clausura desde 1611, en el solar donde vivió el Adelantado. Desde su mirador de celosías de madera las monjas podían asomarse a la plaza sin ser vistas. En su iglesia reposa sor María de Jesús, la Siervita, y cada 15 de febrero se puede visitar su cuerpo.', vista: 0 },
+      { nombre: 'Palacio de Nava', x: 14.1, z: 45.6, texto: 'Lo empezó Tomás Grimón en 1585, y Tomás de Nava y Grimón lo rehízo en 1776 con esta fachada de cantería oscura, columnas salomónicas y balcón corrido. En sus salones se reunía la Tertulia de Nava, foco de la Ilustración en Canarias.', vista: -0.15 },
+      { nombre: 'Casa de los Capitanes', x: -0.3, z: 30.5, texto: 'Pared con pared con el Ayuntamiento, en La Carrera. Le dicen de los Capitanes Generales porque, entre 1705 y 1723, vivieron en ella seis capitanes generales de Canarias. Hoy alberga la alcaldía.', vista: 0.55 },
+      { nombre: 'La Carrera', x: 0, z: 12, texto: 'La calle Obispo Rey Redondo, que todos llaman La Carrera, une la plaza del Adelantado con la iglesia de la Concepción. Casas de colores, portadas de cantería, balcones cerrados de madera y, al fondo, la torre.', vista: 0 },
+      { nombre: 'Catedral de los Remedios', x: 8, z: 3.4, texto: 'La fachada neoclásica, de 1820 e inspirada en la catedral de Pamplona, es lo único que queda del templo antiguo. El resto se levantó de nuevo en hormigón, en estilo neogótico, a principios del siglo XX; la cúpula, forrada de cobre, es el punto más alto del casco. Aquí reposa el Adelantado.', vista: 3 },
+      { nombre: 'Ruinas de San Agustín', x: 20, z: -7, texto: 'La iglesia del antiguo convento de los agustinos, en la calle San Agustín. Ardió la tarde del 2 de junio de 1964 y solo quedaron en pie los muros y las arcadas de columnas.', vista: -0.3 },
+      { nombre: 'La cuadrícula', x: 20, z: 24.8, texto: 'Calles rectas que se cruzan en ángulo recto: la Villa de Abajo se trazó a cordel a partir de 1502. Fue la primera ciudad colonial española sin murallas y sirvió de modelo a muchas ciudades de América. Es Patrimonio de la Humanidad desde 1999.', vista: -0.5 },
+      { nombre: 'Iglesia de la Concepción', x: -13.7, z: -32.6, texto: 'La primera parroquia de Tenerife, fundada en 1511 en la Villa de Arriba, el núcleo más antiguo de la ciudad. Tres naves de cal y teja con techumbre mudéjar, y delante, la plaza del Doctor Olivera con sus palmeras.', vista: -1.1 },
+      { nombre: 'Torre de la Concepción', x: 1.6, z: -39, texto: 'La torre de cantería, de finales del siglo XVII, mide unos 28 metros y guarda la campana más grande de Canarias. Se puede subir a lo alto, desde donde se ve buena parte de la ciudad.', vista: 0.3 },
     ],
   },
 };

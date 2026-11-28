@@ -361,6 +361,27 @@ el cauce se endereza; el castillo queda detrás de la avenida y no en su gloriet
 - [Playa de Las Teresitas, Wikipedia](https://es.wikipedia.org/wiki/Playa_de_Las_Teresitas): 1.300 m por 80, rompeolas de casi un kilómetro a unos 150 m con una boca en cada punta, espigones de la cofradía y de la punta de los Órganos, embarque de la Virgen del Carmen.
 - Diario de Avisos sobre [la arena del Sáhara](https://diariodeavisos.elespanol.com/2022/05/las-teresitas-sahara/) (obras desde 1968, unas 270.000 toneladas en 1973), [los kioscos](https://diariodeavisos.elespanol.com/2026/03/luz-verde-quioscos-las-teresitas/) y [el castillo](https://diariodeavisos.elespanol.com/2023/04/castillo-de-san-andres/).
 - [Castle of San Andrés, Wikipedia](https://en.wikipedia.org/wiki/Castle_of_San_Andr%C3%A9s): torre de hacia 1706, media torre derribada por el barranco, Bien de Interés Cultural, disparos sobre el HMS Theseus en 1797 (contado como tradición).
+## San Cristóbal de La Laguna
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/laguna.ts`, sin
+modelos ni texturas nuevas. La cuadrícula de la Villa de Abajo, La Carrera, la
+calle San Agustín y la plaza del Adelantado siguen un recorte de la ortofoto PNOA,
+de (−16,3225, 28,4845) a (−16,3075, 28,4925), y el callejero de OpenStreetMap,
+girados para que La Carrera corra de sur a norte y comprimidos a escala de juego.
+Se representan la plaza del Adelantado con su fuente de mármol, las Casas
+Consistoriales, la Casa de los Capitanes, el convento de Santa Catalina con su
+mirador de celosías, el palacio de Nava, la ermita de San Miguel, la catedral de
+los Remedios con sus dragos, las ruinas de San Agustín, la iglesia de la
+Concepción con su torre y la plaza del Doctor Olivera. El recorte PNOA y las
+fotos de consulta no están en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- Callejero y posiciones de los edificios: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API 0.6.
+- Fotos de consulta de Wikimedia Commons: fachada de la catedral (La_Laguna_2022_-_main_facade.jpg), torre y plaza de la Concepción, Casas Consistoriales, palacio de Nava, convento de Santa Catalina y calle Obispo Rey Redondo.
+- [Catedral de San Cristóbal de La Laguna, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_San_Crist%C3%B3bal_de_La_Laguna) e [Iglesia de la Concepción, Wikipedia](https://es.wikipedia.org/wiki/Iglesia_de_la_Concepci%C3%B3n_(San_Crist%C3%B3bal_de_La_Laguna)).
+- [Plaza del Adelantado](https://www.webtenerife.co.uk/tenerife/the-island/municipalities/laguna/places-interest/plaza-adelantado/) y [Palacio de Nava](https://www.webtenerife.co.uk/tenerife/art-and-culture/architecture/traditional/palacio-de-nava), Web Tenerife; [Convento de Santa Catalina](https://www.webtenerife.co.uk/tenerife/art-and-culture/architecture/traditional/convento-de-santa-catalina).
+- [Ficha de San Cristóbal de La Laguna, Patrimonio Mundial de la UNESCO](https://whc.unesco.org/es/list/929) y [crónicas sobre el incendio de San Agustín de 1964, Diario de Avisos](https://diariodeavisos.elespanol.com/2024/06/incendio-iglesia-san-agustin-la-laguna/).
+
 
 ## San Sebastián de La Gomera
 

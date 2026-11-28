@@ -182,6 +182,9 @@ export const VISITAS = {
   valverde: {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
+  },  'la-laguna': {
+    nombre: 'San Cristóbal de La Laguna', zona: 'Casco histórico · Tenerife',
+    descripcion: 'Recorre La Carrera desde la plaza del Adelantado hasta la torre de la Concepción, entre casas de colores y balcones de madera.',
   },
   'las-canteras': {
     nombre: 'Playa de Las Canteras', zona: 'Las Palmas · Gran Canaria',

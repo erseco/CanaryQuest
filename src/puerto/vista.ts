@@ -68,9 +68,10 @@ export async function abrirPuerto(
     sol.position.set(-41.6, 33.8, 20.8);
     Object.assign(sol.shadow.camera, { left: -42, right: 42, top: 26, bottom: -26, far: 140 });
     if (plano.suelos) {
-      // Un trazado propio se extiende mar adentro: el foco apunta al centro de la bahía.
-      sol.target.position.set(4, 0, 12);
-      sol.position.set(-37.6, 33.8, 32.8);
+      // Un trazado propio se extiende mar adentro: el foco apunta al centro de la bahía, o al que pida el lugar.
+      const [fx, fz] = plano.foco ?? [4, 12];
+      sol.target.position.set(fx, 0, fz);
+      sol.position.set(fx - 41.6, 33.8, fz + 20.8);
       Object.assign(sol.shadow.camera, { left: -50, right: 50, top: 38, bottom: -38, far: 170 });
     }
     sol.shadow.mapSize.set(2048, 2048);

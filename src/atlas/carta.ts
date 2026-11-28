@@ -17,6 +17,7 @@ export const SITIOS = {
   'loro-parque': { isla: 'tenerife', carta: proyectarLugar(geografia.tenerife['loro-parque']) },
   yaiza: { isla: 'lanzarote', carta: proyectarLugar(geografia.lanzarote.yaiza) },
   cofete: { isla: 'fuerteventura', carta: proyectarLugar(geografia.fuerteventura.cofete) },
+  'la-laguna': { isla: 'tenerife', carta: proyectarLugar(geografia.tenerife['la-laguna']) },
 } as const;
 export type Sitio = keyof typeof SITIOS;
 
