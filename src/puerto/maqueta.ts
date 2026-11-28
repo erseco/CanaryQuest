@@ -6,6 +6,7 @@ import { PUEBLOS, type Pueblo } from '../data/pueblos';
 import { INICIO, PASTOR, alturaPaseo } from './paseo';
 import { trazarRestinga } from './sitios/restinga';
 import { trazarOrchilla } from './sitios/orchilla';
+import { trazarVegueta } from './sitios/vegueta';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -375,6 +376,7 @@ export function crearMaqueta(
   };
   if (plano.sitio === 'restinga') sitio = trazarRestinga(taller);
   else if (plano.sitio === 'orchilla') sitio = trazarOrchilla(taller);
+  else if (plano.sitio === 'vegueta') sitio = trazarVegueta(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {
@@ -725,6 +727,8 @@ export function crearMaqueta(
       escena.add(barco);
     }
   }
+  // Tierra adentro no hay barcos: los del puerto quedarían asomando entre las losas.
+  if (plano.sinMar) for (const barco of barcos) barco.visible = false;
   const jugador = persona(inicio.x, inicio.z, false),
     pastor = persona(PASTOR.x, PASTOR.z, true);
   escena.add(jugador, pastor);

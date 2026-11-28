@@ -1,6 +1,6 @@
 import type { IslaId } from './islas';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'las-palmas';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -18,7 +18,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla';
+  sitio?: 'restinga' | 'orchilla' | 'vegueta';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -74,6 +74,8 @@ export interface Rincon {
   x: number;
   z: number;
   texto: string;
+  /** Giro de la cámara al llegar, para encuadrar lo que se describe; si se omite, no gira. */
+  vista?: number;
 }
 export interface DatosPueblo {
   nombre: string;
@@ -261,6 +263,63 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Faro de Orchilla', x: -7.4, z: -6, texto: 'Piedra gris de cantería sobre la lava. Desde 1933 es la última luz de España hacia poniente.' },
       { nombre: 'Monumento al Meridiano Cero', x: -20.6, z: -8.7, texto: 'Por aquí pasó durante siglos el meridiano cero de los mapas, antes de que se lo llevaran a Greenwich.' },
       { nombre: 'Embarcadero de Orchilla', x: 0, z: 16, texto: 'Por este muellito desembarcaron la piedra y la linterna del faro. Hoy el agua quieta invita a bañarse.' },
+    ],
+  },
+  // Gran Canaria, Vegueta. La plaza de Santa Ana girada 30° para que su eje corra de oeste a
+  // este: la catedral al este, las Casas Consistoriales al oeste, la Casa Regental y el Palacio
+  // Episcopal al norte, la calle del Castillo al sur. Detrás de la catedral, el Pilar Nuevo y la
+  // Casa de Colón; al oeste, la plazoleta del Espíritu Santo. Trazado en `sitios/vegueta.ts`.
+  'las-palmas': {
+    nombre: 'Las Palmas de Gran Canaria',
+    isla: 'gran-canaria',
+    poi: 'las-palmas',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'vegueta',
+      sinMar: true,
+      palmeras: [
+        // Las dos hileras de la plaza, a lo largo de sus lados mayores.
+        ...[-11.2, -7.6, -4, -0.4, 3.2, 6.8, 10.4].flatMap((x, i): [number, number, number][] => [
+          [x, 1.9, 6.6 + (i % 3) * 0.5],
+          [x + 0.3, 10.3, 7.3 - (i % 2) * 0.6],
+        ]),
+        [4.4, -6.4, 4.4], // patio del Palacio Episcopal
+        [26.4, 13.6, 4.8], // patio de los Naranjos
+      ],
+      suelos: [
+        { r: [13.2, 4.9, 14.3, 7.3], y: 0.15, y2: 0, eje: 'x' }, // gradas entre los perros
+        { r: [-13, 1, 13.2, 11.2], y: 0.15 }, // plaza de Santa Ana
+        { r: [-27, -1.6, 13.2, 1] }, // calle Doramas, al pie del Palacio Episcopal
+        { r: [13.2, -3, 17.4, 17.6] }, // calle Obispo Codina, ante la catedral
+        { r: [-28, 11.2, 13.2, 14.2] }, // calle del Castillo
+        { r: [-17, 1, -13, 11.2] }, // explanada de las Casas Consistoriales
+        { r: [-18.6, 1.6, -17, 10.6] }, // su soportal
+        { r: [-37, 7, -28, 19] }, // plazoleta del Espíritu Santo
+        { r: [17.4, 15, 38, 17.6] }, // calle del Espíritu Santo
+        { r: [34.6, 9, 38, 15] }, // callejón hacia el Pilar Nuevo
+        { r: [33.6, 1.5, 45, 9] }, // plaza del Pilar Nuevo
+      ],
+      vallas: [
+        [12.7, 1, 13.4, 4.9], // pedestales de los perros, al norte de las gradas
+        [12.7, 7.3, 13.4, 11.2], // y al sur
+        [39.7, 4.7, 41.3, 6.3], // pilar de la plaza
+        [-33.7, 11.8, -31.3, 14.2], // templete del Espíritu Santo
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 4, z: 8 },
+    rincones: [
+      { nombre: 'Plaza de Santa Ana', x: 0, z: 6.1, texto: 'La plaza mayor de Vegueta, el barrio donde nació la ciudad. En un extremo manda la Iglesia y en el otro el Cabildo, frente a frente, entre dos hileras de palmeras.', vista: -0.3 },
+      { nombre: 'Los perros de Santa Ana', x: 12.2, z: 6.1, texto: 'Ocho perros sentados miran hacia la catedral. Parecen de bronce, pero son de hierro fundido. Recuerdan a los canes que, según Plinio, dieron nombre a las islas.', vista: -0.75 },
+      { nombre: 'Catedral de Santa Ana', x: 16.2, z: 6.1, texto: 'Se empezó hacia 1500 y tardó casi cuatro siglos en terminarse. Por dentro es gótica, con columnas que se abren como palmeras. Por fuera, una fachada neoclásica de piedra gris entre dos torres.', vista: -0.9 },
+      { nombre: 'Palacio Episcopal', x: 6, z: -0.5, texto: 'La casa del obispo. Cuando la armada holandesa quemó la ciudad en 1599, de ella solo quedó en pie esta portada de piedra, de aire mudéjar.', vista: -0.2 },
+      { nombre: 'Casa Regental', x: -7.25, z: -0.5, texto: 'Aquí vivía el regente de la Real Audiencia. Su portada renacentista es de las más bellas de Canarias; hoy alberga el Tribunal Superior de Justicia.', vista: -0.2 },
+      { nombre: 'Casas Consistoriales', x: -15.2, z: 6.1, texto: 'El antiguo ayuntamiento mira a la catedral desde el otro extremo de la plaza. Se rehízo tras el incendio de 1842, con un soportal de nueve arcos.', vista: 1.45 },
+      { nombre: 'Calle del Castillo', x: -27.6, z: 12.7, texto: 'Empedrado, fachadas de colores y balcones de madera de tea: así es Vegueta. Esta calle une la plaza de Santa Ana con la del Espíritu Santo; en una de sus casas vivió y murió el ilustrado Viera y Clavijo.', vista: -0.5 },
+      { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
+      { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
     ],
   },
 };

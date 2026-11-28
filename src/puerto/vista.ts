@@ -178,6 +178,7 @@ export async function abrirPuerto(
   const pos = jugador.position;
   const lugares: { nombre: string; punto: PuntoPuerto; activar: () => void }[] = [];
   let anguloCalle=angulo;
+  let giroRincon: number | undefined;
   function entrar(c: CasaPuerto) {
     anguloCalle=angulo;angulo=-0.18;
     puntoRetorno = umbral(c);
@@ -236,6 +237,8 @@ export async function abrirPuerto(
       activar: () => {
         quienHabla = r.nombre;
         dialogo = [r.texto];
+        // Gira por el camino más corto hacia el encuadre del rincón.
+        if (r.vista !== undefined) giroRincon = angulo + Math.atan2(Math.sin(r.vista - angulo), Math.cos(r.vista - angulo));
         refrescar();
       },
     });
@@ -552,6 +555,10 @@ export async function abrirPuerto(
     (escena.fog as T.Fog).color.copy(cielo);
     aguaMaterial.uniforms.tiempo.value = tiempo;
     aguaMaterial.uniforms.oscuridad.value = luz;
+    if (giroRincon !== undefined) {
+      angulo = T.MathUtils.damp(angulo, giroRincon, 2.6, dt);
+      if (Math.abs(giroRincon - angulo) < 0.005) giroRincon = undefined;
+    }
     if(casaActual)angulo=T.MathUtils.clamp(angulo,-0.85,0.85);
     const radio = (casaActual ? distancia/3 : distancia) * (camara.aspect < 1 ? 1.13 : 1);
     centro.x = T.MathUtils.damp(

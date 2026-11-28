@@ -51,11 +51,15 @@ function obstaculos(pueblo: Pueblo): Rect[] {
 }
 const zonas = Object.fromEntries(PUEBLO_IDS.map((p) => [p, zona(p)])) as Record<Pueblo, Rect>;
 const limites = Object.fromEntries(PUEBLO_IDS.map((p) => [p, obstaculos(p)])) as Record<Pueblo, Rect[]>;
-const dentro = ([a, b, c, d]: Rect, x: number, z: number) => x >= a && x <= c && z >= b && z <= d;
+const dentro = ([a, b, c, d]: Rect, x: number, z: number, holgura = 0) =>
+  x >= a - holgura && x <= c + holgura && z >= b - holgura && z <= d + holgura;
 export function transitable(x: number, z: number, pueblo: Pueblo = 'mogan') {
   const { suelos } = PUEBLOS[pueblo].plano;
   // Trazado propio: se pisa donde hay suelo; en los demás, dentro del rectángulo del pueblo.
-  const enSuelo = suelos ? suelos.some((s) => dentro(s.r, x, z)) : dentro(zonas[pueblo], x, z);
+  // El centímetro de holgura deja doblar la esquina entre dos suelos a quien llega a ella por el
+  // borde: el paso se da por recorrido de ruta cumplido a menos de 8 mm, y sin holgura el viajero
+  // se quedaba rozando el borde de fuera, sin poder avanzar por ningún eje.
+  const enSuelo = suelos ? suelos.some((s) => dentro(s.r, x, z, 0.01)) : dentro(zonas[pueblo], x, z);
   return enSuelo && !limites[pueblo].some((r) => dentro(r, x, z));
 }
 /** Tramo del segmento a→b que cae dentro del rectángulo, como fracciones de 0 a 1. */

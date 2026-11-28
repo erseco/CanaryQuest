@@ -69,6 +69,23 @@ con su pórtico y el dique rompeolas con su escollera.
 - [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).
 - [Monumento al Meridiano Cero, El Hierro Travel](https://elhierro.travel/en/what-to-do/monumento-al-meridiano-cero) y [Embarcadero del Faro de Orchilla, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/embarcadero-del-faro-de-orchilla/).
 
+## Vegueta (Las Palmas de Gran Canaria)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/vegueta.ts`, sin
+modelos ni texturas nuevas. La plaza de Santa Ana, sus calles, las hileras de
+palmeras y la fila de perros siguen la ortofoto PNOA de
+`public/assets/visitas/las-palmas-pnoa.webp` y el callejero de OpenStreetMap,
+giradas 30° y comprimidas a escala de juego. Se representan la catedral (fachada
+neoclásica de cantería gris con dos torres, rosetón, cimborrio y bóvedas blancas),
+las Casas Consistoriales con su soportal de nueve arcos, la Casa Regental, el
+Palacio Episcopal con su portada de alfiz, los ocho perros, la casa de Viera y
+Clavijo, el patio de los Naranjos, el Pilar Nuevo, la Casa de Colón, la plazoleta
+del Espíritu Santo con su templete y su ermita, y casas canarias con balcones de tea.
+
+- Callejero, árboles y esculturas: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
+- [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
+- [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
