@@ -35,6 +35,14 @@ export const Musica = {
     pista?.setVolume(ajustes.musica);
   },
 
+  /** Activa o silencia el sonido y lo recuerda; devuelve si queda silenciado. */
+  alternarMute(game: Phaser.Game): boolean {
+    const nuevo = !game.sound.mute;
+    game.sound.mute = nuevo;
+    localStorage.setItem(CLAVE_MUTE, nuevo ? '1' : '0');
+    return nuevo;
+  },
+
   crearBotonMute(escena: Phaser.Scene): void {
     const muted = localStorage.getItem(CLAVE_MUTE) === '1';
     const boton = escena.add
@@ -45,9 +53,7 @@ export const Musica = {
       .setInteractive({ useHandCursor: true });
     boton.on('pointerdown', (_pointer: Phaser.Input.Pointer, _x: number, _y: number, event: Phaser.Types.Input.EventData) => {
       event.stopPropagation();
-      const nuevo = !escena.game.sound.mute;
-      escena.game.sound.mute = nuevo;
-      localStorage.setItem(CLAVE_MUTE, nuevo ? '1' : '0');
+      const nuevo = Musica.alternarMute(escena.game);
       boton.setText(nuevo ? '🔇' : '🔊');
     });
   },

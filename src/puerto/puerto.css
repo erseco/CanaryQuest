@@ -236,3 +236,14 @@
 .visita h1 {font-size:clamp(27px,3.8vw,60px);max-width:6em}
 .visita footer details p {top:auto;bottom:42px}
 .visita article p:last-child {margin-bottom:0}
+
+/* Portada: el lugar de fondo, sin su interfaz ni respuesta al puntero. */
+.puerto.escaparate {
+  z-index: 2;
+}
+.puerto.escaparate > :not(canvas) {
+  display: none;
+}
+.puerto.escaparate canvas {
+  pointer-events: none;
+}

@@ -31,6 +31,8 @@ export async function abrirPuerto(
   seguirRastro?: () => void,
   /** Eventos de misión de los rincones: hablar con el personaje que espera en uno, o llegar a él. */
   avisar?: (evento: 'npc-hablar' | 'llegar', datos: { npc: string } | { poi: string }) => void,
+  /** Fondo de la portada: sin interfaz ni viajero, la cámara gira despacio alrededor del lugar. */
+  escaparate = false,
 ) {
   const barrio = PUEBLOS[pueblo];
   const { plano, salidas } = barrio;
@@ -41,7 +43,7 @@ export async function abrirPuerto(
   const recursos = await cargarRecursos();
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
-  root.className = 'puerto';
+  root.className = escaparate ? 'puerto escaparate' : 'puerto';
   root.innerHTML = `<header><div class="marca"><span class="rosa" aria-hidden="true">✥</span>${t.marca}</div>
     <div class="acciones"><button data-accion="luz" aria-label="${t.luz}">☀ ${t.dia}</button><button data-accion="mapa">${t.mapa} ↗</button>
     <details><summary aria-label="${t.controles}">?</summary><p>${t.ayuda}</p></details></div></header>
@@ -129,6 +131,7 @@ export async function abrirPuerto(
   const { jugador, pastor, barcos, cristal, fachadas } = crearMaqueta(exterior, recursos, pueblo);
   escena.add(jugador);
   if (llegada) jugador.position.set(llegada.x, 0, llegada.z);
+  jugador.visible = !escaparate;
   pastor.visible = pueblo === 'mogan';
   const mar = new Reflector(new T.PlaneGeometry(240, 240), {
     textureWidth: 512,
@@ -187,7 +190,7 @@ export async function abrirPuerto(
     opts = { signal: abort.signal };
   const teclas = new Set<string>();
   let angulo = -0.36,
-    distancia = 28.5,
+    distancia = escaparate ? 40 : 28.5,
     luz = 0,
     destinoLuz = 0,
     animacion = 0,
@@ -549,7 +552,7 @@ export async function abrirPuerto(
   window.addEventListener(
     'keydown',
     (e) => {
-      if (e.target === selector) return;
+      if (e.target === selector || escaparate) return;
       if (e.ctrlKey || e.metaKey || e.altKey) return;
       if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code)) e.preventDefault();
       teclas.add(e.code);
@@ -575,6 +578,7 @@ export async function abrirPuerto(
     const dt = Math.min(0.06, (ahora - previo) / 1000);
     previo = ahora;
     tiempo += dt;
+    if (escaparate) angulo += dt * 0.05;
     const antes = cercano(),
       pos = jugador.position;
     let dx = 0,

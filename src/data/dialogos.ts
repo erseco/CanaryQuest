@@ -227,3 +227,18 @@ export const VISITAS = {
     descripcion: 'Camina por la laurisilva entre musgo y niebla, de la Laguna Grande al Alto de Garajonay.',
   },
 };
+
+/** Portada y pantalla de carga. */
+export const PORTADA = {
+  marca: 'CanaryQuest',
+  lema: 'Una aventura gráfica por las Islas Canarias',
+  islas: (lugares: number) => `Ocho islas · ${lugares} lugares para pasear`,
+  continuar: 'Continuar',
+  nueva: 'Nueva partida',
+  controles: 'Ratón o flechas para andar · E para hablar · ESC para el menú',
+  desde: 'De fondo',
+  sonido: 'Sonido',
+  silencio: 'Silenciar',
+  error: 'No se pudo cargar',
+  cargando: 'Cargando',
+};

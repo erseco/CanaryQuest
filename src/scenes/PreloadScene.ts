@@ -4,6 +4,7 @@ import { iniciarOrquestador } from '../sistemas/Orquestador';
 import { SaveManager } from '../sistemas/SaveManager';
 import { crearTexturasVehiculos } from '../sistemas/vehiculos';
 import { ISLAS } from '../data/islas';
+import { PORTADA } from '../data/dialogos';
 
 interface SpriteBq {
   width: number;
@@ -17,24 +18,20 @@ export class PreloadScene extends Phaser.Scene {
   }
 
   preload(): void {
-    const { width, height } = this.scale;
-    const barraFondo = this.add
-      .rectangle(width / 2, height / 2, 404, 24, 0x14294f)
-      .setStrokeStyle(2, 0xffffff);
-    const barra = this.add.rectangle(width / 2 - 200, height / 2, 0, 16, 0xf4c542);
-    barra.setOrigin(0, 0.5);
-    const texto = this.add
-      .text(width / 2, height / 2 - 40, 'Cargando CanaryQuest…', {
-        fontFamily: 'monospace',
-        fontSize: '20px',
-        color: '#ffffff',
-      })
-      .setOrigin(0.5);
-
-    this.load.on('progress', (v: number) => barra.setSize(400 * v, 16));
+    // La barra es la de la pantalla de carga de index.html, que sigue a la vista hasta la portada.
+    const carga = document.getElementById('carga');
+    const barra = carga?.querySelector<HTMLElement>('.barra i');
+    const estado = carga?.querySelector<HTMLElement>('.estado');
+    carga?.classList.add('medida');
+    this.load.on('progress', (v: number) => {
+      if (barra) barra.style.width = `${Math.round(v * 100)}%`;
+    });
+    this.load.on('fileprogress', (file: Phaser.Loader.File) => {
+      const isla = Object.values(ISLAS).find((i) => file.key.endsWith(i.id));
+      if (estado && isla) estado.textContent = `${PORTADA.cargando} ${isla.nombre}…`;
+    });
     this.load.on('loaderror', (file: Phaser.Loader.File) => {
-      texto.setText(`Error cargando: ${file.key}`).setColor('#ff6b6b');
-      barraFondo.setStrokeStyle(2, 0xff6b6b);
+      if (estado) estado.textContent = `${PORTADA.error}: ${file.key}`;
     });
 
     // Ilustraciones de islas y mapas
