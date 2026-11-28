@@ -19,6 +19,7 @@ import { trazarDunas } from './sitios/dunas';
 import { trazarLoroParque } from './sitios/loro-parque';
 import { trazarYaiza } from './sitios/yaiza';
 import { trazarCofete } from './sitios/cofete';
+import { trazarSanSebastian } from './sitios/san-sebastian';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -403,6 +404,7 @@ export function crearMaqueta(
   else if (plano.sitio === 'loro') sitio = trazarLoroParque(taller);
   else if (plano.sitio === 'yaiza') sitio = trazarYaiza(taller);
   else if (plano.sitio === 'cofete') sitio = trazarCofete(taller);
+  else if (plano.sitio === 'san-sebastian') sitio = trazarSanSebastian(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {

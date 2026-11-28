@@ -361,3 +361,25 @@ el cauce se endereza; el castillo queda detrás de la avenida y no en su gloriet
 - [Playa de Las Teresitas, Wikipedia](https://es.wikipedia.org/wiki/Playa_de_Las_Teresitas): 1.300 m por 80, rompeolas de casi un kilómetro a unos 150 m con una boca en cada punta, espigones de la cofradía y de la punta de los Órganos, embarque de la Virgen del Carmen.
 - Diario de Avisos sobre [la arena del Sáhara](https://diariodeavisos.elespanol.com/2022/05/las-teresitas-sahara/) (obras desde 1968, unas 270.000 toneladas en 1973), [los kioscos](https://diariodeavisos.elespanol.com/2026/03/luz-verde-quioscos-las-teresitas/) y [el castillo](https://diariodeavisos.elespanol.com/2023/04/castillo-de-san-andres/).
 - [Castle of San Andrés, Wikipedia](https://en.wikipedia.org/wiki/Castle_of_San_Andr%C3%A9s): torre de hacia 1706, media torre derribada por el barranco, Bien de Interés Cultural, disparos sobre el HMS Theseus en 1797 (contado como tradición).
+
+## San Sebastián de La Gomera
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/san-sebastian.ts`,
+sin assets nuevos. El trazado sigue la ortofoto PNOA y las posiciones de
+OpenStreetMap con el norte hacia −z, comprimido a escala de juego: la plaza de
+las Américas, la plaza de la Constitución con sus laureles y el quiosco, la Casa
+de la Aduana con el patio y el Pozo de la Aguada, la calle Real con la iglesia de
+la Asunción y la Casa de Colón, el parque de la Torre del Conde, la playa de
+arena negra y su paseo, la marina, la explanada con la estación marítima, el
+dique del ferry y el Parador en lo alto del lomo de la Horca. El ferry es el
+compartido (`src/puerto/sitios/ferry.ts`). Los recortes PNOA, de (−17.122,
+28.080) a (−17.100, 28.100), se usaron solo como consulta y no están en el
+repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://www.scne.es/).
+- Posiciones de la Torre del Conde, la iglesia, la Casa de Colón, la Casa de la Aduana, el pozo, las plazas, la calle Real, el Parador y la estación marítima: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API Overpass.
+- Torre del Conde (1447–1450, Hernán Peraza el Viejo, unos 15 m, muros de dos metros encalados con esquinas de cantería roja, refugio en la rebelión de 1488): [Wikipedia](https://es.wikipedia.org/wiki/Torre_del_Conde_(Canarias)), [Lonely Planet](https://www.lonelyplanet.com/points-of-interest/torre-del-conde/1463084) y [Beatriz de Bobadilla, Wikipedia](https://en.wikipedia.org/wiki/Beatriz_de_Bobadilla).
+- Iglesia de la Asunción (ermita del siglo XV, tres naves, portada central de toba roja y laterales de piedra blanca, la cartela «Aquí oró Colón» como tradición): [Wikipedia](https://es.wikipedia.org/wiki/Iglesia_matriz_de_la_Asunci%C3%B3n_(San_Sebasti%C3%A1n_de_La_Gomera)) y [elDiario.es, La Gomera Ahora](https://www.eldiario.es/lagomeraahora/cultura/iglesia-Asuncion-verdadero-museo-sacro_0_259324582.html).
+- Pozo de la Aguada, su cartela «Con este agua se bautizó América» y la falta de base documental de la tradición: P. Jerez Sabater en [Quiroga](https://revistaseug.ugr.es/index.php/quiroga/article/download/16513/14044/47760) y [EcuRed](https://www.ecured.cu/San_Sebasti%C3%A1n_de_La_Gomera).
+- Casa de Colón (tradición oral de que Colón pernoctó allí, planta en L de dos alturas, cerámica chimú y mochica) y Casa de la Aduana (una planta en L con patio claustral): [Museos de La Gomera](https://museos.lagomera.es/en/other-centres-to-visit/).
+- Parador de La Gomera en el lomo de la Horca, casona canaria sobre el acantilado con vistas al Teide: [Paradores](https://paradores.es/en/parador-de-la-gomera).
