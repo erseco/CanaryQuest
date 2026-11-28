@@ -133,6 +133,27 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
+## San Cristóbal de La Laguna
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/laguna.ts`, sin
+modelos ni texturas nuevas. La cuadrícula de la Villa de Abajo, La Carrera, la
+calle San Agustín y la plaza del Adelantado siguen un recorte de la ortofoto PNOA,
+de (−16,3225, 28,4845) a (−16,3075, 28,4925), y el callejero de OpenStreetMap,
+girados para que La Carrera corra de sur a norte y comprimidos a escala de juego.
+Se representan la plaza del Adelantado con su fuente de mármol, las Casas
+Consistoriales, la Casa de los Capitanes, el convento de Santa Catalina con su
+mirador de celosías, el palacio de Nava, la ermita de San Miguel, la catedral de
+los Remedios con sus dragos, las ruinas de San Agustín, la iglesia de la
+Concepción con su torre y la plaza del Doctor Olivera. El recorte PNOA y las
+fotos de consulta no están en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- Callejero y posiciones de los edificios: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API 0.6.
+- Fotos de consulta de Wikimedia Commons: fachada de la catedral (La_Laguna_2022_-_main_facade.jpg), torre y plaza de la Concepción, Casas Consistoriales, palacio de Nava, convento de Santa Catalina y calle Obispo Rey Redondo.
+- [Catedral de San Cristóbal de La Laguna, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_San_Crist%C3%B3bal_de_La_Laguna) e [Iglesia de la Concepción, Wikipedia](https://es.wikipedia.org/wiki/Iglesia_de_la_Concepci%C3%B3n_(San_Crist%C3%B3bal_de_La_Laguna)).
+- [Plaza del Adelantado](https://www.webtenerife.co.uk/tenerife/the-island/municipalities/laguna/places-interest/plaza-adelantado/) y [Palacio de Nava](https://www.webtenerife.co.uk/tenerife/art-and-culture/architecture/traditional/palacio-de-nava), Web Tenerife; [Convento de Santa Catalina](https://www.webtenerife.co.uk/tenerife/art-and-culture/architecture/traditional/convento-de-santa-catalina).
+- [Ficha de San Cristóbal de La Laguna, Patrimonio Mundial de la UNESCO](https://whc.unesco.org/es/list/929) y [crónicas sobre el incendio de San Agustín de 1964, Diario de Avisos](https://diariodeavisos.elespanol.com/2024/06/incendio-iglesia-san-agustin-la-laguna/).
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
