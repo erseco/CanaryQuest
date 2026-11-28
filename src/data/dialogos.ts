@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  aridane: {
+    nombre: 'Valle de Aridane', zona: 'Los Llanos · La Palma',
+    descripcion: 'Pasea bajo los laureles de la plaza de España y asómate al valle, que baja entre plataneras hasta el mar.',
+  },
 };

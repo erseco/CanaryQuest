@@ -81,7 +81,7 @@ rectangulares genéricas — afinar con Tiled copiando el patrón de
 
 Los lugares 3D son pueblos de `src/data/pueblos.ts` montados con la maqueta
 del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde
-y Las Palmas. Cada uno con trazado propio vive en `src/puerto/sitios/<lugar>.ts`.
+y Las Palmas, y el valle de Aridane (Los Llanos, La Palma). Cada uno con trazado propio vive en `src/puerto/sitios/<lugar>.ts`.
 Solo las dunas de Maspalomas siguen en `src/atlas`, porque ahí transcurre la
 misión de las cabras.
 

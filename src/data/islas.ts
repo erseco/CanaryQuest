@@ -52,6 +52,7 @@ export const ISLAS: Record<IslaId, Isla> = {
       { id: 'lp-aeropuerto', nombre: 'Aeropuerto de La Palma', tipo: 'aeropuerto', mapa: proyectarLugar(geografia['la-palma']['lp-aeropuerto']) },
     ],
     mapaMundo: puntoCarta(-17.85, 28.67),
+    zonas: [{ mapa: 'aridane', etiqueta: 'Valle de Aridane' }],
   },
   'el-hierro': {
     id: 'el-hierro',

@@ -1,7 +1,7 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'aridane';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +19,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'aridane';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -504,6 +504,68 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Calle del Castillo', x: -27.6, z: 12.7, texto: 'Empedrado, fachadas de colores y balcones de madera de tea: así es Vegueta. Esta calle une la plaza de Santa Ana con la del Espíritu Santo; en una de sus casas vivió y murió el ilustrado Viera y Clavijo.', vista: -0.5 },
       { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
+    ],
+  },
+  // La Palma, Los Llanos de Aridane en el centro del valle. Trazado sobre la ortofoto PNOA y
+  // OpenStreetMap y girado 90°: x apunta al norte y z al este, para que la cámara mire de entrada
+  // valle abajo, hacia el mar. La plaza de España con sus laureles, la iglesia de los Remedios al
+  // norte, el Ayuntamiento al sur y la calle Real de oeste a este. Trazado en `sitios/aridane.ts`.
+  aridane: {
+    nombre: 'Los Llanos de Aridane',
+    isla: 'la-palma',
+    poi: 'aridane',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'aridane',
+      sinMar: true,
+      cuesta: { desnivel: 2 },
+      bruma: [60, 190],
+      palmeras: [
+        [-8, -11, 6.2],
+        [-2, 12.8, 6.8],
+      ],
+      suelos: [
+        { r: [-9, -12, 6.2, 13.6] }, // plaza de España
+        { r: [6.2, -12, 20, -9.7] }, // calle de la Iglesia, ante la fachada de poniente
+        { r: [-12, 13.6, 8, 16.4] }, // calle del Paseo
+        { r: [-12, -32, -9, 34] }, // calle Real
+        { r: [-9, 16.4, -6.5, 34] }, // calle Real hacia el este, con su hilera de laureles
+        { r: [-14, -38, -2, -32] }, // mirador del valle
+        { r: [-20, 30, -12, 40] }, // mirador de Tajogaite
+      ],
+      vallas: [
+        // Troncos de los once laureles de Indias.
+        ...[
+          [4, -8.8],
+          [-4.4, -8.7],
+          [-7.4, -5],
+          [-6.6, -1.2],
+          [-6.7, 2.6],
+          [-6.8, 6.2],
+          [2.9, 7.6],
+          [-7.2, 11.2],
+          [-7.8, 18],
+          [-7.8, 29],
+          [-7.8, 33],
+        ].map(([x, z]): [number, number, number, number] => [x - 0.6, z - 0.6, x + 0.6, z + 0.6]),
+        [4.9, 4.6, 5.7, 5.4], // cruz de la plaza
+        [0.6, 10.2, 4.6, 13.2], // terraza del café
+        [-8.4, -11.4, -7.6, -10.6], // palmeras
+        [-2.4, 12.4, -1.6, 13.2],
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 0, z: 1 },
+    rincones: [
+      { nombre: 'Plaza de España', x: -2, z: -1, texto: 'La plaza mayor de Los Llanos, a la sombra de sus laureles de Indias. Los trajeron de Cuba los emigrantes a mediados del siglo XIX, junto con palmeras reales, y hoy son los más viejos de la isla.' },
+      { nombre: 'Iglesia de los Remedios', x: 5.6, z: -5, texto: 'Nuestra Señora de los Remedios, la parroquia madre del valle, de comienzos del siglo XVI: muros encalados, esquinas de cantería y la torre de piedra oscura con su reloj. Guarda una Virgen flamenca del siglo XVI y un Cristo de la Salud hecho en México con pasta de caña de maíz.', vista: -1.571 },
+      { nombre: 'Ayuntamiento', x: -11, z: 0.25, texto: 'Las casas consistoriales se empezaron en 1945, en estilo regionalista, con proyecto de Tomás Machado: balcones de madera bajo aleros de teja, cantería oscura y un ajimez de celosía.', vista: 1.571 },
+      { nombre: 'Calle Real', x: -8.6, z: 23.3, texto: 'La calle Real, peatonal, sale de la plaza entre casas de balcones de madera. Desde hace más de veinte años, «La Ciudad en el Museo» cuelga cuadros de arte contemporáneo en las fachadas del casco y pinta murales en sus paredes.', vista: -1.2 },
+      { nombre: 'Cumbres de la Caldera', x: 19, z: -11, texto: 'Al norte se alza la pared de la Caldera de Taburiente, parque nacional desde 1954. A su derecha, el pico Bejenado, de 1.854 metros, y hacia el este la Cumbre Nueva, a cuyo pie queda El Paso.', vista: -1.571 },
+      { nombre: 'Mirador del valle', x: -11, z: -36, texto: 'El valle baja hacia el mar en un manto de plataneras, cada una tras sus muros de piedra, que la abrigan del viento. El agua de la Caldera regó primero la caña de azúcar y después los plátanos. Abajo, junto al mar, Tazacorte, que se separó de Los Llanos en 1925.', vista: 0.15 },
+      { nombre: 'Mirador de Tajogaite', x: -18, z: 36, texto: 'Al sur, la Cumbre Vieja. El 19 de septiembre de 2021 se abrió en su ladera el volcán de Tajogaite. Durante 85 días sus coladas bajaron hasta el mar y cubrieron unas 1.200 hectáreas de casas, carreteras y plataneras. Hoy la lava negra forma parte del valle, que sigue reconstruyéndose.', vista: 1.8 },
     ],
   },
 };
