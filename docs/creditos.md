@@ -52,7 +52,7 @@
 ## Puerto de Mogán en 3D
 
 - Arquitectura, vegetación, personajes y sombreado del agua creados para CanaryQuest. Las cuatro texturas de superficie y la panorámica del horizonte se generaron para esta escena con ImageGen. GPL-3.0.
-- Pesquero, velero, bote de remos, barco de pasajeros y paleta de Kenney, **Watercraft Kit 2.1**, CC0. La licencia original acompaña a los modelos en `public/assets/puerto/License.txt`. [Pack original](https://kenney.nl/assets/watercraft-kit)
+- Pesquero, velero, bote de remos y paleta de Kenney, **Watercraft Kit 2.1**, CC0. La licencia original acompaña a los modelos en `public/assets/puerto/License.txt`. [Pack original](https://kenney.nl/assets/watercraft-kit)
 - Renderizado con Three.js, MIT.
 
 ## Faro de Orchilla y La Restinga
@@ -91,7 +91,7 @@ en el repositorio.
 Maqueta original con las piezas del puerto de Mogán (`src/puerto/sitios/caleta.ts`
 y su plano, `caleta-plano.ts`), sin assets nuevos. El trazado se midió sobre
 `public/assets/visitas/la-caleta-pnoa.webp` a 2,5 m por unidad, y los
-contornos de los vasos son los de `src/atlas/recintos.ts`. Se representan los
+contornos de los vasos se trazaron sobre la misma ortofoto. Se representan los
 tres vasos sobre la plataforma de hormigón con su muro de rompiente, el
 solárium con las cuatro jardineras redondas y sus parterres, la caseta redonda
 del mirador con su escalera, la carretera en serpentina con la horquilla, los
@@ -110,8 +110,7 @@ las Salinas al norte, el pueblo con su playa y la ermita, la dársena tras el
 dique, el ferry de Tenerife en el muelle del sur, el muelle viejo, la playa de
 las Nieves y el Dedo de Dios al pie de los riscos de Tamadaba, que en realidad
 queda al sur del puerto. El ferry se modela con los colores de la naviera de la
-línea (casco blanco con franja azul y puente amarillo); el barco de pasajeros de
-Kenney ya no se usa en esta visita.
+línea (casco blanco con franja azul y puente amarillo).
 
 - Posición del Dedo de Dios (28,0964, −15,7081) y caída del pináculo con la tormenta Delta en 2005: [Wikipedia](https://es.wikipedia.org/wiki/Dedo_de_Dios) y [Gran Canaria, «El Dedo de Dios and the Roque Partido»](https://www.grancanaria.com/blog/en/article/el-dedo-de-dios-and-the-roque-partido-two-names-for-the-same-symbol).
 - Las Salinas de Agaete, tres piscinas unidas por túneles volcánicos y protegidas por columnas de roca: [Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/gran-canaria/las-salinas-de-agaete/) y [Turismo de Gran Canaria](https://grancanaria.com/turismo/en/beaches/natural-pools/las-salinas-de-agaete).

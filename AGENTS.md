@@ -79,6 +79,11 @@ La Graciosa y sprites propios. Las islas sin `.tmj` propio usan colisiones
 rectangulares genéricas — afinar con Tiled copiando el patrón de
 `public/assets/maps/islas/gran-canaria.tmj`.
 
-Los lugares 3D se están unificando con el aspecto del Puerto de Mogán
-(ADR-10): Mogán, Agaete y La Restinga ya son pueblos de `src/data/pueblos.ts`;
-faltan Las Palmas, La Caleta, Orchilla y las dunas, que siguen en `src/atlas`.
+Los lugares 3D son pueblos de `src/data/pueblos.ts` montados con la maqueta
+del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde
+y Las Palmas. Cada uno con trazado propio vive en `src/puerto/sitios/<lugar>.ts`.
+Solo las dunas de Maspalomas siguen en `src/atlas`, porque ahí transcurre la
+misión de las cabras.
+
+En desarrollo (o con `?debug=1`) el desplegable «Ir a…» y `window.irA(escena,
+datos)` saltan a cualquier lugar: `irA('Puerto', { pueblo: 'valverde' })`.

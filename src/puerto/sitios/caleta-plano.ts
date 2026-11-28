@@ -13,7 +13,7 @@ type Rect = [number, number, number, number];
 
 /**
  * Contornos de los vasos: el alto junto al mirador, el grande de abajo y el pequeño pegado a él.
- * Son los `VASOS` de `src/atlas/recintos.ts`, pasados de píxeles de la ortofoto a unidades.
+ * Trazados en píxeles sobre la ortofoto y pasados a unidades de juego.
  */
 export const VASOS: Punto[][] = [
   [[1.88, 1.87], [3.13, 1.73], [4.13, 2.68], [4.51, 4.04], [5.63, 4.99], [7.01, 5.53], [8.14, 7.02], [8.64, 8.51], [7.89, 9.32], [5.26, 10.27], [4.26, 9.86], [2.88, 8.24], [1.88, 6.61], [1.13, 4.44], [1.13, 2.95]],

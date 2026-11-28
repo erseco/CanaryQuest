@@ -41,7 +41,6 @@ export class PreloadScene extends Phaser.Scene {
       this.load.image(`isla-${isla.id}`, `assets/islas/${isla.id}.webp`);
       this.load.tilemapTiledJSON(`map-${isla.id}`, `assets/maps/islas/${isla.id}.tmj`);
     }
-    this.load.image('orto-caleta', 'assets/visitas/caleta-pnoa.webp');
     this.load.image('mapa-mundo', 'assets/islas/carta-canarias.webp');
     this.load.image('titulo-fondo', 'assets/titulo/archipielago-aereo.jpg');
 

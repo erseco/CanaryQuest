@@ -5,8 +5,6 @@ import { maspalomas } from './maspalomas';
 import { MASPALOMAS } from '../data/dialogos';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import type { Sitio } from './carta';
-import { referencia, maquetaVisita } from './maquetas';
-import { paseable } from './recintos';
 import { CARTA, VISITAS } from '../data/dialogos';
 import '../puerto/puerto.css';
 
@@ -16,20 +14,18 @@ export async function pasear(
   isla: () => void,
   ciudad: () => void,
 ) {
-  const caleta = sitio === 'la-caleta',
-    ficha = VISITAS[sitio];
+  const ficha = VISITAS[sitio];
   const renderer = new T.WebGLRenderer({ antialias: true });
-  const maqueta = await (sitio==='dunas' ? maspalomas() : maquetaVisita(caleta)).catch((error) => {
+  const maqueta = await maspalomas().catch((error) => {
     renderer.dispose();
     renderer.forceContextLoss();
     throw error;
   });
   const { scene } = maqueta;
-  const geo = referencia(caleta);
   const root = document.createElement('section');
   root.className = 'puerto visita';
   root.innerHTML = `<header><span class="marca">CanaryQuest</span><div class="acciones"><button data-carta>${CARTA.titulo}</button><button data-isla>${CARTA.isla}</button></div></header>
-  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p><small>${CARTA.ortofoto}</small>${sitio==='dunas' ? '<button data-ciudad hidden>'+MASPALOMAS.sendero+' ↗</button>' : sitio !== 'las-palmas' ? '' : '<button data-ciudad>' + CARTA.pasear + ' ↗</button>'}</article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
+  <aside><small>${ficha.zona}</small><h1>${ficha.nombre}</h1></aside><footer><article><p>${ficha.descripcion}</p><small>${CARTA.ortofoto}</small><button data-ciudad hidden>${MASPALOMAS.sendero} ↗</button></article><details><summary aria-label="${CARTA.controles}">?</summary><p>${CARTA.ayuda}</p></details></footer>`;
   root.prepend(renderer.domElement);
   document.body.append(root);
   const canvas = renderer.domElement;
@@ -48,13 +44,13 @@ export async function pasear(
   orbita.maxDistance = 55;
   orbita.minPolarAngle = 0.34;
   orbita.maxPolarAngle = 1.22;
-  camara.position.set(...((caleta ? [13, 20, 22] : [4, 12, 25]) as [number, number, number]));
   const jugador=persona(0,0,false);
   const sendero=root.querySelector<HTMLButtonElement>('[data-ciudad]');
-  const inicio = sitio==='dunas' ? [inicioDunas.x,inicioDunas.z] : geo.mundo(caleta ? [385, 328] : [368, 308]);
+  const inicio = [inicioDunas.x, inicioDunas.z];
   jugador.position.set(inicio[0], 0.14, inicio[1]);
   scene.add(jugador);
-  if(sitio==='dunas'){orbita.target.set(inicioDunas.x,0,inicioDunas.z);camara.position.set(inicioDunas.x+8,12,inicioDunas.z-23)}
+  orbita.target.set(inicioDunas.x, 0, inicioDunas.z);
+  camara.position.set(inicioDunas.x + 8, 12, inicioDunas.z - 23);
   const teclas = new Set<string>(),
     eventos = new AbortController(),
     op = { signal: eventos.signal };
@@ -106,7 +102,7 @@ export async function pasear(
     },
     op,
   );
-  const libre = (x: number, z: number) => sitio==='dunas' ? caminoDunas(x,z) : paseable(caleta, geo.foto(x, z));
+  const libre = (x: number, z: number) => caminoDunas(x, z);
   canvas.addEventListener(
     'pointerup',
     (e) => {
@@ -161,16 +157,16 @@ export async function pasear(
       if(mueve)jugador.rotation.y=Math.atan2(dx,dz);
       if (!mueve) destino = null;
     }
-    if(sitio==='dunas' && sendero)sendero.hidden=pos.z>plano.mirador.z;
+    if (sendero) sendero.hidden = pos.z > plano.mirador.z;
     pos.y = 0.02 + (n > 0.07 ? Math.abs(Math.sin(t * 12)) * 0.07 : 0);
-    const mx = (pos.x * (sitio==='dunas'?1:.4) - orbita.target.x) * dt * 3,
-      mz = (pos.z * (sitio==='dunas'?1:.45) - orbita.target.z) * dt * 3;
+    const mx = (pos.x - orbita.target.x) * dt * 3,
+      mz = (pos.z - orbita.target.z) * dt * 3;
     orbita.target.x += mx;
     camara.position.x += mx;
     orbita.target.z += mz;
     camara.position.z += mz;
     orbita.update();
-    maqueta.actualizar(t);
+    maqueta.actualizar();
     renderer.render(scene, camara);
   });
   return () => {

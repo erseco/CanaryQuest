@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { CARTA, VISITAS } from '../data/dialogos';
 import { SITIOS, type Sitio } from '../atlas/carta';
 import { PUEBLOS, type Pueblo } from '../data/pueblos';
 
@@ -31,10 +30,7 @@ export class VisitaScene extends Phaser.Scene {
     };
     const ciudad = () => {
       ui();
-      this.scene.start('Detail', {
-        mapaId: sitio==='dunas'?'dunas':'las-palmas',
-        retorno: { islaId, x: entrada.x, y: entrada.y },
-      });
+      this.scene.start('Detail', { mapaId: 'dunas', retorno: { islaId, x: entrada.x, y: entrada.y } });
     };
     const carta = () => this.scene.start('Carta', { islaId, entrada });
     try {
@@ -43,26 +39,7 @@ export class VisitaScene extends Phaser.Scene {
       this.events.once('shutdown', cerrar);
     } catch (error) {
       console.warn('Visita 3D no disponible', error);
-      if (sitio === 'las-palmas' || sitio==='dunas') {
-        ciudad();
-        return;
-      }
-      if (sitio !== 'la-caleta') { isla(); return; }
-      this.add.image(480, 270, 'orto-caleta').setDisplaySize(960, 540);
-      this.add.text(20, 20, VISITAS[sitio].nombre, {
-        fontFamily: 'Georgia',
-        fontSize: '30px',
-        backgroundColor: '#173e43',
-      });
-      this.add
-        .text(20, 470, CARTA.isla, {
-          fontSize: '24px',
-          backgroundColor: '#173e43',
-          padding: { x: 14, y: 8 },
-        })
-        .setInteractive()
-        .on('pointerdown', isla);
-      this.input.keyboard?.once('keydown-ESC', isla);
+      ciudad();
     }
   }
 }

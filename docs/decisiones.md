@@ -138,7 +138,9 @@ agua con reflejos, horizonte pintado, luz, interiores y paneles. Mogán creció
 así hasta la playa, un segundo canal y el espigón con faro, y La Restinga fue
 la primera visita convertida.
 
-**Consecuencias.** Un pueblo nuevo es sobre todo datos. Quedan por convertir
-Las Palmas, La Caleta, el faro de Orchilla y las dunas de Maspalomas; los
-tres últimos no son pueblos de muelle y necesitarán piezas propias (charcos,
-malpaís, dunas) dentro de la misma maqueta.
+**Consecuencias.** Un pueblo de muelle y canales es sobre todo datos. Un lugar
+con identidad propia (La Restinga, Orchilla, La Caleta, Agaete, Valverde,
+Las Palmas) se traza sobre su ortofoto PNOA en `src/puerto/sitios/<lugar>.ts`
+con las piezas del `Taller`, y declara en `plano.suelos` por dónde se camina.
+Quedan en `src/atlas` las dunas de Maspalomas, ligadas a la misión de las
+cabras.
