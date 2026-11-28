@@ -7,3 +7,6 @@ canaryquest.zip
 
 # TongaApp (CC BY-NC-SA, no redistribuible con el juego GPL): scripts/descargar-tongapp.sh
 art/tongapp/
+
+# Copias de trabajo de los agentes de Claude Code
+.claude/worktrees/
