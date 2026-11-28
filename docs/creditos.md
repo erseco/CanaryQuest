@@ -69,6 +69,22 @@ con su pórtico y el dique rompeolas con su escollera.
 - [Ficha y visita panorámica del puerto de La Restinga, Puertos Canarios](https://puertoscanarios.es/project/la-restinga/).
 - [Monumento al Meridiano Cero, El Hierro Travel](https://elhierro.travel/en/what-to-do/monumento-al-meridiano-cero) y [Embarcadero del Faro de Orchilla, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/embarcadero-del-faro-de-orchilla/).
 
+## Piscinas de La Caleta
+
+Maqueta original con las piezas del puerto de Mogán (`src/puerto/sitios/caleta.ts`
+y su plano, `caleta-plano.ts`), sin assets nuevos. El trazado se midió sobre
+`public/assets/visitas/la-caleta-pnoa.webp` a 2,5 m por unidad, y los
+contornos de los vasos son los de `src/atlas/recintos.ts`. Se representan los
+tres vasos sobre la plataforma de hormigón con su muro de rompiente, el
+solárium con las cuatro jardineras redondas y sus parterres, la caseta redonda
+del mirador con su escalera, la carretera en serpentina con la horquilla, los
+coches aparcados y el aparcamiento, la cancha del cruce, el paseo de la orilla
+y el camino de la barandilla blanca, la escalera al mar y las casas de los dos
+barrios.
+
+- [Piscinas de La Caleta, Turismo de El Hierro](https://elhierro.travel/piscinas-naturales/el-hierro/piscinas-de-la-caleta/) y [La Caleta pools, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/la-caleta-pools/): escaleras al mar, duchas en los accesos, solárium y la cascada con la pleamar.
+- Grabados rupestres de La Caleta, descubiertos por Aquilino Padrón y destruidos en parte en 1920 para hacer grava: [«El arqueólogo herreño prófugo del cólera que reescribió la historia de Canarias», Vozpópuli](https://www.vozpopuli.com/espana/canarias/el-arqueologo-herreno-profugo-del-colera-que-reescribio-la-historia-de-canarias.html).
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del

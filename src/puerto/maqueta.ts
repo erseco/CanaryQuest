@@ -6,6 +6,7 @@ import { PUEBLOS, type Pueblo } from '../data/pueblos';
 import { INICIO, PASTOR, alturaPaseo } from './paseo';
 import { trazarRestinga } from './sitios/restinga';
 import { trazarOrchilla } from './sitios/orchilla';
+import { trazarCaleta } from './sitios/caleta';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -375,6 +376,7 @@ export function crearMaqueta(
   };
   if (plano.sitio === 'restinga') sitio = trazarRestinga(taller);
   else if (plano.sitio === 'orchilla') sitio = trazarOrchilla(taller);
+  else if (plano.sitio === 'caleta') sitio = trazarCaleta(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {

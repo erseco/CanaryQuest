@@ -26,6 +26,7 @@ import { PUEBLOS } from '../src/data/pueblos';
 import { camino, inicio, muelle, umbral } from '../src/puerto/paseo';
 import { destinosDesde } from '../src/sistemas/viajes';
 import { sueloInterior } from '../src/puerto/interior';
+import { VASOS } from '../src/puerto/sitios/caleta-plano';
 for (const pueblo of Object.keys(PUEBLOS) as (keyof typeof PUEBLOS)[]) {
   it('comunica todas las puertas, el camino y el embarcadero de ' + pueblo, () => {
     const { casas, rincones, salidas } = PUEBLOS[pueblo];
@@ -83,6 +84,51 @@ it('La Restinga se recorre de la avenida al dique sin cruzar la bahía', () => {
   const ruta = rutaPuerto(INICIO, { x: -21, z: 28 }, 'la-restinga');
   expect(ruta.at(-1)).toEqual({ x: -21, z: 28 });
   expect(ruta.some((p) => p.x >= 13)).toBe(true);
+});
+it('La Caleta se pasea por los bordes de los vasos y sus caminos sin meterse en el agua', () => {
+  const pisa = (x: number, z: number) => transitable(x, z, 'la-caleta');
+  // Bordes de los tres vasos, del lado de la plataforma.
+  for (const [x, z] of [
+    [0.5, 4.4], // vaso alto, por el oeste
+    [9.1, 8.5], // y por el este, bajo el mirador
+    [-4.1, 17.5], // vaso grande de abajo
+    [-1.5, 19.6],
+    [5.9, 12.3], // vaso pequeño
+  ])
+    expect(pisa(x, z)).toBe(true);
+  // El agua de cada vaso y el mar no se pisan.
+  for (const vaso of VASOS) {
+    const cx = vaso.reduce((s, [x]) => s + x, 0) / vaso.length,
+      cz = vaso.reduce((s, [, z]) => s + z, 0) / vaso.length;
+    expect(pisa(cx, cz)).toBe(false);
+  }
+  expect(pisa(0, 30)).toBe(false);
+  expect(pisa(20, 14)).toBe(false);
+  // Caminos: aparcamiento, carretera, mirador, paseo de la orilla, barandilla y escalera al mar.
+  for (const [x, z] of [
+    [-19, 9.5],
+    [0, -9.8],
+    [11.6, 4],
+    [14.5, 4.5],
+    [22, 10.4],
+    [33.4, 7],
+    [-6.6, 22.2],
+  ])
+    expect(pisa(x, z)).toBe(true);
+  expect(pisa(-9.7, 8.5)).toBe(false); // jardinera
+  expect(alturaPaseo(0.5, 4.4, 'la-caleta')).toBeGreaterThan(alturaPaseo(-1.5, 19.6, 'la-caleta'));
+  expect(alturaPaseo(11.6, 4, 'la-caleta')).toBeGreaterThan(1.5); // azotea del mirador
+  // Desde el inicio se llega a cada rincón sin salirse de lo pisable.
+  for (const rincon of PUEBLOS['la-caleta'].rincones) {
+    let desde = inicio('la-caleta');
+    const ruta = rutaPuerto(desde, rincon, 'la-caleta');
+    expect(ruta.at(-1)).toEqual(rincon);
+    for (const p of ruta) {
+      for (let i = 0; i <= 50; i++)
+        expect(pisa(desde.x + ((p.x - desde.x) * i) / 50, desde.z + ((p.z - desde.z) * i) / 50)).toBe(true);
+      desde = p;
+    }
+  }
 });
 it('da acceso a la salida de la habitación y al ferry de regreso', () => {
   expect(sueloInterior(0, 2.7)).toBe(true);
