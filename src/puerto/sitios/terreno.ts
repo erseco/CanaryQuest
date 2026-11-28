@@ -16,6 +16,8 @@ export function terreno(
   ladera: (x: number, z: number) => number,
   material: T.MeshStandardMaterial,
   paso = 1.3,
+  /** Color de cada faceta según dónde cae su centro; el material ha de llevar `vertexColors`. */
+  tono?: (x: number, y: number, z: number) => T.Color,
 ): (x: number, z: number) => number {
   const suelos = PUEBLOS[pueblo].plano.suelos ?? [];
   const altura = (x: number, z: number): number => {
@@ -61,6 +63,15 @@ export function terreno(
     }
   const geo = new T.BufferGeometry();
   geo.setAttribute('position', new T.Float32BufferAttribute(vertices, 3));
+  if (tono) {
+    const colores: number[] = [];
+    for (let i = 0; i < vertices.length; i += 9) {
+      const centro = [0, 1, 2].map((k) => (vertices[i + k] + vertices[i + 3 + k] + vertices[i + 6 + k]) / 3);
+      const { r, g, b } = tono(centro[0], centro[1], centro[2]);
+      colores.push(r, g, b, r, g, b, r, g, b);
+    }
+    geo.setAttribute('color', new T.Float32BufferAttribute(colores, 3));
+  }
   geo.computeVertexNormals();
   t.superficie(geo, material, 0, 0, 0, 1, 1, 1, 6);
   geo.dispose();

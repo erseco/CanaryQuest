@@ -50,14 +50,18 @@ export async function abrirPuerto(
   canvas.setAttribute('aria-label', barrio.nombre);
   const escena = new T.Scene(),
     camara = new T.PerspectiveCamera(37, 1, 0.15, 175);
-  const tinteNoche = new T.Color(0x43567d);
-  const dia = new T.Color('#efd6b9'),
-    noche = new T.Color('#344e70');
+  /** Alta montaña: aire limpio y luz fría de día; de noche, cielo oscuro de observatorio. */
+  const cumbre = !!plano.cumbre;
+  const tinteNoche = new T.Color(cumbre ? 0x1b2646 : 0x43567d);
+  // El fondo pintado es un atardecer: en la cumbre se enfría hacia el azul.
+  const tinteDia = new T.Color(cumbre ? 0xa2c2f0 : 0xffffff);
+  const dia = new T.Color(cumbre ? '#bdd5ec' : '#efd6b9'),
+    noche = new T.Color(cumbre ? '#070d1f' : '#344e70');
   const cielo = new T.Color();
   escena.background = cielo;
   escena.fog = new T.Fog(cielo, plano.bruma?.[0] ?? (grande ? 44 : 26), plano.bruma?.[1] ?? (grande ? 150 : 68));
-  const ambiente = new T.HemisphereLight(0xffedd4, 0x8199ae, 1.5);
-  const sol = new T.DirectionalLight(0xffdcaa, 2.4);
+  const ambiente = new T.HemisphereLight(cumbre ? 0xe2edff : 0xffedd4, 0x8199ae, 1.5);
+  const sol = new T.DirectionalLight(cumbre ? 0xfff4e4 : 0xffdcaa, 2.4);
   sol.castShadow = true;
   if (grande) {
     // Más lejos en la misma dirección, para que la playa también quede delante del foco.
@@ -89,6 +93,26 @@ export async function abrirPuerto(
   horizonte.position.y = (grande ? 24 : 15) - (plano.cuesta?.desnivel ?? 0);
   horizonte.rotation.y = -0.82;
   exterior.add(horizonte);
+  // Estrellas y Vía Láctea sobre el mar de nubes, delante del fondo pintado: salen con la noche.
+  let estrellas: T.PointsMaterial | undefined;
+  if (cumbre) {
+    const puntos: number[] = [],
+      brillos: number[] = [];
+    for (let i = 0; i < 1500; i++) {
+      const a = Math.random() * Math.PI * 2,
+        lactea = i % 5 < 2;
+      const y = lactea ? 4 + 9 * Math.sin(a + 1) + (Math.random() - 0.5) * 5 : -12 + Math.random() * 31;
+      const r = 76 + Math.random() * 2;
+      puntos.push(Math.sin(a) * r, Math.min(19, Math.max(-12, y)), Math.cos(a) * r);
+      const b = 0.45 + Math.random() * 0.55;
+      brillos.push(b, b, b * (0.9 + Math.random() * 0.2));
+    }
+    const geo = new T.BufferGeometry();
+    geo.setAttribute('position', new T.Float32BufferAttribute(puntos, 3));
+    geo.setAttribute('color', new T.Float32BufferAttribute(brillos, 3));
+    estrellas = new T.PointsMaterial({ size: 1.7, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0, depthWrite: false, fog: false });
+    exterior.add(new T.Points(geo, estrellas));
+  }
   const luces = [-8.5, -3, 3, 8.5].map((x) => {
     const luz = new T.PointLight(0xffab52, 0, 6, 1.7);
     luz.position.set(x, 1.96, 3.35);
@@ -237,6 +261,7 @@ export async function abrirPuerto(
       activar: () => {
         quienHabla = r.nombre;
         dialogo = [r.texto];
+        if (r.llegar) window.game.events.emit('llegar', { poi: r.llegar });
         // Gira por el camino más corto hacia el encuadre del rincón.
         if (r.vista !== undefined) giroRincon = angulo + Math.atan2(Math.sin(r.vista - angulo), Math.cos(r.vista - angulo));
         refrescar();
@@ -546,7 +571,8 @@ export async function abrirPuerto(
       b.rotation.y = b.userData.rumbo ?? 1.15 + i * 0.55;
     });
     luz = T.MathUtils.damp(luz, casaActual ? 0 : destinoLuz, 2.8, dt);
-    paisaje.color.setRGB(1, 1, 1).lerp(tinteNoche, luz);
+    paisaje.color.copy(tinteDia).lerp(tinteNoche, luz);
+    if (estrellas) estrellas.opacity = luz;
     for (const farol of luces) farol.intensity = plano.sinFaroles ? 0 : luz * 11;
     cristal.emissiveIntensity = 0.2 + luz * 2.2;
     ambiente.intensity = 1.42 - luz * 1.05;
@@ -578,7 +604,8 @@ export async function abrirPuerto(
     const giro = angulo;
     const elevacion = casaActual
       ? 0.77
-      : (cuesta ? 0.54 : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
+      : // En la cumbre la cámara se tumba un poco más, para que asomen el horizonte y el mar de nubes.
+        (cuesta ? (cumbre ? 0.42 : 0.54) : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
     camara.position.set(
       centro.x + Math.sin(giro) * radio,
       centro.y + radio * elevacion,
@@ -603,7 +630,7 @@ export async function abrirPuerto(
       abort.abort();
       const materiales = new Set<T.Material>();
       escena.traverse((obj) => {
-        if (obj instanceof T.Mesh) {
+        if (obj instanceof T.Mesh || obj instanceof T.Points) {
           obj.geometry.dispose();
           for (const m of [obj.material].flat()) materiales.add(m);
         }

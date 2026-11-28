@@ -10,6 +10,7 @@ export const SITIOS = {
   'la-caleta': { isla: 'el-hierro', carta: proyectarLugar(geografia['el-hierro']['la-caleta']) },
   'las-palmas': { isla: 'gran-canaria', carta: proyectarLugar(geografia['gran-canaria']['las-palmas']) },
   valverde: { isla: 'el-hierro', carta: proyectarLugar(geografia['el-hierro'].valverde) },
+  'roque-de-los-muchachos': { isla: 'la-palma', carta: proyectarLugar(geografia['la-palma']['roque-de-los-muchachos']) },
 } as const;
 export type Sitio = keyof typeof SITIOS;
 

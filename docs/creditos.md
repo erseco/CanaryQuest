@@ -133,6 +133,29 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
+## Roque de los Muchachos (La Palma)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/roque.ts`, sin
+modelos ni texturas nuevas. La cumbre, el borde de la Caldera de Taburiente, el
+aparcamiento, las carreteras y la posición de cada telescopio se tomaron de un
+recorte de la ortofoto PNOA y de OpenStreetMap, y se giraron para que la cámara
+mire al oeste a lo largo del borde. El trazado está comprimido, sobre todo hacia
+el oeste para que el GTC entre en cuadro, y los edificios van a escala de maqueta.
+Se representan los roques de la cumbre con el mirador y su pretil, la pared de la
+Caldera, el mar de nubes, el GTC con su edificio de control, el Galileo, el
+Nordic, el William Herschel, los telescopios solares sueco y holandés, el Isaac
+Newton, las cúpulas del Liverpool y el Mercator, los dos MAGIC y la LP-4. Se
+dejan fuera los LST del CTA, vecinos de los MAGIC. Los recortes PNOA, de
+(−17.8965, 28.746) a (−17.8735, 28.766), se usaron solo como consulta y no están
+en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- Telescopios, miradores y cumbre (2.426 m): © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
+- [Gran Telescopio Canarias, presentación del GTC](https://www.gtc.iac.es/gtc/presentation.php) y [descripción óptica](https://www.gtc.iac.es/observing/GTCoptics.php): espejo de 10,4 m en 36 segmentos, primera luz en 2007, cúpula de 35 m.
+- [Roque de los Muchachos, Wikipedia](https://en.wikipedia.org/wiki/Roque_de_los_Muchachos), [Hispanopedia](https://es.hispanopedia.com/wiki/Roque_de_los_Muchachos) (origen del nombre, como tradición) y [Observatorio del Roque de los Muchachos, Wikipedia](https://en.wikipedia.org/wiki/Roque_de_los_Muchachos_Observatory).
+- [William Herschel Telescope](https://en.wikipedia.org/wiki/William_Herschel_Telescope), [Telescopio Nazionale Galileo](https://en.wikipedia.org/wiki/Telescopio_Nazionale_Galileo) y [MAGIC](https://en.wikipedia.org/wiki/MAGIC_(telescope)), Wikipedia; diseño del edificio del Galileo según la [tesis de ESO sobre el viento en recintos de telescopios](https://www.eso.org/gen-fac/pubs/astclim/papers/lz-thesis/node26.html).
+- [Parque Nacional de la Caldera de Taburiente, Wikipedia](https://en.wikipedia.org/wiki/Caldera_de_Taburiente_National_Park) y [la Ley del Cielo, IAC](https://iac.es/en/outreach/news/law-sky-30-years-old).
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del

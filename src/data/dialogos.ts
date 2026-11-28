@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  'roque-de-los-muchachos': {
+    nombre: 'Roque de los Muchachos', zona: 'Cumbre · La Palma',
+    descripcion: 'Sube al techo de La Palma: roques oscuros, el abismo de la Caldera y las cúpulas del observatorio sobre el mar de nubes.',
+  },
 };
