@@ -133,6 +133,29 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
+## Cofete y la Casa Winter
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/cofete.ts`, sin
+assets nuevos. El trazado (la casa en la ladera, el caserío en el llano, la
+Montañeta y el cementerio camino de la arena, la playa hasta el Roque del Moro
+y la pista que baja de la degollada de Agua Oveja) se tomó de recortes de la
+ortofoto PNOA y de las posiciones de OpenStreetMap, girado para que el mar quede
+delante y muy comprimido: en la realidad la casa está a 1,3 km del caserío y el
+roque a 4,5 km. Otras licencias: la casa mira de frente al mar (está girada unos
+35°), la pared del macizo se queda en una fracción de sus 800 m y el lomo de
+Agua Oveja se acerca a la playa. La planta de la casa (patio con cuatro alas,
+torre redonda en la esquina norte, galería de arcos con terraza) sigue la
+ortofoto y las fotos de Wikimedia Commons. Los recortes PNOA, entre (−14.44,
+28.085) y (−14.35, 28.125), se usaron solo como consulta y no están en el
+repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
+- Posiciones de la casa, el caserío, el cementerio, el Roque del Moro, la degollada de Agua Oveja y el pico de la Zarza: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API Overpass.
+- [Villa Winter, Wikipedia](https://en.wikipedia.org/wiki/Villa_Winter) y sus fotos de 2024 en Wikimedia Commons (fachada, costado, patio y terraza), solo como referencia visual.
+- [La falsa leyenda sobre nazis y submarinos de la casa Winter, elDiario.es (2025)](https://www.eldiario.es/canariasahora/sociedad/falsa-leyenda-nazis-submarinos-casa-winter-fuerteventura_1_12510354.html): obras desde 1946, arrendamiento de Jandía en 1937, la familia vivió en Morro Jable, sin bases de submarinos documentadas.
+- [Pedro, el guardián de los secretos de Winter, El Español (2021)](https://www.elespanol.com/reportajes/20210807/pedro-guardian-secretos-winter-casa-horrores-fuerteventura/602190951_0.html): la casa nunca se terminó y la habita un descendiente de los Matos.
+- [Cementerio Marino de Cofete, Hello Canary Islands](https://www.hellocanaryislands.com/museums-and-places-of-interest/fuerteventura/cementerio-marino-de-cofete/) y [Playa de Cofete, Barceló](https://www.barcelo.com/guia-turismo/es/espana/fuerteventura/que-ver/playa-de-cofete/): muro bajo que salta la arena, cruces de madera, Parque Natural de Jandía.
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del

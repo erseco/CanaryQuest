@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  cofete: {
+    nombre: 'Casa Winter', zona: 'Cofete · Fuerteventura',
+    descripcion: 'Baja por la pista de Morro Jable hasta la casa de la torre, sola entre la montaña y la playa salvaje.',
+  },
 };

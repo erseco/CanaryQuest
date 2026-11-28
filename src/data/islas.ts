@@ -104,7 +104,7 @@ export const ISLAS: Record<IslaId, Isla> = {
       { id: 'fv-aeropuerto', nombre: 'Aeropuerto de Fuerteventura', tipo: 'aeropuerto', mapa: proyectarLugar(geografia['fuerteventura']['fv-aeropuerto']) },
     ],
     mapaMundo: puntoCarta(-14.03, 28.36),
-    zonas: [{ mapa: 'betancuria', etiqueta: 'Betancuria y el malpaís' }],
+    zonas: [{ mapa: 'betancuria', etiqueta: 'Betancuria y el malpaís' }, { mapa: 'cofete', etiqueta: 'Cofete y la Casa Winter' }],
   },
   lanzarote: {
     id: 'lanzarote',
