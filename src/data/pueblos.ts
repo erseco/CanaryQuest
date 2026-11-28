@@ -1,7 +1,7 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'san-sebastian';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +19,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'san-sebastian';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -504,6 +504,148 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Calle del Castillo', x: -27.6, z: 12.7, texto: 'Empedrado, fachadas de colores y balcones de madera de tea: así es Vegueta. Esta calle une la plaza de Santa Ana con la del Espíritu Santo; en una de sus casas vivió y murió el ilustrado Viera y Clavijo.', vista: -0.5 },
       { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
+    ],
+  },
+  // La Gomera, la capital y su puerto. Trazado sobre la ortofoto PNOA y OpenStreetMap con el norte
+  // hacia −z y comprimido: la plaza de las Américas en el centro, la calle Real que sube al norte
+  // hasta la iglesia de la Asunción y la Casa de Colón, el parque de la Torre del Conde al oeste,
+  // la playa al sur, la marina y el muelle del ferry al sureste y el Parador en el risco del este.
+  // El trazado está en `src/puerto/sitios/san-sebastian.ts`.
+  'san-sebastian': {
+    nombre: 'San Sebastián de La Gomera',
+    isla: 'la-gomera',
+    poi: 'lg-san-sebastian',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'san-sebastian',
+      // La villa se extiende tierra adentro: la cámara sigue de cerca al viajero.
+      cuesta: { desnivel: 0 },
+      costa: 13,
+      palmeras: [
+        // Paseo de la playa y de la marina.
+        [-20.5, 6.3, 4.6],
+        [-15, 6.3, 4],
+        [-9.5, 6.3, 4.8],
+        [-4, 6.3, 4.2],
+        [5.6, 6.3, 4.4],
+        [10.8, 6.3, 3.9],
+        [16, 6.3, 4.6],
+        // Plaza de las Américas y parque de la Torre.
+        [-11.8, 3.5, 4.4],
+        [4.5, 3.5, 4.9],
+        [-22.3, -9.8, 5],
+        [-22.3, 3.3, 4.2],
+        [-13.2, -9.6, 4.6],
+        // Explanada del puerto, al pie del risco.
+        [23.5, 4.6, 4.2],
+        [27.5, 4.6, 4.8],
+        [37, 4.6, 4.4],
+        // Avenida del suroeste, a lo largo de la playa.
+        [-29.3, 12.4, 4.4],
+        [-33.5, 19.3, 4],
+        [-38.4, 29.7, 4.6],
+        [-41.8, 40.8, 4.2],
+      ],
+      suelos: [
+        { r: [-12.4, -3, 5, 4] }, // plaza de las Américas
+        { r: [-27.4, 4, 21, 6.6] }, // paseo de la playa y de la marina, desde el puente del barranco
+        { r: [-22, 6.6, 1.6, 13.4], y: -0.08, y2: -0.75 }, // playa de San Sebastián
+        { r: [-23, -10.5, -12.4, 4] }, // parque de la Torre del Conde
+        { r: [-9.5, -27.4, -7, -3] }, // calle Real
+        { r: [-7, -22, -5.7, -11.6] }, // atrio de la Asunción
+        { r: [-3, -11, 4.4, -3] }, // plaza de la Constitución
+        { r: [1.6, 6.6, 3.4, 21.8] }, // muelle oeste de la marina
+        { r: [3.4, 20, 17, 21.8] }, // muelle sur de la marina
+        { r: [21, 4, 42, 21.8] }, // explanada del puerto
+        { r: [21.6, 21.8, 26, 42.4] }, // dique del ferry
+      ],
+      vallas: [
+        [-19.7, -5.6, -15.3, -1.2], // Torre del Conde
+        [-1.85, -9.65, -0.95, -8.75], // laureles de la plaza de la Constitución
+        [2.45, -9.65, 3.35, -8.75],
+        [2.45, -5.05, 3.35, -4.15],
+        [-0.2, -7.85, 1.7, -5.95], // quiosco
+        [1.45, 6.7, 1.75, 13.6], // muro entre la playa y la marina
+        [28.5, 9, 34, 19.5], // estación marítima
+        [35.4, 8, 41.6, 17.2], // coches aparcados
+      ],
+    },
+    salidas: { mar: 'ferry' },
+    casas: [],
+    inicio: { x: -0.5, z: 3 },
+    embarcadero: { x: 22.6, z: 23.4 },
+    rincones: [
+      {
+        nombre: 'Plaza de las Américas',
+        x: -1.5,
+        z: 1.2,
+        texto: 'Aquí la villa se abre al mar y arranca la calle Real. Su nombre mira al otro lado del océano: de esta bahía zarpó Colón el 6 de septiembre de 1492, en su primer viaje.',
+        vista: -0.25,
+      },
+      {
+        nombre: 'Plaza de la Constitución',
+        x: 2.6,
+        z: -6.9,
+        texto: 'Junto a la plaza de las Américas, unos laureles enormes dan sombra a los bancos y al quiosco. Es el salón de la villa: aquí se sienta la gente a charlar.',
+        vista: -0.3,
+      },
+      {
+        nombre: 'Pozo de la Aguada',
+        x: -2.3,
+        z: -9.4,
+        texto: 'En el patio de la antigua Casa de la Aduana hay un pozo con una cartela: «Con este agua se bautizó América». La tradición dice que de aquí sacaron agua las naves de Colón; ningún documento lo confirma.',
+        vista: 0.6,
+      },
+      {
+        nombre: 'Calle Real',
+        x: -8.25,
+        z: -12,
+        texto: 'La calle Real, que aquí llaman también calle del Medio, sube desde la plaza entre casas de balcones de madera y portadas de cantería, camino de la iglesia y de la Casa de Colón.',
+        vista: -0.2,
+      },
+      {
+        nombre: 'Iglesia de la Asunción',
+        x: -6.35,
+        z: -18.2,
+        texto: 'Nació como ermita en el siglo XV y creció hasta tener tres naves. La portada central es de toba roja; las laterales, de piedra blanca. Se cuenta que Colón oró aquí antes de zarpar: hasta hace unas décadas lo recordaba una cartela, «Aquí oró Colón».',
+        vista: -1.3,
+      },
+      {
+        nombre: 'Casa de Colón',
+        x: -8.25,
+        z: -25.3,
+        texto: 'Según la tradición oral, Colón pasó aquí la noche antes de partir hacia las Indias, aunque la casa que se ve es muy posterior. Dentro se expone cerámica precolombina de las culturas chimú y mochica, del Perú.',
+        vista: -1.1,
+      },
+      {
+        nombre: 'Torre del Conde',
+        x: -17.5,
+        z: -0.4,
+        texto: 'La mandó levantar Hernán Peraza el Viejo hacia 1450: muros encalados de dos metros de grueso y esquinas de cantería roja. Es la única torre de la conquista que sigue en pie en Canarias. Según las crónicas, en la rebelión gomera de 1488 se refugió en ella Beatriz de Bobadilla.',
+        vista: -0.15,
+      },
+      {
+        nombre: 'Playa de San Sebastián',
+        x: -8,
+        z: 10.3,
+        texto: 'La playa de la villa, de arena negra volcánica, donde el barranco de la Villa llega al mar. Los riscos pardos cierran la bahía a los dos lados.',
+        vista: 0.55,
+      },
+      {
+        nombre: 'Parador de La Gomera',
+        x: 25.5,
+        z: 5.2,
+        texto: 'Arriba, en el lomo de la Horca, el Parador se asoma al puerto desde unos sesenta metros de altura. Imita una casona canaria, con tejas y balcones de madera, y desde sus jardines se ve Tenerife y, en los días claros, el Teide.',
+        vista: 0.2,
+      },
+      {
+        nombre: 'Punta del dique',
+        x: 23.8,
+        z: 41.2,
+        texto: 'Al abrigo de este dique atracan los ferris que cruzan a Los Cristianos, en Tenerife. Desde la punta se ve toda la villa: la playa, la torre y el Parador en lo alto del risco.',
+        vista: 0.05,
+      },
     ],
   },
 };
