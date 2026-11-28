@@ -12,7 +12,7 @@ import {
 } from '../puerto/sitios/teresitas-plano';
 import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -30,7 +30,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -1163,6 +1163,107 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Jardín de picón', x: 3, z: 16, texto: 'Tuneras, cardones, pitas y palmeras sobre picón negro. En Lanzarote el picón no es solo adorno: retiene la humedad de la noche y frena la evaporación en una isla donde casi no llueve.', vista: 2.8 },
       { nombre: 'Camino de Timanfaya', x: 44, z: -2.2, texto: 'Por aquí se va a las Montañas del Fuego. El cura de Yaiza, Andrés Lorenzo Curbelo, anotó que el 1 de septiembre de 1730, entre las nueve y las diez de la noche, la tierra se abrió cerca de Timanfaya, a dos leguas del pueblo. Los volcanes ardieron seis años.', vista: -0.1 },
       { nombre: 'Calle Vista de Yaiza', x: -22, z: -2.6, texto: 'Casas bajas y cúbicas, encaladas, de azotea, con chimeneas blancas y puertas y ventanas verdes. En Lanzarote se suele pintar la carpintería de verde tierra adentro y de azul junto al mar, una estética que César Manrique defendió para toda la isla.' },
+    ],
+  },
+  // Fuerteventura, la costa de barlovento de Jandía. La Casa Winter sola en la ladera, el caserío
+  // de Cofete en el llano, el cementerio junto a la arena y la playa salvaje hasta el Roque del
+  // Moro, con la pista de Morro Jable bajando de la degollada de Agua Oveja. Trazado sobre la
+  // ortofoto PNOA y OpenStreetMap, girado para que el mar quede delante (el norte real apunta a
+  // −x y +z) y muy comprimido: la casa está a 1,3 km del caserío y el roque a 4,5 km.
+  // Trazado en `sitios/cofete.ts`.
+  cofete: {
+    nombre: 'Casa Winter',
+    isla: 'fuerteventura',
+    poi: 'cofete',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'cofete',
+      costa: 19.9,
+      sinFaroles: true,
+      cuesta: { desnivel: 0 },
+      palmeras: [],
+      suelos: [
+        { r: [-40, 9, 38, 17.5], y: 0.25, y2: -0.6 }, // playa de Cofete, que baja hacia el agua
+        { r: [5, 0, 7.5, 9], y: 2, y2: 0.25 }, // pista del caserío a la playa y al cementerio
+        { r: [4, -4, 20, 0], y: 2 }, // calle del caserío
+        { r: [-6, -4, 4, 0], y: 3.8, y2: 2, eje: 'x' }, // pista de la casa, que sube hacia el este
+        { r: [-10.5, -9, -6, 0], y: 3.8 }, // rellano bajo la casa
+        { r: [-26, -9, -10.5, -5.5], y: 3.8 }, // explanada al pie de la fachada
+        { r: [-10.5, -16, -6, -9], y: 6, y2: 3.8 }, // rampa junto al costado de la casa
+        { r: [-10.5, -23.5, -6, -16], y: 6 }, // era ante la portada lateral
+        { r: [-14.5, -18.2, -10.5, -16.8], y: 6 }, // zaguán bajo el arco
+        { r: [-21.7, -18.7, -14.5, -13.8], y: 6 }, // patio
+        { r: [20, -4, 34, 0], y: 2, y2: 3.6, eje: 'x' }, // pista de Morro Jable, que sube a la degollada
+        { r: [34, -7, 39, 0], y: 3.6 }, // mirador de Agua Oveja
+      ],
+      vallas: [
+        [-27.9, -12.3, -24.5, -8.9], // torre
+        [8.4, 9.9, 14.1, 13.6], // cementerio
+        [-21.7, -18.7, -20.7, -17.7], // bomba de agua del patio
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: -22.6, z: -6 },
+    carretera: { x: 38.5, z: -3.5 },
+    rincones: [
+      {
+        nombre: 'Casa Winter',
+        x: -18,
+        z: -6.4,
+        texto: 'La levantó a partir de 1946 el ingeniero alemán Gustav Winter, que desde 1937 tenía arrendada la península de Jandía. Dos plantas encaladas sobre un zócalo de piedra, tejas rojas y una torre redonda que mira al mar. Nunca llegó a terminarse, y los Winter vivieron en Morro Jable.',
+        vista: 0.15,
+      },
+      {
+        nombre: 'Torre de la casa',
+        x: -23,
+        z: -7.2,
+        texto: 'Se cuenta que desde esta torre se hacían señales a submarinos alemanes y que bajo la casa se escondieron nazis huidos. Son leyendas: los historiadores no han hallado ninguna base en Jandía, y los rumores crecieron en los años ochenta, después de morir Winter en 1971.',
+        vista: -0.35,
+      },
+      {
+        nombre: 'Patio de la casa',
+        x: -18,
+        z: -16.2,
+        texto: 'Por el arco del costado se entra a un patio rodeado de galerías. Hoy vive aquí un descendiente de los Matos, la familia que trabajó para Winter en la finca, y enseña la casa como museo privado.',
+        vista: 0.5,
+      },
+      {
+        nombre: 'Caserío de Cofete',
+        x: 12,
+        z: -2,
+        texto: 'Unas pocas casas bajas de piedra y cal en el llano, al pie de la montaña. Solo se llega por la pista de tierra, y las cabras majoreras pastan sueltas por las laderas.',
+        vista: -0.2,
+      },
+      {
+        nombre: 'Cementerio de Cofete',
+        x: 7.9,
+        z: 11.75,
+        texto: 'Un muro bajo de piedra que la arena salta con cada ventolera y, dentro, tumbas de piedras y cruces de madera. Se cuenta que antes de tenerlo los difuntos viajaban a lomos de camello hasta el cementerio de Pájara.',
+        vista: -0.9,
+      },
+      {
+        nombre: 'Playa de Cofete',
+        x: -14,
+        z: 15.5,
+        texto: 'Kilómetros de arena sin una casa, de cara a todo el Atlántico y protegidos por el Parque Natural de Jandía. Las olas rompen con fuerza y la resaca arrastra: es una playa para mirarla, no para bañarse.',
+        vista: 0.7,
+      },
+      {
+        nombre: 'Roque del Moro',
+        x: 37,
+        z: 16,
+        texto: 'Aquí se acaba la arena. El roque oscuro aguanta las olas sobre una rasa de roca, al pie de la sierra que cae al mar.',
+        vista: -0.9,
+      },
+      {
+        nombre: 'Degollada de Agua Oveja',
+        x: 36.5,
+        z: -3.5,
+        texto: 'Por este collado llega la pista de tierra de Morro Jable. Desde aquí se ve de golpe toda la playa y, detrás, la pared del macizo de Jandía con el pico de la Zarza: pasa de 800 m y es el techo de Fuerteventura.',
+        vista: 2.4,
+      },
     ],
   },
 };

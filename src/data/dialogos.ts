@@ -207,4 +207,8 @@ export const VISITAS = {
     nombre: 'Yaiza', zona: 'Sur · Lanzarote',
     descripcion: 'Pasea por la plaza de los Remedios entre casas blancas de carpintería verde, a las puertas de Timanfaya.',
   },
+  cofete: {
+    nombre: 'Casa Winter', zona: 'Cofete · Fuerteventura',
+    descripcion: 'Baja por la pista de Morro Jable hasta la casa de la torre, sola entre la montaña y la playa salvaje.',
+  },
 };
