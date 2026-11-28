@@ -53,7 +53,7 @@ export class PuertoScene extends Phaser.Scene {
         (destino, porMar = false) => {
           if (destino === 'ferry') {
             iniciarUI();
-            this.scene.start('TravelMap', { origen: islaId, terminal: 'gc-agaete', desdePueblo: true });
+            this.scene.start('TravelMap', { origen: islaId, terminal: poi, desdePueblo: true });
             return;
           }
           this.scene.restart({ pueblo: destino, llegada: porMar ? muelle(destino) : camino(destino) });
@@ -62,9 +62,9 @@ export class PuertoScene extends Phaser.Scene {
       );
     } catch (error) {
       console.warn('Puerto de Mogán utilizará su mapa de detalle.', error);
-      if (pueblo === 'agaete') {
+      if (PUEBLOS[pueblo].salidas.mar === 'ferry') {
         iniciarUI();
-        this.scene.start('TravelMap', { origen: islaId, terminal: 'gc-agaete' });
+        this.scene.start('TravelMap', { origen: islaId, terminal: poi });
         return;
       }
       iniciarUI();

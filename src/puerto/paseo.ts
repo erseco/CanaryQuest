@@ -15,6 +15,8 @@ export const umbral = (c: CasaPuerto) => ({ x: c.x, z: c.z + c.fondo / 2 + 0.52 
 
 type Rect = [number, number, number, number];
 const PUEBLO_IDS = Object.keys(PUEBLOS) as Pueblo[];
+/** Pueblo que es también terminal del ferry (Agaete, Playa Blanca): se entra en él y en él se desembarca. */
+export const puebloDeTerminal = (terminal: string) => PUEBLO_IDS.find((p) => PUEBLOS[p].poi === terminal);
 /** Rectángulo que abarca todo lo pisable: las orillas, más la playa y el espigón donde los hay. */
 function zona(pueblo: Pueblo): Rect {
   const { orillas, playa, espigon } = PUEBLOS[pueblo].plano;

@@ -3,7 +3,7 @@ import Phaser from 'phaser';
 import { fondoCarta } from '../atlas/carta';
 import { ISLAS, buscarTerminal, type IslaId, type Punto, type Terminal } from '../data/islas';
 import { destinosDesde, medioDe, type Destino, type MedioTransporte } from '../sistemas/viajes';
-import { muelle } from '../puerto/paseo';
+import { muelle, puebloDeTerminal } from '../puerto/paseo';
 import { PASEO } from '../data/dialogos';
 import { Musica } from '../sistemas/Musica';
 import { ESCALA_VEHICULO, texturaFerry } from '../sistemas/vehiculos';
@@ -154,8 +154,9 @@ export class TravelMapScene extends Phaser.Scene {
 
   private volver(): void {
     if (this.viajando) return;
-    if (this.datos.desdePueblo) {
-      this.scene.start('Puerto', { pueblo: 'agaete', llegada: muelle('agaete') });
+    const pueblo = puebloDeTerminal(this.origen.id);
+    if (this.datos.desdePueblo && pueblo) {
+      this.scene.start('Puerto', { pueblo, llegada: muelle(pueblo) });
       return;
     }
     this.scene.start('Island', { islaId: this.datos.origen, lugar: this.origen.id });
@@ -224,8 +225,10 @@ export class TravelMapScene extends Phaser.Scene {
         this.cameras.main.once('camerafadeoutcomplete', () => {
           const partida = this.registry.get('partida') as Partida;
           partida.islaActual = destino.isla;
-          if (destino.terminal.id === 'gc-agaete') {
-            this.scene.start('Puerto', { pueblo: 'agaete', llegada: muelle('agaete') });
+          // Si la terminal de llegada es un pueblo, se desembarca en su muelle.
+          const pueblo = puebloDeTerminal(destino.terminal.id);
+          if (pueblo) {
+            this.scene.start('Puerto', { pueblo, llegada: muelle(pueblo) });
             return;
           }
           // Se desembarca en la terminal de llegada

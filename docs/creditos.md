@@ -162,3 +162,24 @@ El viajero de las escenas 3D comparte modelo con Mogán. La hoja
 - Recortes PNOA de referencia en `public/assets/visitas/` (coordenadas longitud/latitud): `mogan-pnoa.webp` (−15.7684, 27.8164 a −15.7614, 27.8217), `agaete-pnoa.webp` (−15.7145, 28.0982 a −15.7067, 28.1046), `la-caleta-pnoa.webp` (−17.8890, 27.7997 a −17.8863, 27.8015), `las-palmas-pnoa.webp` (−15.4170, 28.09955 a −15.41385, 28.1014), `orchilla-pnoa.webp` (−18.1498, 27.7052 a −18.1453, 27.7082), `la-restinga-pnoa.webp` (−17.9834, 27.6381 a −17.9782, 27.6423) y `maspalomas-pnoa.webp` (−15.5804, 27.7430 a −15.5722, 27.7540). Recopilados el 26 de noviembre de 2026 para contrastar las visitas; las seis primeras quedan como referencias para integrar en sus maquetas.
 - La cadena sitúa el local de Playa del Inglés en el bajo 4 del hotel Rey Carlos, esquina de Tirajana con Francia. [Directorio oficial](https://pepechiringo.es/restaurantes/).
 - Referencias fotográficas para modelar arcadas, torretas y rótulo del CITA y contrastar el aspecto del hotel. [Fotografías del CITA](https://www.dunasmap.com/post/cita-shopping-centre-playa-del-ingles) · [RIU Palace, fotografía de 2025](https://commons.wikimedia.org/wiki/File:Riu_Palace_Maspalomas,_2025-01.jpg). La maqueta agrupa los motivos decorativos del centro.
+## Playa Blanca (Lanzarote)
+
+El pueblo 3D de Playa Blanca (`src/puerto/sitios/playa-blanca.ts`) se ha
+modelado para el juego con las piezas de la maqueta del puerto: el puerto del
+ferry con su dársena pesquera, la playa del Pueblo, la iglesia de Nuestra Señora
+del Carmen con su espadaña, el paseo sobre la lava, Playa Dorada entre sus
+escolleras, la Marina Rubicón con la torrecilla de la capitanía, el Castillo de
+las Coloradas (Torre del Águila) sobre la punta del Águila, la Montaña Roja, Los
+Ajaches y, enfrente, Lobos y la costa norte de Fuerteventura. El ferry, compartido
+con Agaete (`src/puerto/sitios/ferry.ts`), lleva la librea de Naviera Armas: casco
+blanco, raya roja y gris, el rótulo ARMAS y el banderín de la casa en las chimeneas.
+No se ha copiado ninguna imagen al juego: las fotografías y ortofotos solo sirvieron de referencia.
+
+### Referencias del trazado de Playa Blanca
+
+- Ortofoto PNOA máxima actualidad © IGN y productores PNOA, [CC BY 4.0](https://www.scne.es/). Recortes del WMS consultados entre (−13.845, 28.848) y (−13.805, 28.868).
+- Posiciones de la iglesia, las playas, los muelles, la Marina Rubicón y el castillo: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
+- Fechas del Castillo de las Coloradas (1741–1744, incendio de 1749 y lápida de 1769) según [Lanzarote Information](https://lanzaroteinformation.co.uk/?p=12336), [Hispanopedia](https://es.hispanopedia.com/wiki/Playa_Blanca_(Lanzarote)) y [Burgenwelt](https://www.burgenwelt.org/spanien/coloradas/burgenwelt-coloradas-objektseite.pdf).
+- Fotografías de referencia en Wikimedia Commons: iglesia del Carmen, de Frank Vincentz (CC BY-SA 3.0) y Dguendel (CC BY 4.0); Castillo de las Coloradas, de Marc Ryckaert (CC BY 3.0) y Wiki05 (CC0); Marina Rubicón, de Luis Miguel Bugallo Sánchez y Frank Vincentz (CC BY-SA 3.0); Playa Dorada, de Mark (CC BY 2.0) y Frank Vincentz (CC BY-SA 3.0).
+- Ferry de Naviera Armas: fotografías del Volcán de Tindaya en Playa Blanca y Corralejo, de Frank Vincentz (CC BY-SA 3.0) y Ein Dahmer (CC BY-SA 4.0), y el [distintivo de los buques de Naviera Armas](https://commons.wikimedia.org/wiki/File:Distintivo_de_los_buques_de_Naviera_Armas.JPG), de Carlos Teixidor Cadenas (CC BY-SA 3.0).
+- Travesía Playa Blanca–Corralejo (unos 13 km, entre 25 y 35 minutos): [Ferryhopper](https://www.ferryhopper.com/es/ferry-routes/direct/playa-blanca-corralejo) y [Direct Ferries](https://www.directferries.es/ferry_playa_blanca_corralejo.htm). Mercadillo de la Marina Rubicón los miércoles y sábados: [mercadillos.org](https://mercadillos.org/es/playa-blanca/mercadillo-marina-rubicon). Procesión marítima de la Virgen del Carmen: [La Voz de Lanzarote](https://www.lavozdelanzarote.com/en/news/culture/playa-blanca-and-its-seafaring-tradition-surrender-to-the-virgen-carmen_236548_102.html).

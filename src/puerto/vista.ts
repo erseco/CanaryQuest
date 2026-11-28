@@ -15,6 +15,7 @@ import {
 import { PUERTO as t, PASEO as guia } from '../data/dialogos';
 import { PUEBLOS, type Pueblo, type CasaPuerto } from '../data/pueblos';
 import { ISLAS } from '../data/islas';
+import { destinosDesde } from '../sistemas/viajes';
 import { crearInterior, sueloInterior } from './interior';
 import { CURSOR, type Gesto } from '../cursores';
 import './puerto.css';
@@ -218,7 +219,9 @@ export async function abrirPuerto(
   const { mar: porMar, tierra } = salidas;
   if (porMar) {
     indiceBarco = lugares.length;
-    const texto = porMar === 'ferry' ? guia.ferry : guia.lancha;
+    // El ferry anuncia las islas a las que llevan las líneas de su terminal.
+    const islas = destinosDesde(barrio.poi).map((d) => ISLAS[d.isla].nombre);
+    const texto = porMar === 'ferry' ? `${guia.ferry} ${islas.join(' y ')}` : guia.lancha;
     carteles.push({ indice: indiceBarco, texto });
     lugares.push({ nombre: texto, punto: muelle(pueblo), activar: () => viajar(porMar, true), gesto: 'salir' });
   }
