@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  'loro-parque': {
+    nombre: 'Loro Parque', zona: 'Puerto de la Cruz · Tenerife',
+    descripcion: 'Entra por el pabellón tailandés y pasea entre loros, pingüinos y orcas, con el Teide al fondo.',
+  },
 };
