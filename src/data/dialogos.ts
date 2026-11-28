@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  yaiza: {
+    nombre: 'Yaiza', zona: 'Sur · Lanzarote',
+    descripcion: 'Pasea por la plaza de los Remedios entre casas blancas de carpintería verde, a las puertas de Timanfaya.',
+  },
 };

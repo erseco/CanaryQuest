@@ -86,7 +86,7 @@ export async function abrirPuerto(
   const paisaje = new T.MeshBasicMaterial({ map: recursos.horizonte, side: T.BackSide, fog: false });
   const horizonte = new T.Mesh(new T.CylinderGeometry(50, 50, 44, 96, 1, true), paisaje);
   horizonte.scale.setScalar(grande ? 1.6 : 1);
-  horizonte.position.y = (grande ? 24 : 15) - (plano.cuesta?.desnivel ?? 0);
+  horizonte.position.y = (grande ? 24 : 15) - (plano.cuesta?.desnivel ?? plano.horizonte ?? 0);
   horizonte.rotation.y = -0.82;
   exterior.add(horizonte);
   const luces = [-8.5, -3, 3, 8.5].map((x) => {

@@ -133,6 +133,32 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
+## Yaiza (Lanzarote)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/yaiza.ts`, sin
+modelos ni texturas nuevas. El trazado (la calle Vista de Yaiza de oeste a este;
+al sur, la plaza de los Remedios entre la casa natal de Benito Pérez Armas y la
+iglesia; detrás de la iglesia, el jardín y el Ayuntamiento; la salida hacia
+Timanfaya y, al norte, una huerta enarenada) se tomó de un recorte de la
+ortofoto PNOA y de OpenStreetMap, y se comprimió a escala de juego, a unas 0,12
+unidades por píxel del recorte (unos 0,35 m). Licencias de composición: la calle
+Vista de Yaiza, que en realidad se curva hacia el nordeste pasada la iglesia, va
+recta, y por eso el Ayuntamiento y su jardín quedan al sur de ella; el
+aparcamiento al sur de la plaza es un jardín de picón con tuneras, cardones y un
+drago; el patio de la casa natal se abre por el sur con un portón para que se
+vean la galería y la escalera; los bancales de palmeras sobre tierra roja se
+acercan a la iglesia, y los volcanes del horizonte se juntan mucho más de lo que
+están. El recorte PNOA, de (−13.7680, 28.9510) a (−13.7625, 28.9540), se usó solo
+como consulta y no está en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
+- Posiciones de la iglesia, el Ayuntamiento, la casa natal de Benito Pérez Armas (BIC, monumento), la plaza y las calles: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API Overpass.
+- [Village of Yaiza, Hello Canary Islands](https://www.hellocanaryislands.com/places-full-of-charm/lanzarote/village-of-yaiza): casas blancas de azotea, la Casa de la Cultura con su balcón y escaleras de madera, y los premios por lo cuidado del pueblo.
+- [Casa de la Cultura Benito Pérez Armas, Lanzarote Information](https://lanzaroteinformation.co.uk/?p=13732): casa natal del escritor y político (1871), con patio central y habitación alta con balcón.
+- Diario de la erupción de 1730 del cura de Yaiza, Andrés Lorenzo Curbelo: [Carracedo y otros, Estudios Geológicos (1990)](https://estudiosgeol.revistas.csic.es/index.php/estudiosgeol/article/download/436/456/449) y [Pallarés Padilla, Memoria Digital de Lanzarote](https://memoriadelanzarote.com/media/docs/items/20110112092548CONSIDERACIONES-EN-TORNO-AL-MANUSCRITO-DEL-CURA-DE-YAIZA.pdf).
+- Carpintería verde tierra adentro y azul en la costa, y la estética que defendió César Manrique: [La Maleta Inquieta](https://lamaletainquieta.com/pueblos-lanzarote/) y [Barceló, guía de Yaiza](https://www.barcelo.com/guia-turismo/es/espana/lanzarote/que-ver/yaiza/).
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [la iglesia desde el suroeste](https://commons.wikimedia.org/wiki/File:Iglesia_de_Nuestra_Se%C3%B1ora_de_los_Remedios_(Yaiza).jpg), [la iglesia y la plaza](https://commons.wikimedia.org/wiki/File:Yaiza_-_Plaza_de_los_Remedios_-_Nuestra_Se%C3%B1ora_de_los_Remedios_ex_01_ies.jpg), [la plaza hacia la iglesia](https://commons.wikimedia.org/wiki/File:ES-lanza-yaiza-plaza-igl-remedios.jpg), [la casa natal desde la plaza](https://commons.wikimedia.org/wiki/File:Casa_Natal_de_Benito_P%C3%A9rez_Armas_Plaza.jpg), [su patio](https://commons.wikimedia.org/wiki/File:Casa_Natal_de_Benito_P%C3%A9rez_Armas_-_Patio.jpg), [la plaza de los Remedios](https://commons.wikimedia.org/wiki/File:Yaiza,_the_Plaza_de_Los_Remedios.JPG) y [el Ayuntamiento y su jardín](https://commons.wikimedia.org/wiki/File:Town_of_Yaiza_-_Lanzarote_-_Spain._Y34.jpg). Solo se usaron como referencia; no se incluyen en el juego.
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
