@@ -8,6 +8,7 @@ import { trazarRestinga } from './sitios/restinga';
 import { trazarOrchilla } from './sitios/orchilla';
 import { trazarValverde } from './sitios/valverde';
 import { trazarCaleta } from './sitios/caleta';
+import { trazarAgaete } from './sitios/agaete';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -51,10 +52,12 @@ export interface Taller {
 }
 /** Lo que un trazado propio devuelve además de sus piezas: dónde van los barcos. */
 export interface Sitio {
-  /** Barcos a flote, que cabecean: modelo, x, z. */
-  amarres: [number, number, number][];
+  /** Barcos a flote, que cabecean: modelo, x, z y, si va alineado con un muelle, su rumbo. */
+  amarres: [number, number, number, number?][];
   /** Barcos en tierra: modelo, x, y, z y giro. */
   enSeco: [number, number, number, number, number][];
+  /** Barco de línea hecho con piezas propias: pasa a ser el barco 0, el que se toca para embarcar. */
+  ferry?: T.Group;
 }
 
 // La maqueta se hornea en mallas con color por vértice para dibujar el pueblo en pocas llamadas.
@@ -379,17 +382,10 @@ export function crearMaqueta(
   else if (plano.sitio === 'orchilla') sitio = trazarOrchilla(taller);
   else if (plano.sitio === 'valverde') sitio = trazarValverde(taller);
   else if (plano.sitio === 'caleta') sitio = trazarCaleta(taller);
+  else if (plano.sitio === 'agaete') sitio = trazarAgaete(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {
-  if (pueblo === 'agaete') {
-    // La ermita y sus torres azules marcan el paseo de Las Nieves.
-    for (const x of [-3, -0.2]) {
-      pieza(caja, blanco, x, 2.45, -6.8, 0.85, 4.9, 1.1);
-      pieza(caja, '#1f5893', x, 4.15, -6.21, 0.37, 0.72, 0.08);
-      pieza(piramide, '#31669c', x, 5.24, -6.8, 0.86, 0.85, 0.86, 0, Math.PI / 4);
-    }
-  }
   if (pueblo === 'mogan') {
     // Campanario, huecos de campana y remate de teja.
     pieza(caja, '#f1d59c', -1.6, 3.2, -7, 1.58, 6.4, 1.5);
@@ -685,7 +681,7 @@ export function crearMaqueta(
     const limites = new T.Box3().setFromObject(modelo);
     const tamano = limites.getSize(new T.Vector3()),
       centro = limites.getCenter(new T.Vector3());
-    const escala = [pueblo === 'agaete' ? 7.2 : 3.55, 4.65, 2.4][i] / Math.max(tamano.x, tamano.z);
+    const escala = [3.55, 4.65, 2.4][i] / Math.max(tamano.x, tamano.z);
     modelo.position.set(-centro.x, -limites.min.y, -centro.z);
     modelo.traverse((obj) => {
       if (obj instanceof T.Mesh) obj.castShadow = obj.receiveShadow = true;
@@ -693,7 +689,7 @@ export function crearMaqueta(
     const barco = new T.Group();
     barco.add(modelo);
     barco.scale.setScalar(escala);
-    barco.position.set([-5.25, 6.6, -9.3][i], -0.85, [pueblo === 'agaete' ? 6.65 : 5.5, 6, 6.8][i]);
+    barco.position.set([-5.25, 6.6, -9.3][i], -0.85, [5.5, 6, 6.8][i]);
     escena.add(barco);
     return barco;
   });
@@ -711,11 +707,12 @@ export function crearMaqueta(
     }
   if (sitio) {
     const usados = new Set<number>();
-    for (const [origen, x, z] of sitio.amarres) {
+    for (const [origen, x, z, rumbo] of sitio.amarres) {
       const repetido = usados.has(origen);
       const barco = repetido ? barcos[origen].clone() : barcos[origen];
       usados.add(origen);
       barco.position.set(x, -0.85, z);
+      barco.userData.rumbo = rumbo;
       if (repetido) {
         escena.add(barco);
         barcos.push(barco);
@@ -727,6 +724,11 @@ export function crearMaqueta(
       barco.position.set(x, y, z);
       barco.rotation.y = giro;
       escena.add(barco);
+    }
+    // El barco de línea va el primero, después de usar los modelos como plantilla.
+    if (sitio.ferry) {
+      escena.add(sitio.ferry);
+      barcos.unshift(sitio.ferry);
     }
   }
   const jugador = persona(inicio.x, inicio.z, false),

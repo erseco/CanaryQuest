@@ -32,7 +32,7 @@ export async function abrirPuerto(
   const grande = !!plano.playa || plano.orillas.length > 2 || !!plano.suelos;
   /** Un lugar sin casas (un faro, unas piscinas) no es un pueblo: sus textos hablan de rincones. */
   const textoLugares = barrio.casas.length ? guia.lugares : guia.rincones;
-  const recursos = await cargarRecursos(pueblo);
+  const recursos = await cargarRecursos();
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
   const root = document.createElement('section');
   root.className = 'puerto';
@@ -540,7 +540,7 @@ export async function abrirPuerto(
     barcos.forEach((b, i) => {
       b.position.y = -1.03 + 0.045 * Math.sin(tiempo * 1.6 + i);
       b.rotation.z = 0.035 * Math.sin(tiempo + i);
-      b.rotation.y = 1.15 + i * 0.55;
+      b.rotation.y = b.userData.rumbo ?? 1.15 + i * 0.55;
     });
     luz = T.MathUtils.damp(luz, casaActual ? 0 : destinoLuz, 2.8, dt);
     paisaje.color.setRGB(1, 1, 1).lerp(tinteNoche, luz);
