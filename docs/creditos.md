@@ -146,6 +146,31 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
+## Playa de Las Canteras (Las Palmas de Gran Canaria)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/canteras.ts` y
+`canteras-plano.ts`, sin modelos ni texturas nuevas. La orilla, el paseo, La
+Barra, La Puntilla con su plaza y su varadero, Playa Chica y la Peña de la Vieja
+se trazaron sobre recortes PNOA de (−15,456; 28,126) a (−15,426; 28,156) y se
+«desenrollaron»: el arco de la bahía corre en línea a lo largo de x, a unos 19 m
+por unidad, y de través a unos 7 m, para que la cámara lo recorra entero. La
+Barra queda más cerca de la orilla que en la realidad (unos 200 m), para que se
+vea con la playa. El arco de La Cícer y el Auditorio Alfredo Kraus se comprimen
+al fondo, dentro del horizonte pintado. Los edificios de la primera línea, el
+hotel Reina Isabel, el bloque azul, la casa antigua de dos plantas, los bloques
+escalonados de La Cícer y la torre Woermann se modelan a partir de fotografías,
+sin copiar sus fachadas. Los recortes PNOA se usaron solo como consulta y no están
+en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
+- Posiciones de la playa, La Puntilla, la heladería de la Peña de la Vieja, el hotel Reina Isabel, la torre Woermann y el Auditorio: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con Nominatim.
+- [Playa de Las Canteras, Wikipedia](https://es.wikipedia.org/wiki/Playa_de_Las_Canteras) y [Las Canteras beach, Wikipedia](https://en.wikipedia.org/wiki/Las_Canteras_beach): La Barra de arenisca, de unos dos kilómetros a unos doscientos metros de la orilla; el nombre, de la piedra que se sacaba de ella; la Peña a unos 60 m; Playa Chica; el Teide que se ve en los días claros.
+- [Las Canteras, LPA Mar](https://lpamar.laspalmasgc.es/las-playas/las-canteras?locale=en) y [LPA Visit](https://lpavisit.com/en/?p=18976): sectores de la playa, La Puntilla como último refugio de los pescadores, el Teide visible desde la playa.
+- [Las Canteras bit by bit, Gran Canaria Info](https://gran-canaria-info.com/beaches/gran-canaria-beaches-las-canteras-bit-by-bit): barcas varadas en La Puntilla, Playa Chica sin hamacas, viejas y pejeverdes, La Cícer sin barra y con olas.
+- [Auditorio Alfredo Kraus, Wikipedia](https://en.wikipedia.org/wiki/Auditorio_Alfredo_Kraus): obra de Óscar Tusquets, inaugurada en 1997; [RTVE Canarias, 25.º aniversario](https://rtvc.es/auditorio-alfredo-kraus-25-aniversario/): «Desde el principio imaginé el edificio entre una fortaleza y un faro, que protegiera la playa de Las Canteras»; [«The voice of the ocean», Gran Canaria](https://grancanaria.com/blog/en/article/the-voice-of-the-ocean): la sala sinfónica abre una ventana al mar tras el escenario.
+- [El Teide desde Las Canteras, miplayadelascanteras.com](https://miplayadelascanteras.com/2019/12/15/el-teide-desde-las-canteras/) y [eldiario.es](https://www.eldiario.es/canariasahora/sociedad/fotografia-desde-gran-canaria-teide-nieve-hoy_1_9929816.html).
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [el Auditorio desde la entrada](https://commons.wikimedia.org/wiki/File:Auditorio_Alfredo_Kraus_01.jpg), [el Auditorio y su linterna](https://commons.wikimedia.org/wiki/File:Auditorio_alfredo_kraus_las_palmas_de_gran_canaria.jpg), [la Peña de la Vieja](https://commons.wikimedia.org/wiki/File:Las_Canteras_Beach-Pe%C3%B1a_la_Vieja.jpg), [barcas y nasas en La Puntilla](https://commons.wikimedia.org/wiki/File:Canteras_Beach-Nasas_%26_boats_in_La_Puntilla.jpg), [La Puntilla](https://commons.wikimedia.org/wiki/File:Canteras_Beach-La_Puntilla-Gran_Canaria.jpg), [el varadero](https://commons.wikimedia.org/wiki/File:La_Puntilla,_playa_de_Las_Canteras_en_Las_Palmas_de_Gran_Canaria.jpg), [La Puntilla al anochecer](https://commons.wikimedia.org/wiki/File:200214_Las_Canteras_-_Blick_auf_La_Puntilla_am_Abend.jpg), [Playa Chica](https://commons.wikimedia.org/wiki/File:Playa_las_canteras_chica_atardecer_palmas_gran_canaria.jpg), [el paseo](https://commons.wikimedia.org/wiki/File:Las_Canteras_Beach_Avenue-Las_Palmas_Gran_Canaria.jpg), [sus terrazas](https://commons.wikimedia.org/wiki/File:20150209_Strandleben_am_Paseo_des_Las_Canteras.jpg), [sus edificios](https://commons.wikimedia.org/wiki/File:Playa_las_canteras_paseo_palmas_de_gran_canaria.jpg) y [el hotel Reina Isabel](https://commons.wikimedia.org/wiki/File:Hotel_Reina_Isabel,_Las_Palmas_de_Gran_Canaria.jpg). Solo se usaron como referencia; no se incluyen en el juego.
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del

@@ -93,6 +93,7 @@ export const ISLAS: Record<IslaId, Isla> = {
       { id: 'gc-aeropuerto', nombre: 'Aeropuerto de Gran Canaria', tipo: 'aeropuerto', mapa: proyectarLugar(geografia['gran-canaria']['gc-aeropuerto']) },
     ],
     mapaMundo: puntoCarta(-15.6, 27.96),
+    zonas: [{ mapa: 'las-canteras', etiqueta: 'Las Canteras' }],
   },
   fuerteventura: {
     id: 'fuerteventura',
