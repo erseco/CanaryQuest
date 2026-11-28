@@ -156,3 +156,45 @@ it('da acceso a la salida de la habitación y al ferry de regreso', () => {
   expect(destinosDesde('gc-agaete').some((d) => d.terminal.id === 'tf-santa-cruz')).toBe(true);
   expect(destinosDesde('tf-santa-cruz').some((d) => d.terminal.id === 'gc-agaete')).toBe(true);
 });
+it('Las Palmas: la plaza y las calles de Vegueta se pisan, los edificios no, y se llega a cada rincón', () => {
+  const pueblo = 'las-palmas';
+  const pisa = (x: number, z: number) => transitable(x, z, pueblo);
+  expect(pisa(0, 6)).toBe(true); // plaza de Santa Ana
+  expect(pisa(16, 0)).toBe(true); // calle Obispo Codina, ante la catedral
+  expect(pisa(-20, 12.5)).toBe(true); // calle del Castillo
+  expect(pisa(-17.8, 6)).toBe(true); // soportal de las Casas Consistoriales
+  expect(pisa(25, 16)).toBe(true); // calle del Espíritu Santo
+  expect(pisa(40, 5)).toBe(false); // pilar del Pilar Nuevo
+  expect(pisa(26, 6)).toBe(false); // naves de la catedral
+  expect(pisa(-22, 6)).toBe(false); // Casas Consistoriales
+  expect(pisa(6, -4)).toBe(false); // Palacio Episcopal
+  expect(pisa(40, -2)).toBe(false); // Casa de Colón
+  expect(pisa(13, 3)).toBe(false); // pedestales de los perros
+  expect(alturaPaseo(0, 6, pueblo)).toBeGreaterThan(0.1); // la plaza está un escalón por encima
+  // Se camina como en la vista: paso a paso, primero en x y luego en z, dando por alcanzado
+  // cada punto de la ruta a menos de 8 mm. Con varios largos de paso, como a distintos fotogramas
+  // por segundo, alguno se detiene justo antes de una esquina entre dos suelos.
+  const caminar = (desde: { x: number; z: number }, hasta: { x: number; z: number }, zancada: number) => {
+    const pos = { ...desde },
+      ruta = rutaPuerto(desde, hasta, pueblo);
+    for (let i = 0; i < 20000 && ruta.length; i++) {
+      const dx = ruta[0].x - pos.x,
+        dz = ruta[0].z - pos.z,
+        largo = Math.hypot(dx, dz);
+      if (largo < 0.008) {
+        ruta.shift();
+        continue;
+      }
+      const paso = Math.min(largo, zancada);
+      if (transitable(pos.x + (dx / largo) * paso, pos.z, pueblo)) pos.x += (dx / largo) * paso;
+      if (transitable(pos.x, pos.z + (dz / largo) * paso, pueblo)) pos.z += (dz / largo) * paso;
+    }
+    return Math.hypot(pos.x - hasta.x, pos.z - hasta.z);
+  };
+  const { rincones } = PUEBLOS[pueblo];
+  for (const zancada of [0.031, 0.047, 0.059, 0.067, 0.083, 0.097, 0.113]) {
+    for (const r of rincones) expect(caminar(inicio(pueblo), r, zancada), r.nombre).toBeLessThan(0.01);
+    // También de un extremo a otro: de la Casa de Colón a la plazoleta del Espíritu Santo.
+    expect(caminar(rincones.at(-1)!, rincones.at(-2)!, zancada)).toBeLessThan(0.01);
+  }
+});
