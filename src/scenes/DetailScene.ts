@@ -14,7 +14,7 @@ export interface RetornoDetalle {
   x: number;
   y: number;
   /**
-   * Si hay padre, el borde inferior vuelve a ese Detail (p. ej. Chistera → Isleta).
+   * Si hay padre, el borde inferior vuelve a ese Detail (p. ej. casa-cueva → Roque Nublo).
    * `retorno` del padre se restaura tal cual para no romper la cadena.
    */
   parent?: { mapaId: string; x: number; y: number; retorno: RetornoDetalle };
@@ -189,7 +189,6 @@ export class DetailScene extends Phaser.Scene {
       'pixellab-dunas': 'tiles-dunas',
       'pixellab-pueblo': 'tiles-plaza',
       'pixellab-ciudad': 'tiles-ciudad',
-      'pixellab-chistera': 'tiles-chistera',
       'pixellab-cumbre-camino': 'tiles-cumbre-camino',
       'pixellab-cumbre-risco': 'tiles-cumbre-risco',
       'pixellab-cumbre-presa': 'tiles-cumbre-presa',
@@ -337,8 +336,6 @@ export class DetailScene extends Phaser.Scene {
       triana: 'Triana',
       vegueta: 'Vegueta',
       catedral: 'Catedral de Santa Ana',
-      isleta: 'La Isleta',
-      chistera: 'La Chistera',
       'roque-nublo': 'Roque Nublo',
       presa: 'Presa de los Hornos',
       'crater-timanfaya': 'Cráter de Timanfaya',
@@ -352,15 +349,6 @@ export class DetailScene extends Phaser.Scene {
   private crearNpcDesdeObjeto(o: Phaser.Types.Tilemaps.TiledObject): void {
     const x = o.x ?? 0;
     const y = o.y ?? 0;
-    if (o.name === 'comico') {
-      // Preferir sprite PixelLab si existe; si no, hero reutilizado
-      const textura = this.textures.exists('decor-comico') ? 'decor-comico' : 'hero';
-      const npc = new Npc(this, x, y, 'comico', textura, textura === 'hero' ? 1 : undefined);
-      if (textura === 'hero') npc.setScale(1.5);
-      npc.setDepth(12);
-      this.npcs.push(npc);
-      return;
-    }
     // Propiedad `sprite`: NPC de BrowserQuest (villager, priest, lavanpc…)
     const sprite = this.prop(o, 'sprite');
     if (sprite !== undefined && this.textures.exists(`bq-${sprite}`)) {
@@ -540,7 +528,6 @@ export class DetailScene extends Phaser.Scene {
   }
 
   private nombreAmigable(id: string): string {
-    if (id === 'comico') return 'el cómico';
     if (id === 'pastor') return 'el pastor';
     if (id === 'abuela') return 'la abuela';
     if (id === 'guardiana-jameos') return 'la guardiana';

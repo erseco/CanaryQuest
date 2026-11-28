@@ -12,7 +12,6 @@ const MAPAS: [string, IslaId][] = [
   ['dunas', 'gran-canaria'],
   ['roque-nublo', 'gran-canaria'],
   ['las-palmas', 'gran-canaria'],
-  ['isleta', 'gran-canaria'],
   ['jameos', 'lanzarote'],
   ['timanfaya', 'lanzarote'],
   ['betancuria', 'fuerteventura'],

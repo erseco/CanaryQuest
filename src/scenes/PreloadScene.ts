@@ -49,8 +49,6 @@ export class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map-pueblo', 'assets/maps/pueblo.tmj');
     this.load.tilemapTiledJSON('map-dunas', 'assets/maps/dunas.tmj');
     this.load.tilemapTiledJSON('map-las-palmas', 'assets/maps/las-palmas.tmj');
-    this.load.tilemapTiledJSON('map-isleta', 'assets/maps/isleta.tmj');
-    this.load.tilemapTiledJSON('map-chistera', 'assets/maps/chistera.tmj');
     this.load.tilemapTiledJSON('map-roque-nublo', 'assets/maps/roque-nublo.tmj');
     this.load.tilemapTiledJSON('map-casa-cueva', 'assets/maps/casa-cueva.tmj');
     for (const m of ['timanfaya', 'jameos', 'garajonay', 'betancuria']) {
@@ -64,7 +62,6 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('tiles-dunas', 'assets/tilesets/pixellab-dunas-32.png');
     this.load.image('tiles-plaza', 'assets/tilesets/pixellab-pueblo-32.png');
     this.load.image('tiles-ciudad', 'assets/tilesets/pixellab-ciudad-32.png');
-    this.load.image('tiles-chistera', 'assets/tilesets/pixellab-chistera-32.png');
     for (const ts of ['cumbre-camino', 'cumbre-risco', 'cumbre-presa', 'casa-cueva']) {
       this.load.image(`tiles-${ts}`, `assets/tilesets/pixellab-${ts}-32.png`);
     }
@@ -93,9 +90,6 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('decor-catedral-lp', 'assets/sprites/pixellab-catedral-lp.png');
     this.load.image('decor-casa-vegueta', 'assets/sprites/pixellab-casa-vegueta.png');
     this.load.image('decor-casa-triana', 'assets/sprites/pixellab-casa-triana.png');
-    this.load.image('decor-letrero-chistera', 'assets/sprites/pixellab-letrero-chistera.png');
-    this.load.image('decor-escenario-micro', 'assets/sprites/pixellab-escenario-micro.png');
-    this.load.image('decor-comico', 'assets/sprites/pixellab-comico.png');
     this.load.image('decor-pino-canario', 'assets/sprites/pixellab-pino-canario.png');
     for (const p of ['laurel', 'arbusto', 'aguja-volcanica', 'aguja-ocre', 'roca-malpais']) {
       this.load.image(`decor-${p}`, `assets/sprites/lpc-${p}.png`);

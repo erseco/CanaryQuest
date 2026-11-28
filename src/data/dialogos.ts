@@ -187,4 +187,8 @@ export const VISITAS = {
     nombre: 'Playa de Las Canteras', zona: 'Las Palmas · Gran Canaria',
     descripcion: 'Pasea de La Puntilla a la Peña de la Vieja, con La Barra calmando el mar frente a la arena dorada.',
   },
+  isleta: {
+    nombre: 'La Isleta', zona: 'Las Palmas · Gran Canaria',
+    descripcion: 'Del Castillo de La Luz y el puerto, sube por las calles empinadas del barrio hasta el pie de los volcanes.',
+  },
 };

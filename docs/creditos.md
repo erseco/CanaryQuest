@@ -7,9 +7,9 @@
 | Vista aérea (título) | `public/assets/titulo/archipielago-aereo.jpg` | Generada con IA (canarias.win) | Propia |
 | Tileset pueblo 32 px extruido | `public/assets/tilesets/tuxemon-32px-extruido.png` | Proyecto [Tuxemon](https://github.com/Tuxemon/Tuxemon), vía plantilla phaser-rpg | CC-BY-SA 4.0 |
 | Mapa del pueblo | `public/assets/maps/pueblo.tmj` | "tuxemon-town" de la plantilla [phaser-rpg](https://github.com/remarkablegames/phaser-rpg) (remarkablemark) | MIT (mapa), tiles CC-BY-SA 4.0 |
-| Tilesets Wang dunas/plaza/ciudad/club 32 px | `public/assets/tilesets/pixellab-*.png` | Generados con [PixelLab API](https://www.pixellab.ai/) para este proyecto | Propios (cuenta CanaryQuest) |
-| Props mapa (casas, catedral, Chistera, cómico…) | `public/assets/sprites/pixellab-*.png` | Generados con PixelLab (`map-objects`) | Propios |
-| Mapas dunas, Las Palmas, Isleta, Chistera | `public/assets/maps/*.tmj` | Layout propio sobre tilesets PixelLab | Propio |
+| Tilesets Wang dunas/plaza/ciudad 32 px | `public/assets/tilesets/pixellab-*.png` | Generados con [PixelLab API](https://www.pixellab.ai/) para este proyecto | Propios (cuenta CanaryQuest) |
+| Props mapa (casas, catedral…) | `public/assets/sprites/pixellab-*.png` | Generados con PixelLab (`map-objects`) | Propios |
+| Mapas dunas y Las Palmas | `public/assets/maps/*.tmj` | Layout propio sobre tilesets PixelLab | Propio |
 | Tilesets Wang cumbre (camino, risco, presa) y casa-cueva 32 px | `public/assets/tilesets/pixellab-cumbre-*.png`, `pixellab-casa-cueva-32.png` | PixelLab (`scripts/pixellab-generate.py roque-nublo`) | Propios |
 | Pino canario | `public/assets/sprites/pixellab-pino-canario.png` | PixelLab (`map-objects`) | Propio |
 | Terrenos Wang LPC (lava, picón, tierra roja, arena, camino, agua, hierba, musgo) y props (laurel, arbusto, agujas volcánicas, roca de malpaís) | `public/assets/tilesets/lpc-*.png`, `public/assets/sprites/lpc-*.png` (fuentes en `art/lpc/`, recoloreados por `scripts/lpc-a-wang.py`) | [Liberated Pixel Cup](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles), Lanea «Sharm» Zimmerman (ver `art/lpc/CREDITS.TXT`) | CC-BY-SA 3.0 / GPL 3.0 (también OGA-BY 3.0) |
@@ -208,3 +208,33 @@ No se ha copiado ninguna imagen al juego: las fotografías y ortofotos solo sirv
 - Fotografías de referencia en Wikimedia Commons: iglesia del Carmen, de Frank Vincentz (CC BY-SA 3.0) y Dguendel (CC BY 4.0); Castillo de las Coloradas, de Marc Ryckaert (CC BY 3.0) y Wiki05 (CC0); Marina Rubicón, de Luis Miguel Bugallo Sánchez y Frank Vincentz (CC BY-SA 3.0); Playa Dorada, de Mark (CC BY 2.0) y Frank Vincentz (CC BY-SA 3.0).
 - Ferry de Naviera Armas: fotografías del Volcán de Tindaya en Playa Blanca y Corralejo, de Frank Vincentz (CC BY-SA 3.0) y Ein Dahmer (CC BY-SA 4.0), y el [distintivo de los buques de Naviera Armas](https://commons.wikimedia.org/wiki/File:Distintivo_de_los_buques_de_Naviera_Armas.JPG), de Carlos Teixidor Cadenas (CC BY-SA 3.0).
 - Travesía Playa Blanca–Corralejo (unos 13 km, entre 25 y 35 minutos): [Ferryhopper](https://www.ferryhopper.com/es/ferry-routes/direct/playa-blanca-corralejo) y [Direct Ferries](https://www.directferries.es/ferry_playa_blanca_corralejo.htm). Mercadillo de la Marina Rubicón los miércoles y sábados: [mercadillos.org](https://mercadillos.org/es/playa-blanca/mercadillo-marina-rubicon). Procesión marítima de la Virgen del Carmen: [La Voz de Lanzarote](https://www.lavozdelanzarote.com/en/news/culture/playa-blanca-and-its-seafaring-tradition-surrender-to-the-virgen-carmen_236548_102.html).
+
+## La Isleta (Las Palmas de Gran Canaria)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/isleta.ts`, sin
+modelos ni texturas nuevas. El trazado sigue la ortofoto PNOA y el callejero de
+OpenStreetMap con el norte arriba, comprimido a escala de juego: la dársena con
+el muelle de los pesqueros y un carguero; la avenida del puerto; el Castillo de
+La Luz en su jardín (mampostería, almenas de cantería, torreones redondos al
+noreste y al suroeste, garita al noroeste y las cajas de acero corten de la
+reforma de 2015) con el edificio de la fundación al este; la iglesia de La Luz
+con sus tres rosetones y su tejado de bóvedas al oeste; las calles Juan Rejón,
+La Naval y una calle alta unidas por cuestas y escaleras, entre casas de
+colores con azoteas, depósitos de agua y plantas a medio acabar; los tanques de
+combustible y las grúas de la terminal de contenedores al este; los volcanes y
+los cuarteles al norte, y El Confital al noroeste. Licencias de composición: la
+pendiente del barrio está suavizada, la puerta del castillo se ha llevado a la
+cara sur para que se vea desde el puerto, El Confital está más cerca del barrio
+que en la realidad y la terminal de contenedores, frente a la dársena. Los
+colores de la fachada de la iglesia y las grúas no se han verificado. La
+Chistera es un local del juego; no se corresponde con ningún local real de La
+Isleta. Los recortes PNOA, de (−15.450, 28.130) a (−15.395, 28.185) y sus
+ampliaciones, se usaron solo como consulta y no están en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
+- Calles, plazas, el castillo y las parroquias: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
+- [Castillo de la Luz, Wikipedia](https://es.wikipedia.org/wiki/Castillo_de_la_Luz): construido en piedra en 1494 sobre un arrecife, incendiado por la armada de Van der Does en 1599, hoy a más de 150 m del mar y sede de la Fundación Martín Chirino desde 2015.
+- [La Isleta, Wikipedia](https://es.wikipedia.org/wiki/La_Isleta_(Las_Palmas_de_Gran_Canaria)), [Paisaje protegido de La Isleta](https://es.wikipedia.org/wiki/Paisaje_protegido_de_La_Isleta) y [El Confital](https://es.wikipedia.org/wiki/El_Confital): zona militar, fiestas de La Naval, la ola de El Confital y el derribo de las chabolas en 2004.
+- [La Isleta in Gran Canaria, Lopesan](https://www.lopesan.com/blog/en/?p=15158): el ataque de Drake en 1595 y el Puerto de La Luz de 1883.
+- [Rehabilitación de la iglesia de La Luz, RTVC](https://rtvc.es/rehabilitacion-iglesia-de-la-luz-las-palmas-de-gran-canaria-28-septiembre-202/): inaugurada en 1914, tres rosetones, bóvedas de media naranja y la Virgen de Luján Pérez.
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [el castillo](https://commons.wikimedia.org/wiki/File:Castillo_de_la_Luz_D81_5344_(27910263459).jpg), [su garita](https://commons.wikimedia.org/wiki/File:Castilo_de_La_Luz-torreon_Las-Palmas-Gran-Canaria.jpg), [casas de la calle Coronel Rocha](https://commons.wikimedia.org/wiki/File:Residential_by_Calle_del_Coronel_Rocha_in_La_Isleta,_Las_Palmas_de_Gran_Canaria,_Gran_Canaria,_2023_May.jpg) y [La Isleta desde el interior de la isla](https://commons.wikimedia.org/wiki/File:Mirando_hacia_La_Isleta_-_panoramio.jpg). Solo se usaron como referencia; no se incluyen en el juego.

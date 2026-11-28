@@ -2,7 +2,7 @@ import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
 import { PALMERAS as PALMERAS_CANTERAS, SUELOS as SUELOS_CANTERAS, VALLAS as VALLAS_CANTERAS } from '../puerto/sitios/canteras-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -20,7 +20,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -35,9 +35,11 @@ export interface Plano {
   sinMar?: boolean;
   /**
    * Lugar en cuesta: la cámara mira más desde arriba y sigue de cerca al viajero, también en altura.
-   * `desnivel` baja el horizonte pintado: el mar queda lejos, abajo.
+   * `desnivel` baja el horizonte pintado: el mar queda lejos, abajo. `mirada` es la inclinación
+   * de la cámara a ras del mar, más baja que la normal (0,54) para dejar ver los montes de detrás;
+   * al subir por las calles vuelve a la normal.
    */
-  cuesta?: { desnivel: number };
+  cuesta?: { desnivel: number; mirada?: number };
   /** Bruma propia: distancia a la que empieza la niebla y a la que ya lo cubre todo. */
   bruma?: [number, number];
 }
@@ -65,6 +67,8 @@ export interface CasaPuerto {
   alto: number;
   fondo: number;
   color: string;
+  /** Quien recibe dentro: el personaje con el que se habla al entrar y cómo se le nombra. */
+  anfitrion?: { npc: string; nombre: string };
 }
 function casa(
   nombre: string,
@@ -669,7 +673,7 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       suelos: SUELOS_CANTERAS,
       vallas: VALLAS_CANTERAS,
     },
-    salidas: {},
+    salidas: { tierra: 'isleta' },
     casas: [],
     inicio: { x: -8, z: 1.6 },
     carretera: { x: -54.2, z: -16.5 },
@@ -680,6 +684,110 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Playa Chica', x: 27.5, z: 2.2, vista: 1, texto: 'Una playa pequeña dentro de la grande, entre rocas y charcos. Es la zona de las familias y de los que bucean entre viejas y pejeverdes.' },
       { nombre: 'Peña de la Vieja', x: 39, z: 4.4, vista: -1.3, texto: 'La peña más famosa de Las Canteras asoma a unos sesenta metros de la orilla. La playa mira a poniente: el sol se pone en el mar y, en los días claros, se ve el Teide al otro lado.' },
       { nombre: 'Hacia La Cícer', x: 47, z: 3, vista: -1.7, texto: 'Al sur la playa se abre sin la barra y llegan las olas de los surfistas. Al fondo, el Auditorio Alfredo Kraus, de Óscar Tusquets, inaugurado en 1997: su autor lo pensó entre fortaleza y faro.' },
+    ],
+  },
+  // Gran Canaria, la península al norte de Las Palmas. Trazado sobre la ortofoto PNOA y
+  // OpenStreetMap con el norte arriba (−z): delante, la dársena con el muelle de los pesqueros;
+  // el Castillo de La Luz en su jardín y la iglesia de La Luz al oeste; las calles Juan Rejón y
+  // La Naval y una calle alta que trepan hacia los volcanes; al este, los tanques y las grúas del
+  // puerto, y al noroeste, El Confital. Trazado en `sitios/isleta.ts`.
+  isleta: {
+    nombre: 'La Isleta',
+    isla: 'gran-canaria',
+    poi: 'isleta',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'isleta',
+      estilo: 'blanca',
+      costa: 0,
+      cuesta: { desnivel: 0, mirada: 0.3 },
+      bruma: [55, 190],
+      palmeras: [
+        // Jardín del castillo.
+        [-7.6, -3.2, 4.6],
+        [-7.4, 1.8, 4],
+        [-6.6, 5.7, 4.4],
+        [7.4, 5.4, 4.2],
+        // Mediana de la avenida del puerto.
+        ...[-22, -16, -10, -4, 9, 15, 21].map((x, i): [number, number, number] => [x, 9.9, 4.4 + (i % 3) * 0.4]),
+        // Plaza de la iglesia.
+        [-25.6, 5.6, 4.2],
+        [-10.6, 5.6, 4.6],
+      ],
+      suelos: [
+        { r: [-27, 7, 26, 13] }, // avenida y muelle de la dársena
+        { r: [1.5, 13, 4.5, 29.5] }, // muelle de los pesqueros
+        { r: [-9, -8, 13, 7] }, // jardín del castillo
+        { r: [-27, -1, -9, 7] }, // plaza de la iglesia
+        { r: [-27, -8, -24.5, -1] }, // callejón de la iglesia
+        { r: [-38, -10.5, 30, -8] }, // calle Juan Rejón
+        { r: [-32, -21, 22, -17.2], y: 2.2 }, // calle La Naval
+        { r: [-36, -31.5, 14, -27.7], y: 5.4 }, // calle alta, al pie de la montaña
+        { r: [-41, -33, -36, -27], y: 5.4 }, // mirador de El Confital
+        { r: [-31.5, -17.2, -29, -10.5], y: 2.2, y2: 0 }, // calle del Faro, de Juan Rejón a La Naval
+        { r: [-31.5, -27.7, -29, -21], y: 5.4, y2: 2.2 }, // y de La Naval a la calle alta
+        { r: [-2.5, -17.2, 0, -10.5], y: 2.2, y2: 0 }, // calle del medio, cuesta abajo
+        { r: [-2.5, -27.7, 0, -21], y: 5.4, y2: 2.2 }, // y en escalera hasta arriba
+        { r: [17, -17.2, 19.5, -10.5], y: 2.2, y2: 0 }, // calle del este
+      ],
+      vallas: [
+        [-5.7, -6.7, 5.7, 4.7], // el castillo y su foso
+        [9.5, -5.5, 12.5, 1.5], // edificio de la fundación
+      ],
+    },
+    salidas: { tierra: 'las-canteras' },
+    casas: [
+      {
+        ...casa('La Chistera', -12, -12.4, 3.6, 2.6, 3.4, '#7a2f8f'),
+        anfitrion: { npc: 'comico', nombre: 'El cómico' },
+      },
+    ],
+    inicio: { x: 3, z: 9.6 },
+    // Hacia La Puntilla y Las Canteras, por el oeste de Juan Rejón.
+    carretera: { x: -37, z: -9.25 },
+    rincones: [
+      {
+        nombre: 'Castillo de La Luz',
+        x: 0,
+        z: 5.4,
+        texto: 'Se levantó en piedra en 1494 sobre un arrecife que la marea dejaba aislado. La armada holandesa de Van der Does lo incendió en 1599 y hubo que rehacerlo. El puerto creció tanto que hoy queda a más de 150 metros del agua; dentro guarda la colección del escultor Martín Chirino.',
+        vista: -0.15,
+      },
+      {
+        nombre: 'Iglesia de La Luz',
+        x: -18,
+        z: 0.4,
+        texto: 'La parroquia del Puerto se inauguró en 1914 donde antes hubo varias ermitas. Tiene tres rosetones y bóvedas de media naranja, y guarda la Virgen de La Luz que talló Luján Pérez, patrona del puerto.',
+        vista: -0.1,
+      },
+      {
+        nombre: 'Muelle de los pesqueros',
+        x: 3,
+        z: 28.6,
+        texto: 'Barcos de pesca a los dos lados y, al fondo, grúas de contenedores y tanques de combustible. El Puerto de La Luz empezó a construirse en 1883 en la bahía que abriga La Isleta, y con él creció el barrio.',
+        vista: 0.35,
+      },
+      {
+        nombre: 'Calle La Naval',
+        x: -14,
+        z: -19.5,
+        texto: 'Tiendas, bares y casas de colores con azoteas llenas de depósitos de agua. En octubre, por las fiestas de La Naval, el barrio saca en procesión a la Virgen de La Luz y recuerda con fuegos la defensa contra la flota de Drake en 1595.',
+      },
+      {
+        nombre: 'Lo alto del barrio',
+        x: -1.25,
+        z: -30,
+        texto: 'Las calles se empinan hasta acabar en escaleras al pie de la montaña. Muchas casas crecieron planta a planta, y alguna aún espera la de arriba con los hierros al aire. Detrás, los volcanes de La Isleta son zona militar.',
+        vista: Math.PI,
+      },
+      {
+        nombre: 'Mirador de El Confital',
+        x: -39.5,
+        z: -30,
+        texto: 'Al noroeste se abre El Confital: plataformas de roca, arena gruesa y una ola de derecha que muchos surfistas cuentan entre las mejores de Europa. Hasta 2004 hubo chabolas a la orilla; hoy es parte del paisaje protegido de La Isleta.',
+        vista: 0.4,
+      },
     ],
   },
 };
