@@ -1,7 +1,7 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'san-sebastian';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'san-sebastian';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +19,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'san-sebastian';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'san-sebastian';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -504,6 +504,150 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Calle del Castillo', x: -27.6, z: 12.7, texto: 'Empedrado, fachadas de colores y balcones de madera de tea: así es Vegueta. Esta calle une la plaza de Santa Ana con la del Espíritu Santo; en una de sus casas vivió y murió el ilustrado Viera y Clavijo.', vista: -0.5 },
       { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
+    ],
+  },
+  // Lanzarote, la punta sur, frente a Fuerteventura. Trazado sobre la ortofoto PNOA y comprimido de
+  // oeste a este: el puerto del ferry de Corralejo, la playa del Pueblo con el casco viejo y la iglesia
+  // del Carmen, el paseo sobre la lava, Playa Dorada entre escolleras, la Marina Rubicón y, en la punta
+  // del Águila, el Castillo de las Coloradas. Trazado en `sitios/playa-blanca.ts`.
+  'playa-blanca': {
+    nombre: 'Playa Blanca',
+    isla: 'lanzarote',
+    poi: 'lz-playa-blanca',
+    plano: {
+      orillas: [],
+      canales: [],
+      lava: true,
+      sitio: 'playa-blanca',
+      estilo: 'blanca',
+      bruma: [60, 190],
+      palmeras: [
+        [-21.2, 0.4, 4.4],
+        [-7.9, 0.4, 3.9],
+        [-6.9, -7.7, 4.8],
+        [0.9, -7.7, 4.2],
+        [-17.6, 0.5, 4],
+        [8.6, 0.4, 4.6],
+        [14.5, -3.4, 3.8],
+        [20.4, 0.4, 4.2],
+        [28.7, 3.1, 4.4],
+        [-37.3, -2.2, 4],
+      ],
+      suelos: [
+        { r: [-17, 1, -8.5, 6.5], y: 0, y2: -0.85 }, // playa del Pueblo
+        { r: [9, 2.5, 19.5, 7], y: 0, y2: -0.75 }, // Playa Dorada
+        { r: [42.5, 9, 45.5, 13], y: 0, y2: 1.5, eje: 'x' }, // subida a la punta del Águila
+        { r: [-46, -1.5, -38, 20] }, // explanada del puerto
+        { r: [-46, 20, -19, 23.5] }, // muelle del ferry
+        { r: [-38, 11, -27, 12.5] }, // muelle de la dársena pesquera
+        { r: [-28.5, 6, -27, 11] }, // su codo
+        { r: [-38, -1.5, -20, 1.5] }, // paseo del puerto
+        { r: [-22, -2.5, -2, 1] }, // avenida de la playa
+        { r: [-7.5, -8.3, 1.5, -2.5] }, // plaza del Carmen
+        { r: [-2, -1, 8.5, 2.5] }, // paseo de la punta
+        { r: [8, 0, 23, 2.5] }, // paseo de Playa Dorada
+        { r: [22, 2.5, 42.5, 5] }, // muelle norte de la marina
+        { r: [22.5, 5, 29, 13] }, // muelle de poniente
+        { r: [40, 5, 42.5, 20.5] }, // muelle de levante
+        { r: [22, 17, 42.5, 20.5] }, // dique de la marina
+        { r: [45.5, 7, 52, 18.5], y: 1.5 }, // explanada del castillo
+      ],
+      vallas: [
+        [-7.3, -8.1, -6.5, -7.3], // alcorques de las palmeras de la plaza
+        [0.5, -8.1, 1.3, -7.3],
+        [-18, 0.1, -17.2, 0.9], // y de la avenida
+        [-8.3, 0, -7.5, 0.8],
+        [-21.6, 0, -20.8, 0.8],
+        [8.2, 0, 9, 0.8],
+        [20, 0, 20.8, 0.8],
+        [-5.35, -8.3, -3.65, -6.9], // murete del atrio de la iglesia
+        [-2.35, -8.3, -0.65, -6.9],
+        [-7, -4.8, -6.2, -4], // laureles de la plaza
+        [0.2, -4.8, 1, -4],
+        [-39.7, 7.7, -38.7, 9.9], // taquillas del puerto
+        [28.3, 2.7, 29.1, 3.5], // palmera de la marina
+        [47.2, 10.7, 51.4, 14.9], // Castillo de las Coloradas
+        [45.9, 12.2, 47.2, 13.4], // su escalera
+      ],
+    },
+    salidas: { mar: 'ferry' },
+    casas: [
+      casa('Estación marítima', -42.5, 4.6, 6, 2.9, 3.4, '#2a5f9e'),
+      casa('Casa de los marinos', -31, -3.4, 3.4, 3.4, 3.2, '#2f6e3b'),
+      casa('Bar del muelle', -27, -3.4, 3.6, 2.7, 3.2, '#2a5f9e'),
+      casa('Casa del patrón', -20, -4.35, 3.6, 3.4, 3.4, '#2f6e3b'),
+      casa('Heladería de la playa', -16.2, -4.35, 3.4, 2.7, 3.4, '#2a5f9e'),
+      casa('Pescadería del pueblo', -12.5, -4.35, 3.4, 3.4, 3.4, '#2f6e3b'),
+      casa('Casa de las celosías', -9, -4.35, 3.2, 5.1, 3.4, '#6b4a32'),
+      casa('Restaurante del paseo', 4, -3, 3.8, 2.7, 3.2, '#2f6e3b'),
+      casa('Apartamentos Playa Dorada', 12, -1.7, 4.6, 3.4, 3.2, '#2a5f9e'),
+      casa('Chiringuito de la playa', 17.5, -1.4, 3.6, 2.4, 2.6, '#2f6e3b'),
+      casa('Capitanía de la marina', 25.2, 8.4, 4.2, 3.4, 3.2, '#2f6e3b'),
+      casa('Tienda náutica', 31, 0.8, 3.6, 2.7, 3.2, '#2a5f9e'),
+      casa('Café de la marina', 35.5, 0.8, 3.8, 3.4, 3.2, '#2f6e3b'),
+      casa('Velería', 39.6, 0.8, 3.2, 2.7, 3.2, '#6b4a32'),
+    ],
+    inicio: { x: -30, z: 0 },
+    embarcadero: { x: -38.8, z: 17.6 },
+    rincones: [
+      {
+        nombre: 'Muelle del ferry',
+        x: -20.2,
+        z: 21.75,
+        texto: 'De aquí salen los ferris que cruzan el estrecho de La Bocaina hasta Corralejo, en Fuerteventura: unos trece kilómetros de mar que se pasan en media hora larga. Enfrente asoma el islote de Lobos.',
+        vista: -2.2,
+      },
+      {
+        nombre: 'Playa del Pueblo',
+        x: -12.75,
+        z: 2.6,
+        texto: 'La pequeña playa del casco viejo, la del antiguo pueblo de pescadores. A su alrededor creció Playa Blanca, que hoy es el segundo núcleo más poblado de Lanzarote.',
+      },
+      {
+        nombre: 'Iglesia del Carmen',
+        x: -3,
+        z: -6.4,
+        texto: 'Una iglesia blanca y sencilla, con espadaña de dos campanas y cantería en la puerta. La Virgen del Carmen es la patrona del pueblo: en julio sale en procesión por el mar, escoltada por las barcas.',
+        vista: 0,
+      },
+      {
+        nombre: 'Paseo marítimo',
+        x: 3,
+        z: 1.6,
+        texto: 'Unos siete kilómetros de paseo bordean la costa de lava negra, entre casas blancas de carpintería verde, terrazas y palmeras.',
+      },
+      {
+        nombre: 'Playa Dorada',
+        x: 14.5,
+        z: 4,
+        texto: 'Arena dorada al abrigo de dos escolleras que amansan el agua. Los días claros se ven enfrente Lobos y las dunas blancas de Corralejo.',
+      },
+      {
+        nombre: 'Marina Rubicón',
+        x: 33,
+        z: 4.2,
+        texto: 'El puerto deportivo toma el nombre del Rubicón, la comarca donde Jean de Béthencourt levantó en 1402 su primera fortaleza al empezar la conquista de Canarias. Los miércoles y los sábados hay mercadillo en sus muelles.',
+      },
+      {
+        nombre: 'Dique de la marina',
+        x: 23.2,
+        z: 18.75,
+        texto: 'En la punta del dique hay un helipuerto. Por dentro, cientos de veleros; por fuera, el mar abierto de La Bocaina.',
+      },
+      {
+        nombre: 'Castillo de las Coloradas',
+        x: 46.2,
+        z: 15.8,
+        texto: 'También llamado Torre del Águila. Se levantó entre 1741 y 1744 contra los piratas berberiscos, que lo incendiaron en 1749; una lápida sobre la puerta recuerda que se rehízo en 1769, reinando Carlos III. Se entra por una escalera de piedra y un puente levadizo.',
+        vista: -0.6,
+      },
+      {
+        nombre: 'Punta del Águila',
+        x: 50.8,
+        z: 17.6,
+        texto: 'Las rocas rojizas de la punta, las «coloradas», caen al mar. Al otro lado de La Bocaina se ven el islote de Lobos, con su montaña de la Caldera, y la costa norte de Fuerteventura.',
+        vista: 2.1,
+      },
     ],
   },
   // La Gomera, la capital y su puerto. Trazado sobre la ortofoto PNOA y OpenStreetMap con el norte

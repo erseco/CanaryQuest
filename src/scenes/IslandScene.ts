@@ -4,6 +4,7 @@ import { CARTA } from '../data/dialogos';
 import { ISLAS, buscarTerminal, type IslaId } from '../data/islas';
 import { Jugador } from '../sistemas/Jugador';
 import { Musica } from '../sistemas/Musica';
+import { puebloDeTerminal } from '../puerto/paseo';
 
 interface Poi {
   nombre: string;
@@ -255,6 +256,7 @@ export class IslandScene extends Phaser.Scene {
   private activarPoi(): void {
     if (this.poiCercano === null || this.saliendo) return;
     const poi = this.poiCercano;
+    const pueblo = puebloDeTerminal(poi.nombre);
     if (ENTRADAS_DETALLE.has(poi.nombre) || poi.tipo === 'entrada') {
       this.saliendo = true;
       this.cameras.main.fadeOut(250);
@@ -272,9 +274,10 @@ export class IslandScene extends Phaser.Scene {
           retorno: { islaId: this.islaId, x: poi.x, y: poi.y },
         });
       });
-    } else if (poi.nombre === 'gc-agaete') {
+    } else if (pueblo) {
+      // Terminal del ferry que es también un pueblo: se entra en él y desde su muelle se embarca.
       this.saliendo = true;
-      this.scene.start('Puerto', { pueblo: 'agaete', entrada: { x: poi.x, y: poi.y } });
+      this.scene.start('Puerto', { pueblo, entrada: { x: poi.x, y: poi.y } });
     } else if (poi.tipo === 'transporte') {
       this.scene.start('TravelMap', { origen: this.islaId, terminal: poi.nombre });
     } else if (poi.tipo === 'hito') {
