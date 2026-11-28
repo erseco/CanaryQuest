@@ -195,4 +195,8 @@ export const VISITAS = {
     nombre: 'Playa de Las Teresitas', zona: 'San Andrés · Tenerife',
     descripcion: 'Pasea por la arena dorada entre palmeras, frente al rompeolas, hasta el castillo de San Andrés.',
   },
+  chipude: {
+    nombre: 'La Fortaleza de Chipude', zona: 'Vallehermoso · La Gomera',
+    descripcion: 'De la plaza de Chipude, entre bancales, hasta la cima llana de la mesa de roca, con restos de los antiguos gomeros.',
+  },
 };

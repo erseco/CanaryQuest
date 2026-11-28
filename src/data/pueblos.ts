@@ -11,7 +11,7 @@ import {
   enMuelle,
 } from '../puerto/sitios/teresitas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -29,7 +29,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -47,8 +47,9 @@ export interface Plano {
    * `desnivel` baja el horizonte pintado: el mar queda lejos, abajo. `mirada` es la inclinación
    * de la cámara a ras del mar, más baja que la normal (0,54) para dejar ver los montes de detrás;
    * al subir por las calles vuelve a la normal.
+   * `picado` cambia esa inclinación normal: más baja, deja ver lo que se alza al fondo.
    */
-  cuesta?: { desnivel: number; mirada?: number };
+  cuesta?: { desnivel: number; mirada?: number; picado?: number };
   /** Bruma propia: distancia a la que empieza la niebla y a la que ya lo cubre todo. */
   bruma?: [number, number];
 }
@@ -831,6 +832,76 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Muelle de los pescadores', ...punto(enMuelle(8.2)), texto: 'El muelle de la cofradía de San Andrés, en el extremo sur de la playa. Cada mes de julio, por la Virgen del Carmen, la imagen embarca aquí para salir en procesión por el mar.', vista: -1.1 },
       { nombre: 'Castillo de San Andrés', x: CASTILLO.x, z: CASTILLO.z + 2.8, texto: 'Torre redonda de piedra que guardaba la playa de los piratas desde comienzos del siglo XVIII. Las avenidas del barranco se llevaron media torre; la otra mitad sigue en pie y es Bien de Interés Cultural. Se cuenta que en 1797 sus cañones alcanzaron a uno de los barcos de Nelson.', vista: -0.8 },
       { nombre: 'San Andrés', x: -56, z: 15.2, texto: 'Pueblo de pescadores en la boca del barranco, con las casas de colores apretadas entre la montaña y el mar. En la avenida se come el pescado del día.' },
+    ],
+  },
+  // La Gomera, cumbre de Vallehermoso. La Fortaleza, la mesa de roca de 1.243 m, y el pueblo de
+  // Chipude a sus pies, trazados sobre la ortofoto PNOA y las curvas de nivel del IGN. Todo gira
+  // para que la mesa asome al fondo del encuadre: la iglesia mira a la cámara, la plaza queda tras
+  // ella y el camino baja entre bancales, sube a Pavón, rodea la mesa hasta el collado y trepa por
+  // la canal de la arista nordeste. Trazado en `sitios/chipude.ts`.
+  chipude: {
+    nombre: 'La Fortaleza de Chipude',
+    isla: 'la-gomera',
+    poi: 'chipude',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'chipude',
+      sinMar: true,
+      sinFaroles: true,
+      cuesta: { desnivel: 10, picado: 0.24 },
+      bruma: [45, 160],
+      palmeras: [
+        [6.5, 4, 5.4],
+        [6.6, 9.5, 4.8],
+        [13.2, -9.6, 4.6],
+      ],
+      suelos: [
+        { r: [-8.2, 14, 9, 19] }, // atrio, ante la fachada
+        { r: [3.4, -1, 9, 14] }, // costado sur de la iglesia
+        { r: [-8.2, -11, 16, 1.2] }, // plaza de Chipude
+        { r: [-12.5, -13, -8.2, 26] }, // carretera del pueblo
+        { r: [-26, 6, -12.5, 8.4], y: -1.4, y2: 0, eje: 'x' }, // camino de El Cercado
+        { r: [0.5, -19.5, 3, -11], y: -1.2, y2: 0 }, // camino que baja de la plaza al barranquillo
+        { r: [0.5, -22, 3, -19.5], y: -1.2 }, // paso del barranquillo, entre pretiles de piedra
+        { r: [0.5, -31, 3, -22], y: 2.4, y2: -1.2 }, // cuesta de Pavón, entre bancales
+        { r: [-11, -35, 3, -31], y: 2.4 }, // Pavón, donde arranca la senda
+        { r: [-5, -46, -2.5, -35], y: 4.2, y2: 2.4 }, // senda al collado
+        { r: [-5.5, -50.5, 3, -46], y: 4.2 }, // collado de la Fortaleza
+        { r: [3, -50.5, 10.5, -48.2], y: 4.2, y2: 7.4, eje: 'x' }, // canal de la arista nordeste
+        { r: [10.5, -50.5, 12.7, -48.2], y: 7.4 },
+        { r: [10.5, -48.2, 12.7, -43.6], y: 7.4, y2: 10.2 },
+        { r: [10.5, -43.6, 12.7, -41.4], y: 10.2 },
+        { r: [12.7, -43.6, 19, -41.4], y: 10.2, y2: 13, eje: 'x' }, // paso de la cornisa
+        { r: [19, -46, 30, -37.5], y: 13 }, // cima
+        { r: [22, -37.5, 28, -33], y: 13 }, // proa del norte
+        { r: [30, -47, 35.5, -40], y: 13 },
+        { r: [35.5, -49.3, 40.5, -44], y: 13 },
+        { r: [40.5, -51.4, 43.5, -47.5], y: 13 }, // punta sur, sobre el barranco de Erque
+      ],
+      vallas: [
+        [-3.9, 13.6, -2.1, 15.2], // campanario
+        [2.2, 1.5, 4.6, 4.3], // sacristía
+        [6.1, 3.6, 6.9, 4.4], // palmeras
+        [6.2, 9.1, 7, 9.9],
+        [12.8, -10, 13.6, -9.2],
+        [-6.6, -8.4, -5.4, -7.2], // laureles de la plaza
+        [6.4, -8.4, 7.6, -7.2],
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 3, z: 17 },
+    rincones: [
+      { nombre: 'Iglesia de la Candelaria', x: -1, z: 16.8, texto: 'Dos naves encaladas bajo teja roja y, entre sus dos hastiales, un campanario de cantería oscura. Fue una de las primeras ermitas de la isla y en el siglo XVII se hizo parroquia.' },
+      { nombre: 'Plaza de Chipude', x: 6, z: -5, texto: 'La plaza del pueblo, a más de mil metros de altura. Cada 15 de agosto se llena para la fiesta de la Virgen de Candelaria, una de las más grandes de La Gomera.', vista: -0.5 },
+      { nombre: 'Camino de El Cercado', x: -24.5, z: 7.2, texto: 'Por aquí se baja a El Cercado, el pago de las loceras. Hacen la loza sin torno, con técnicas anteriores a la Conquista: modelan el barro a mano, lo alisan con un callao y lo pintan con almagre.', vista: 0.5 },
+      { nombre: 'Bancales del barranquillo', x: 1.75, z: -20.75, texto: 'Muros de piedra seca escalonan la ladera para sujetar la tierra. Donde hubo monte se sembró cereal; hoy muchos bancales descansan sin cultivar.' },
+      { nombre: 'Pavón', x: -6.5, z: -33, texto: 'El último caserío antes de la Fortaleza. De aquí sale la senda que rodea la mesa por el norte hasta el collado.' },
+      { nombre: 'Collado de la Fortaleza', x: -1, z: -48.2, texto: 'Desde este collado, a 1.125 metros, la senda trepa por una canal de la arista nordeste. Es la única entrada a la cima: un paso estrecho que se puede cerrar con facilidad.', vista: -0.9 },
+      { nombre: 'Cima de la Fortaleza', x: 24, z: -41, texto: 'Una mesa casi llana a 1.243 metros, cercada de paredes verticales: un domo de lava espesa que se enfrió sin derramarse. Quizá sea la Argodey de las crónicas, una fortaleza «toda cercada de peña muy fuerte» con una sola entrada.' },
+      { nombre: 'Recintos de piedra', x: 33, z: -43.5, texto: 'Restos de construcciones de piedra seca de los antiguos gomeros. Para unos estudiosos son aras de una montaña sagrada, donde se cree que se ofrendaban cabras; para otros, cabañas de pastores que subían en ciertas épocas del año.' },
+      { nombre: 'Punta sur', x: 42.5, z: -49.5, texto: 'La mesa acaba en proa. A sus pies se abre el barranco de Erque, cientos de metros más abajo, y al fondo brilla el mar.', vista: 0.6 },
     ],
   },
 };

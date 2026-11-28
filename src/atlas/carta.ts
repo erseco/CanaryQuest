@@ -13,6 +13,7 @@ export const SITIOS = {
   'las-canteras': { isla: 'gran-canaria', carta: proyectarLugar(geografia['gran-canaria']['las-canteras']) },
   isleta: { isla: 'gran-canaria', carta: proyectarLugar(geografia['gran-canaria'].isleta) },
   'las-teresitas': { isla: 'tenerife', carta: proyectarLugar(geografia.tenerife['las-teresitas']) },
+  chipude: { isla: 'la-gomera', carta: proyectarLugar(geografia['la-gomera'].chipude) },
 } as const;
 export type Sitio = keyof typeof SITIOS;
 

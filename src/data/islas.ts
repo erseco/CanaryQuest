@@ -71,7 +71,7 @@ export const ISLAS: Record<IslaId, Isla> = {
       { id: 'lg-aeropuerto', nombre: 'Aeropuerto de La Gomera', tipo: 'aeropuerto', mapa: proyectarLugar(geografia['la-gomera']['lg-aeropuerto']) },
     ],
     mapaMundo: puntoCarta(-17.23, 28.12),
-    zonas: [{ mapa: 'garajonay', etiqueta: 'Bosque de Garajonay' }],
+    zonas: [{ mapa: 'garajonay', etiqueta: 'Bosque de Garajonay' }, { mapa: 'chipude', etiqueta: 'La Fortaleza de Chipude' }],
   },
   tenerife: {
     id: 'tenerife',

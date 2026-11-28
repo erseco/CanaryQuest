@@ -606,9 +606,10 @@ export async function abrirPuerto(
         : 2.2;
     const giro = angulo;
     // Con `mirada`, la cámara va baja a ras del mar y recobra su inclinación al subir un par de metros.
-    const mirada = plano.cuesta?.mirada;
+    const mirada = plano.cuesta?.mirada,
+      picado = plano.cuesta?.picado ?? 0.54;
     const inclinacion =
-      mirada === undefined ? 0.54 : mirada + (0.54 - mirada) * T.MathUtils.clamp((centro.y - 5) / 2.2, 0, 1);
+      mirada === undefined ? picado : mirada + (picado - mirada) * T.MathUtils.clamp((centro.y - 5) / 2.2, 0, 1);
     const elevacion = casaActual
       ? 0.77
       : (cuesta ? inclinacion : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
