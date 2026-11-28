@@ -1,6 +1,7 @@
 import type { IslaId } from './islas';
+import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -18,7 +19,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -323,6 +324,43 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Cabildo de El Hierro', x: -14.2, z: -7.6, texto: 'Aquí se gobierna la isla. Valverde es la única capital canaria que vive de espaldas al mar, a salvo de los piratas.' },
       { nombre: 'Casa de las Quinteras', x: -32, z: 13.6, texto: 'Una casa de familia convertida en centro etnográfico: el telar, la fragua, la loza y los aperos del campo herreño.' },
       { nombre: 'Mirador del barranco', x: 16, z: 1.8, texto: 'Bajo la plaza se abre el barranco. Cuando levanta la bruma se ve el mar del nordeste y, en los días claros, La Gomera.' },
+    ],
+  },
+  // El Hierro, costa de Valverde. Tres vasos de agua de mar sobre la lava, el solárium con sus
+  // jardineras redondas, el mirador y la carretera en serpentina que baja del pueblo.
+  // El trazado está en `src/puerto/sitios/caleta-plano.ts`.
+  'la-caleta': {
+    nombre: 'Piscinas de La Caleta',
+    isla: 'el-hierro',
+    poi: 'la-caleta',
+    plano: {
+      orillas: [],
+      canales: [],
+      lava: true,
+      sitio: 'caleta',
+      estilo: 'blanca',
+      costa: 22,
+      sinFaroles: true,
+      palmeras: [
+        [18, 1.6, 6.9],
+        [24.2, -3.6, 7.3],
+        [29, 4.7, 6.9],
+        [21.4, -12.8, 8.6],
+        [38.4, -4, 7.8],
+      ],
+      suelos: SUELOS_CALETA,
+      vallas: VALLAS_CALETA,
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 6.2, z: 10.5 },
+    rincones: [
+      { nombre: 'Piscinas de La Caleta', x: 5.6, z: 15.6, texto: 'Tres vasos de agua de mar sobre la lava: el grande de arriba, junto al mirador, y abajo otro grande pegado a uno pequeño. Con la pleamar las olas saltan el muro y se forma una cascada.' },
+      { nombre: 'Mirador de las piscinas', x: 11.6, z: 4, texto: 'Desde la azotea de la caseta redonda se ven los tres vasos sobre la lava, la carretera de curvas que baja del pueblo y la rompiente del este.' },
+      { nombre: 'Solárium de las jardineras', x: -11.7, z: 9.4, texto: 'Cuatro jardineras redondas, tres de picón negro y una de tierra, entre parterres de tabaibas y verodes.' },
+      { nombre: 'Escalera al mar', x: -6.6, z: 22.2, texto: 'Unos peldaños bajan desde la plataforma directos al océano. Solo para los días de mar en calma.' },
+      { nombre: 'Camino de la costa', x: 38, z: 5.2, texto: 'La barandilla blanca acompaña el camino entre la rompiente y las casas. En las rocas de esta costa los bimbaches grabaron letreros líbico-bereberes; muchos acabaron hechos grava para la carretera en 1920.' },
+      { nombre: 'Cancha de La Caleta', x: 12.2, z: -6.5, texto: 'La cancha del barrio, junto al cruce donde aparcan los que bajan a bañarse.' },
     ],
   },
 };

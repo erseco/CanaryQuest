@@ -86,6 +86,21 @@ en el repositorio.
 - [Valverde (El Hierro), Hispanopedia](https://es.hispanopedia.com/wiki/Valverde_(El_Hierro)): fachada de cantería con arco de medio punto, campanario octogonal con cúpula e imagen de la Virgen, y casas consistoriales de piedra levantadas tras el incendio de 1899.
 - [Iglesia de Nuestra Señora de la Concepción, El Hierro Travel](https://elhierro.travel/en/museums-and-places-of-interest/el-hierro/iglesia-de-nuestra-senora-de-la-concepcion/) y [Lonely Planet](https://www.lonelyplanet.com/points-of-interest/iglesia-de-santa-maria-de-la-concepcion/1462646): torre con mirador en lo alto.
 - [La villa histórica de Valverde](https://www.hellocanaryislands.com/places-full-of-charm/el-hierro/the-historical-town-of-valverde/) y [Centro Etnográfico Casa de Las Quinteras](https://www.hellocanaryislands.com/museums-and-places-of-interest/el-hierro/centro-etnografico-casa-de-las-quinteras/), Hello Canary Islands.
+## Piscinas de La Caleta
+
+Maqueta original con las piezas del puerto de Mogán (`src/puerto/sitios/caleta.ts`
+y su plano, `caleta-plano.ts`), sin assets nuevos. El trazado se midió sobre
+`public/assets/visitas/la-caleta-pnoa.webp` a 2,5 m por unidad, y los
+contornos de los vasos son los de `src/atlas/recintos.ts`. Se representan los
+tres vasos sobre la plataforma de hormigón con su muro de rompiente, el
+solárium con las cuatro jardineras redondas y sus parterres, la caseta redonda
+del mirador con su escalera, la carretera en serpentina con la horquilla, los
+coches aparcados y el aparcamiento, la cancha del cruce, el paseo de la orilla
+y el camino de la barandilla blanca, la escalera al mar y las casas de los dos
+barrios.
+
+- [Piscinas de La Caleta, Turismo de El Hierro](https://elhierro.travel/piscinas-naturales/el-hierro/piscinas-de-la-caleta/) y [La Caleta pools, Hello Canary Islands](https://www.hellocanaryislands.com/natural-pools/el-hierro/la-caleta-pools/): escaleras al mar, duchas en los accesos, solárium y la cascada con la pleamar.
+- Grabados rupestres de La Caleta, descubiertos por Aquilino Padrón y destruidos en parte en 1920 para hacer grava: [«El arqueólogo herreño prófugo del cólera que reescribió la historia de Canarias», Vozpópuli](https://www.vozpopuli.com/espana/canarias/el-arqueologo-herreno-profugo-del-colera-que-reescribio-la-historia-de-canarias.html).
 
 ## Paseo de Playa del Inglés
 
