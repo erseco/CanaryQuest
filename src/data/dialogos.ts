@@ -203,4 +203,8 @@ export const VISITAS = {
     nombre: 'Loro Parque', zona: 'Puerto de la Cruz · Tenerife',
     descripcion: 'Entra por el pabellón tailandés y pasea entre loros, pingüinos y orcas, con el Teide al fondo.',
   },
+  yaiza: {
+    nombre: 'Yaiza', zona: 'Sur · Lanzarote',
+    descripcion: 'Pasea por la plaza de los Remedios entre casas blancas de carpintería verde, a las puertas de Timanfaya.',
+  },
 };

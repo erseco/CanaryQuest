@@ -213,6 +213,32 @@ como consulta y no están en el repositorio.
 - Historia y fechas (apertura en 1972 con unos 150 loros, delfinario en 1987, Isla del Tigre en 1991, gorilas a comienzos de los noventa, pueblo tailandés en 1993, Planet Penguin en 1999, Orca Ocean en 2006, unos 4.000 loros de unas 350 especies y subespecies): [Loro Parque, Wikipedia en español](https://es.wikipedia.org/wiki/Loro_Parque) y [en inglés](https://en.wikipedia.org/wiki/Loro_Parque).
 - Planet Penguin, su nieve diaria y sus especies: [guía de Barceló](https://www.barcelo.com/guia-turismo/es/espana/tenerife/que-ver/loro-parque-tenerife/) y [ficha de los pingüinos de Loro Parque](https://www.loroparque.com/en/datasheet-animals-penguins/).
 - Fotografías de Wikimedia Commons consultadas para formas y colores: [las casas de la entrada](https://commons.wikimedia.org/wiki/File:Visitors_flock_at_the_entrance_houses_of_a_Zoo_in_Spain_Tenerife.jpg), [el pabellón tailandés y su escalinata](https://commons.wikimedia.org/wiki/File:Pagoda_house_in_a_zoo_in_Spain_Tenerife.jpg), [sus columnas rojas con cisnes dorados](https://commons.wikimedia.org/wiki/File:Buddhist_temple_inside_a_zoo_in_Spain_Tenerife.jpg), [las gradas amarillas de las orcas](https://commons.wikimedia.org/wiki/File:Шоу_косаток_в_Лоро-парке.jpg), [la roca del delfinario](https://commons.wikimedia.org/wiki/File:Шоу_дельфинов_в_Лоро-парке.jpg) y [los pingüinos rey](https://commons.wikimedia.org/wiki/File:Pingu04.jpg). Solo se usaron como referencia; no se incluyen en el juego.
+## Yaiza (Lanzarote)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/yaiza.ts`, sin
+modelos ni texturas nuevas. El trazado (la calle Vista de Yaiza de oeste a este;
+al sur, la plaza de los Remedios entre la casa natal de Benito Pérez Armas y la
+iglesia; detrás de la iglesia, el jardín y el Ayuntamiento; la salida hacia
+Timanfaya y, al norte, una huerta enarenada) se tomó de un recorte de la
+ortofoto PNOA y de OpenStreetMap, y se comprimió a escala de juego, a unas 0,12
+unidades por píxel del recorte (unos 0,35 m). Licencias de composición: la calle
+Vista de Yaiza, que en realidad se curva hacia el nordeste pasada la iglesia, va
+recta, y por eso el Ayuntamiento y su jardín quedan al sur de ella; el
+aparcamiento al sur de la plaza es un jardín de picón con tuneras, cardones y un
+drago; el patio de la casa natal se abre por el sur con un portón para que se
+vean la galería y la escalera; los bancales de palmeras sobre tierra roja se
+acercan a la iglesia, y los volcanes del horizonte se juntan mucho más de lo que
+están. El recorte PNOA, de (−13.7680, 28.9510) a (−13.7625, 28.9540), se usó solo
+como consulta y no está en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
+- Posiciones de la iglesia, el Ayuntamiento, la casa natal de Benito Pérez Armas (BIC, monumento), la plaza y las calles: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API Overpass.
+- [Village of Yaiza, Hello Canary Islands](https://www.hellocanaryislands.com/places-full-of-charm/lanzarote/village-of-yaiza): casas blancas de azotea, la Casa de la Cultura con su balcón y escaleras de madera, y los premios por lo cuidado del pueblo.
+- [Casa de la Cultura Benito Pérez Armas, Lanzarote Information](https://lanzaroteinformation.co.uk/?p=13732): casa natal del escritor y político (1871), con patio central y habitación alta con balcón.
+- Diario de la erupción de 1730 del cura de Yaiza, Andrés Lorenzo Curbelo: [Carracedo y otros, Estudios Geológicos (1990)](https://estudiosgeol.revistas.csic.es/index.php/estudiosgeol/article/download/436/456/449) y [Pallarés Padilla, Memoria Digital de Lanzarote](https://memoriadelanzarote.com/media/docs/items/20110112092548CONSIDERACIONES-EN-TORNO-AL-MANUSCRITO-DEL-CURA-DE-YAIZA.pdf).
+- Carpintería verde tierra adentro y azul en la costa, y la estética que defendió César Manrique: [La Maleta Inquieta](https://lamaletainquieta.com/pueblos-lanzarote/) y [Barceló, guía de Yaiza](https://www.barcelo.com/guia-turismo/es/espana/lanzarote/que-ver/yaiza/).
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [la iglesia desde el suroeste](https://commons.wikimedia.org/wiki/File:Iglesia_de_Nuestra_Se%C3%B1ora_de_los_Remedios_(Yaiza).jpg), [la iglesia y la plaza](https://commons.wikimedia.org/wiki/File:Yaiza_-_Plaza_de_los_Remedios_-_Nuestra_Se%C3%B1ora_de_los_Remedios_ex_01_ies.jpg), [la plaza hacia la iglesia](https://commons.wikimedia.org/wiki/File:ES-lanza-yaiza-plaza-igl-remedios.jpg), [la casa natal desde la plaza](https://commons.wikimedia.org/wiki/File:Casa_Natal_de_Benito_P%C3%A9rez_Armas_Plaza.jpg), [su patio](https://commons.wikimedia.org/wiki/File:Casa_Natal_de_Benito_P%C3%A9rez_Armas_-_Patio.jpg), [la plaza de los Remedios](https://commons.wikimedia.org/wiki/File:Yaiza,_the_Plaza_de_Los_Remedios.JPG) y [el Ayuntamiento y su jardín](https://commons.wikimedia.org/wiki/File:Town_of_Yaiza_-_Lanzarote_-_Spain._Y34.jpg). Solo se usaron como referencia; no se incluyen en el juego.
+
 
 
 ## Dunas de Maspalomas

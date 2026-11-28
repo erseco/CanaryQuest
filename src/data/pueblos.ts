@@ -12,7 +12,7 @@ import {
 } from '../puerto/sitios/teresitas-plano';
 import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -30,7 +30,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -55,6 +55,8 @@ export interface Plano {
   bruma?: [number, number];
   /** Altura del suelo en un lugar que no es de losas ni rampas, como unas dunas: manda sobre `suelos`. */
   cota?: (x: number, z: number) => number;
+  /** Cuánto baja el horizonte pintado sin tocar la cámara: tierra adentro, los montes propios tapan su mar. */
+  horizonte?: number;
 }
 export interface Suelo {
   r: [number, number, number, number];
@@ -1087,6 +1089,80 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
         texto: 'Desde la terraza se ve el Teide, a unos diecisiete kilómetros, al fondo del valle de La Orotava. Con sus 3.718 metros es el pico más alto de España.',
         vista: -0.45,
       },
+    ],
+  },
+  // Lanzarote, el sur. Pueblo blanco de interior trazado sobre la ortofoto PNOA: la calle Vista de
+  // Yaiza corre de oeste a este; al sur, la plaza de los Remedios entre la casa natal de Benito
+  // Pérez Armas y la iglesia; más allá, el Ayuntamiento y la carretera de Timanfaya.
+  // Trazado en `sitios/yaiza.ts`.
+  yaiza: {
+    nombre: 'Yaiza',
+    isla: 'lanzarote',
+    poi: 'yaiza',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'yaiza',
+      sinMar: true,
+      bruma: [60, 175],
+      horizonte: 20,
+      palmeras: [
+        [-6.6, 2, 6.6], // plaza
+        [8.8, 11.6, 6],
+        [31.7, 2, 6.4], // jardín del Ayuntamiento
+        [31.7, 7.8, 6.8],
+        [-3.2, 20.6, 4.6], // jardín de picón
+        [6.8, 22.4, 5.4],
+        // Bancales de tierra roja con palmeras, al sureste.
+        ...[33, 37, 41, 45, 49].flatMap((x, i): [number, number, number][] => [
+          [x, 17, 3.6 + (i % 3) * 0.4],
+          [x + 2, 22.5, 4.4 - (i % 2) * 0.5],
+          [x, 28, 3.8 + (i % 2) * 0.6],
+        ]),
+      ],
+      suelos: [
+        { r: [-13.2, 0.2, 12.4, 13.2], y: 0.4 }, // plaza de los Remedios
+        { r: [-36, -4.6, 48, -0.6] }, // calle Vista de Yaiza
+        { r: [-1.4, -0.6, 1.4, 0.2], y: 0, y2: 0.4 }, // escalones de la plaza a la calle
+        { r: [12.4, 6.6, 13.2, 9.4], y: 0.4, y2: 0, eje: 'x' }, // escalones hacia la iglesia
+        { r: [-4.8, 13.2, -1.8, 13.8], y: 0.4, y2: 0 }, // escalones al paseo
+        { r: [13.2, -0.6, 15, 16.4] }, // calle ante la iglesia
+        { r: [15, 7.4, 29.4, 10] }, // calle al sur de la iglesia
+        { r: [26.4, -0.6, 29.4, 7.4] }, // calle al este de la iglesia
+        { r: [29.4, -0.6, 36.4, 10] }, // jardín del Ayuntamiento
+        { r: [-29.4, 13.8, 15, 16.4] }, // paseo al sur de la plaza
+        { r: [11.8, 16.4, 15, 30] }, // calle Salida al Rubicón
+        { r: [-29.4, -0.6, -26.4, 13.8] }, // callejón de poniente
+        { r: [-20.4, 12.8, -19, 13.8] }, // portón del patio
+        { r: [-22.4, 4.2, -17, 12.8] }, // patio de la casa natal
+      ],
+      vallas: [
+        [-11.4, 0.8, -5.4, 3], // parterres de la plaza: laureles, palmeras y picón
+        [3.4, 0.8, 9.8, 3],
+        [-12, 10.4, -6, 12.6],
+        [3.4, 10.4, 9.8, 12.6],
+        [-1.6, 5.8, 1.6, 7.6],
+        [14.2, -0.5, 15, 0.3], // laureles junto a la iglesia
+        [21.4, 7.6, 22.2, 8.4],
+        [30.4, 0.6, 33, 3.4], // jardín del Ayuntamiento: palmeras, araucaria y escultura
+        [30.4, 6.4, 33, 9.2],
+        [33.6, 0.8, 35.4, 2.6],
+        [33.9, 7.1, 34.9, 8.1],
+        [-22.4, 4.4, -21.2, 8.8], // escalera del sobrado
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 4, z: 6 },
+    rincones: [
+      { nombre: 'Iglesia de los Remedios', x: 14.1, z: 4.4, texto: 'Encalada de arriba abajo, con tejado de teja y una espadaña de dos campanas sobre la fachada. Está dedicada a la Virgen de los Remedios, la patrona de Yaiza.', vista: -1.1 },
+      { nombre: 'Plaza de los Remedios', x: 0, z: 4.4, texto: 'La plaza mayor del pueblo, a la sombra de los laureles de Indias: farolas verdes, bancos de madera y parterres de picón negro entre la iglesia y la casa natal de Benito Pérez Armas.' },
+      { nombre: 'Casa de la Cultura', x: -12.4, z: 7.2, texto: 'Aquí nació en 1871 Benito Pérez Armas, escritor y político. La casona, de una planta y tejados de teja, es hoy la Casa de la Cultura y está declarada Bien de Interés Cultural.', vista: 1.15 },
+      { nombre: 'Patio de la casa natal', x: -18.2, z: 9.6, texto: 'La casa se abre a un patio, como manda la arquitectura tradicional canaria. Una escalera de madera sube al sobrado, la habitación alta, con su balcón corrido.', vista: 0.35 },
+      { nombre: 'Ayuntamiento de Yaiza', x: 35.4, z: 4.5, texto: 'Casa consistorial baja y encalada, con puertas y ventanas de madera. Delante, un jardín con dos grandes palmeras canarias, una araucaria, las banderas y una escultura.', vista: -0.6 },
+      { nombre: 'Jardín de picón', x: 3, z: 16, texto: 'Tuneras, cardones, pitas y palmeras sobre picón negro. En Lanzarote el picón no es solo adorno: retiene la humedad de la noche y frena la evaporación en una isla donde casi no llueve.', vista: 2.8 },
+      { nombre: 'Camino de Timanfaya', x: 44, z: -2.2, texto: 'Por aquí se va a las Montañas del Fuego. El cura de Yaiza, Andrés Lorenzo Curbelo, anotó que el 1 de septiembre de 1730, entre las nueve y las diez de la noche, la tierra se abrió cerca de Timanfaya, a dos leguas del pueblo. Los volcanes ardieron seis años.', vista: -0.1 },
+      { nombre: 'Calle Vista de Yaiza', x: -22, z: -2.6, texto: 'Casas bajas y cúbicas, encaladas, de azotea, con chimeneas blancas y puertas y ventanas verdes. En Lanzarote se suele pintar la carpintería de verde tierra adentro y de azul junto al mar, una estética que César Manrique defendió para toda la isla.' },
     ],
   },
 };

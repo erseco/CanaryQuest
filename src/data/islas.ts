@@ -121,6 +121,7 @@ export const ISLAS: Record<IslaId, Isla> = {
     zonas: [
       { mapa: 'timanfaya', etiqueta: 'Montañas del Fuego (Timanfaya)' },
       { mapa: 'jameos', etiqueta: 'Jameos del Agua' },
+      { mapa: 'yaiza', etiqueta: 'Yaiza' },
     ],
   },
   'la-graciosa': {
