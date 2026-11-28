@@ -28,7 +28,7 @@ Los mapas grandes se generan por código y siguen siendo editables en Tiled
 
 - `scripts/generar-mapas-cumbre.py`: Roque Nublo y casa-cueva (tilesets PixelLab).
 - `scripts/lpc-a-wang.py`: convierte terrenos LPC de `art/lpc/` en hojas Wang
-  (lava, picón, tierra roja, arena, camino, agua, hierba, musgo) y props.
+  (lava, picón, tierra roja, arena, camino, agua, hierba) y props.
 - `scripts/generar-mapas-islas.py`: Timanfaya, Jameos, Garajonay, Betancuria.
   Cada terreno es una capa; los tiles con `collides` (lava, agua) bloquean.
   Propiedad de mapa `niebla: true` para la bruma de laurisilva.

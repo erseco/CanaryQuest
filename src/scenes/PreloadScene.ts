@@ -51,11 +51,11 @@ export class PreloadScene extends Phaser.Scene {
     this.load.tilemapTiledJSON('map-las-palmas', 'assets/maps/las-palmas.tmj');
     this.load.tilemapTiledJSON('map-roque-nublo', 'assets/maps/roque-nublo.tmj');
     this.load.tilemapTiledJSON('map-casa-cueva', 'assets/maps/casa-cueva.tmj');
-    for (const m of ['timanfaya', 'jameos', 'garajonay', 'betancuria']) {
+    for (const m of ['timanfaya', 'jameos', 'betancuria']) {
       this.load.tilemapTiledJSON(`map-${m}`, `assets/maps/${m}.tmj`);
     }
     // Terrenos LPC (scripts/lpc-a-wang.py): la clave es el nombre del tileset en el .tmj
-    for (const t of ['lava', 'picon', 'tierra-roja', 'arena', 'camino', 'agua', 'hierba', 'musgo']) {
+    for (const t of ['lava', 'picon', 'tierra-roja', 'arena', 'camino', 'agua', 'hierba']) {
       this.load.image(`lpc-${t}`, `assets/tilesets/lpc-${t}-32.png`);
     }
     this.load.image('tiles-pueblo', 'assets/tilesets/tuxemon-32px-extruido.png');
@@ -91,7 +91,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('decor-casa-vegueta', 'assets/sprites/pixellab-casa-vegueta.png');
     this.load.image('decor-casa-triana', 'assets/sprites/pixellab-casa-triana.png');
     this.load.image('decor-pino-canario', 'assets/sprites/pixellab-pino-canario.png');
-    for (const p of ['laurel', 'arbusto', 'aguja-volcanica', 'aguja-ocre', 'roca-malpais']) {
+    for (const p of ['arbusto', 'aguja-volcanica', 'aguja-ocre', 'roca-malpais']) {
       this.load.image(`decor-${p}`, `assets/sprites/lpc-${p}.png`);
     }
 

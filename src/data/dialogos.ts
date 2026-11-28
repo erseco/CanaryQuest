@@ -222,4 +222,8 @@ export const VISITAS = {
     nombre: 'Valle de Aridane', zona: 'Los Llanos · La Palma',
     descripcion: 'Pasea bajo los laureles de la plaza de España y asómate al valle, que baja entre plataneras hasta el mar.',
   },
+  garajonay: {
+    nombre: 'Parque Nacional de Garajonay', zona: 'Cumbre · La Gomera',
+    descripcion: 'Camina por la laurisilva entre musgo y niebla, de la Laguna Grande al Alto de Garajonay.',
+  },
 };

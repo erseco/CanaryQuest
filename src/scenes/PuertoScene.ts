@@ -74,6 +74,7 @@ export class PuertoScene extends Phaser.Scene {
         },
         datos.llegada,
         seguirRastro,
+        (evento, carga) => this.game.events.emit(evento, carga),
       );
     } catch (error) {
       console.warn('Puerto de Mogán utilizará su mapa de detalle.', error);

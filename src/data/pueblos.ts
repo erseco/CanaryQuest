@@ -12,7 +12,7 @@ import {
 } from '../puerto/sitios/teresitas-plano';
 import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete' | 'san-sebastian' | 'la-laguna' | 'roque-de-los-muchachos' | 'aridane';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete' | 'san-sebastian' | 'la-laguna' | 'roque-de-los-muchachos' | 'aridane' | 'garajonay';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -30,7 +30,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete' | 'san-sebastian' | 'laguna' | 'roque' | 'aridane';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete' | 'san-sebastian' | 'laguna' | 'roque' | 'aridane' | 'garajonay';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -110,6 +110,10 @@ export interface Rincon {
   vista?: number;
   /** Punto de misión que se alcanza al llegar aquí: se avisa con el evento `llegar`. */
   llegar?: string;
+  /** Personaje de misión que espera en el rincón: al llegar se habla con él (evento `npc-hablar`). */
+  npc?: string;
+  /** Punto de misión: tras leer el texto, cuenta como haber llegado a él (evento `llegar`). */
+  poi?: string;
 }
 export interface DatosPueblo {
   nombre: string;
@@ -1627,6 +1631,119 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Cumbres de la Caldera', x: 19, z: -11, texto: 'Al norte se alza la pared de la Caldera de Taburiente, parque nacional desde 1954. A su derecha, el pico Bejenado, de 1.854 metros, y hacia el este la Cumbre Nueva, a cuyo pie queda El Paso.', vista: -1.571 },
       { nombre: 'Mirador del valle', x: -11, z: -36, texto: 'El valle baja hacia el mar en un manto de plataneras, cada una tras sus muros de piedra, que la abrigan del viento. El agua de la Caldera regó primero la caña de azúcar y después los plátanos. Abajo, junto al mar, Tazacorte, que se separó de Los Llanos en 1925.', vista: 0.15 },
       { nombre: 'Mirador de Tajogaite', x: -18, z: 36, texto: 'Al sur, la Cumbre Vieja. El 19 de septiembre de 2021 se abrió en su ladera el volcán de Tajogaite. Durante 85 días sus coladas bajaron hasta el mar y cubrieron unas 1.200 hectáreas de casas, carreteras y plataneras. Hoy la lava negra forma parte del valle, que sigue reconstruyéndose.', vista: 1.8 },
+    ],
+  },
+  // La Gomera, la cumbre. Trazado sobre la ortofoto PNOA y comprimido: el claro de la Laguna Grande
+  // al noroeste, el Alto de Garajonay al sur con su mirador, el Contadero en la carretera dorsal y,
+  // bosque abajo hacia el nordeste, la ermita de Lourdes de El Cedro. Al norte del claro, el corazón
+  // del bosque. Trazado en `sitios/garajonay.ts`.
+  garajonay: {
+    nombre: 'Parque Nacional de Garajonay',
+    isla: 'la-gomera',
+    poi: 'garajonay',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'garajonay',
+      sinMar: true,
+      sinFaroles: true,
+      cuesta: { desnivel: 30 },
+      bruma: [20, 82],
+      palmeras: [],
+      suelos: [
+        { r: [-34, -8, -12, 6] }, // claro de la Laguna Grande
+        { r: [-22, -24, -18.5, -8], y: -1.5, y2: 0 }, // sendero que baja al norte, al corazón del bosque
+        { r: [-26, -32, -8, -24], y: -1.5 }, // corazón del bosque
+        { r: [-8, -30, 26, -26.5], y: -1.5, y2: -4.5, eje: 'x' }, // sendero de El Cedro, entre barandillas
+        { r: [26, -32, 36, -24], y: -4.5 }, // explanada de la ermita de Lourdes
+        { r: [30, -24, 33.5, -2], y: -4.5, y2: 2.5 }, // subida de El Cedro al Contadero, junto al arroyo
+        { r: [20, -2, 36, 4], y: 2.5 }, // el Contadero
+        { r: [-12, -3, 20, 0.5], y: 0, y2: 2.5, eje: 'x' }, // carretera dorsal
+        { r: [24, 4, 27.5, 22.5], y: 2.5, y2: 5.5 }, // sendero del Contadero al Alto
+        { r: [24, 22.5, 27.5, 26], y: 5.5 }, // su recodo
+        { r: [7.5, 22.5, 24, 26], y: 6, y2: 5.5, eje: 'x' }, // último tramo, hasta el mirador
+        { r: [0.5, 22.5, 7.5, 29.5], y: 6 }, // mirador del Alto de Garajonay
+        { r: [-26, 6, -22.5, 24], y: 0, y2: 3 }, // pista de la Laguna Grande al Alto
+        { r: [-26, 24, -22.5, 27.5], y: 3 }, // su recodo
+        { r: [-22.5, 24, 0.5, 27.5], y: 3, y2: 6, eje: 'x' }, // subida al mirador
+      ],
+      vallas: [
+        [2.2, 24.2, 5.8, 27.8], // aras del Alto
+        [-29.2, 1.2, -25.8, 2.4], // Gara y Jonay
+        [-14.4, 2.4, -12.6, 5.4], // coches del aparcamiento
+        [-14.4, -7.4, -12.6, -4.4],
+        [-12.4, -30.4, -9.6, -27.6], // el til viejo del corazón del bosque
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: -15, z: -1.25 },
+    rincones: [
+      {
+        nombre: 'La maestra silbadora',
+        npc: 'maestra-silbo',
+        x: -22.6,
+        z: -6.4,
+        texto: 'Una maestra de silbo gomero espera a la entrada del sendero, con los dedos listos para silbar.',
+      },
+      {
+        nombre: 'Laguna Grande',
+        x: -29,
+        z: -0.5,
+        texto: 'El gran claro del parque, rodeado de bosque, con sus mesas, sus fogones y un corro de piedras. Cuando llueve fuerte se encharca y vuelve a ser la laguna que le da nombre.',
+      },
+      {
+        nombre: 'Gara y Jonay',
+        x: -27.5,
+        z: 3.6,
+        texto: 'Dos figuras de madera recuerdan la leyenda. Se cuenta que Gara, princesa gomera, y Jonay, príncipe de Tenerife, se amaron contra la voluntad de los suyos y, acorralados en la cumbre, prefirieron morir juntos. De sus nombres vendría el de Garajonay, aunque los estudiosos creen que la leyenda nació del nombre, y no al revés.',
+      },
+      {
+        nombre: 'Corazón del bosque',
+        poi: 'corazon-garajonay',
+        x: -14,
+        z: -27,
+        texto: 'Aquí la laurisilva es más vieja y más oscura: tiles y viñátigos forrados de musgo, helechos hasta la cintura y la niebla enredada en las ramas. Bosques de laurel como este cubrían el sur de Europa hace millones de años.',
+      },
+      {
+        nombre: 'Sendero de El Cedro',
+        x: 8,
+        z: -28.25,
+        texto: 'De las ramas cuelga la barba de capuchino, un liquen que solo crece con aire limpio y húmedo. La niebla del alisio se queda prendida en las hojas y gotea: es la lluvia horizontal que da de beber al bosque.',
+      },
+      {
+        nombre: 'Ermita de Lourdes',
+        x: 31,
+        z: -29,
+        texto: 'Una ermita blanca en medio del bosque de El Cedro, con la puerta verde y una espadaña con su campana. La encuentra quien baja a pie desde el Contadero.',
+        vista: -0.36,
+      },
+      {
+        nombre: 'Arroyo de El Cedro',
+        x: 33.4,
+        z: -14,
+        texto: 'Uno de los pocos arroyos de Canarias que llevan agua casi todo el año. Baja hacia el valle de Hermigua y se despeña en el chorro de El Cedro.',
+        vista: -1.1,
+      },
+      {
+        nombre: 'El Contadero',
+        x: 28,
+        z: 1,
+        texto: 'Un cruce de caminos junto a la carretera dorsal: de aquí sube el sendero al Alto de Garajonay y baja, bosque adentro, el que lleva a El Cedro.',
+      },
+      {
+        nombre: 'Alto de Garajonay',
+        x: 4,
+        z: 23.2,
+        texto: 'El techo de La Gomera, a 1.487 metros. Los días claros, desde el mirador se ve el Teide asomando sobre el mar de nubes y, al otro lado, La Palma y El Hierro.',
+        vista: -1.28,
+      },
+      {
+        nombre: 'Aras del Alto',
+        x: 4,
+        z: 28.8,
+        texto: 'En la cima se han hallado aras de piedra donde los antiguos gomeros quemaban ofrendas de animales. Los arqueólogos creen que el Alto fue el gran santuario de toda la isla.',
+      },
     ],
   },
 };

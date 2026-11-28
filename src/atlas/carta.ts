@@ -20,6 +20,7 @@ export const SITIOS = {
   'la-laguna': { isla: 'tenerife', carta: proyectarLugar(geografia.tenerife['la-laguna']) },
   'roque-de-los-muchachos': { isla: 'la-palma', carta: proyectarLugar(geografia['la-palma']['roque-de-los-muchachos']) },
   aridane: { isla: 'la-palma', carta: proyectarLugar(geografia['la-palma'].aridane) },
+  garajonay: { isla: 'la-gomera', carta: proyectarLugar(geografia['la-gomera'].garajonay) },
 } as const;
 export type Sitio = keyof typeof SITIOS;
 

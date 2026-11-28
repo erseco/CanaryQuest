@@ -10,3 +10,4 @@ art/tongapp/
 
 # Copias de trabajo de los agentes de Claude Code
 .claude/worktrees/
+.playwright-mcp/

@@ -23,6 +23,7 @@ import { trazarSanSebastian } from './sitios/san-sebastian';
 import { trazarLaguna } from './sitios/laguna';
 import { trazarRoque } from './sitios/roque';
 import { trazarAridane } from './sitios/aridane';
+import { trazarGarajonay } from './sitios/garajonay';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -411,6 +412,7 @@ export function crearMaqueta(
   else if (plano.sitio === 'laguna') sitio = trazarLaguna(taller);
   else if (plano.sitio === 'roque') sitio = trazarRoque(taller);
   else if (plano.sitio === 'aridane') sitio = trazarAridane(taller);
+  else if (plano.sitio === 'garajonay') sitio = trazarGarajonay(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {
