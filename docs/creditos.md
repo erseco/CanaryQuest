@@ -133,19 +133,33 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
-## Paseo de Playa del Inglés
+## Dunas de Maspalomas
 
-La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
-RIU y las dunas se han modelado para el juego. La ruta comprime la distancia
-entre las paradas. El pasaje que comunica la avenida con el mirador sigue la
-descripción del [Plan Director de la reserva](https://www.idecanarias.es/resources/PLA_ENP_URB/GC/AD/C-07_Las_Dunas_de_Maspalomas/RNE/TIP/pd_rne_dma_mi.pdf).
-El viajero de las escenas 3D comparte modelo con Mogán. La hoja
-`public/assets/sprites/viajero.png` contiene vistas del mismo modelo para los mapas 2D.
+Maqueta original con las piezas del puerto de Mogán (`src/puerto/sitios/dunas.ts`
+y su plano sin Three.js, `dunas-plano.ts`), sin assets nuevos: los rizos de la
+arena y los rótulos se pintan en un lienzo al cargar. Se representan Playa del
+Inglés en su terraza (la rotonda de Tirajana y Francia, Pepe Chiringo en los
+bajos del hotel Rey Carlos, el Centro Comercial CITA con sus réplicas de la
+torre Eiffel, la torre de Pisa y el Arco de Triunfo, la avenida de Alemania),
+el Riu Palace en media luna con el pasaje público al Mirador de las Dunas y su
+escalera a la arena, el Paseo Costa Canaria por el borde, el campo de dunas con
+crestas que el alisio empuja al suroeste, la hoya de matorral, los montículos de
+balancones de la playa del Inglés, el sendero balizado, la Charca con sus cañas,
+el palmeral del Oasis, el campo de golf y el Faro de Maspalomas con la casa del
+torrero y la plaza del paseo de Meloneras. El viajero de las escenas 3D comparte
+modelo con Mogán. La hoja `public/assets/sprites/viajero.png` contiene vistas del
+mismo modelo para los mapas 2D.
 
-### Referencias del trazado de Maspalomas
+Licencias de composición: Playa del Inglés va a unos 20 m por unidad y las dunas
+a unos 33; la Charca, el palmeral y el faro, a más de 2 km del mirador, se han
+acercado a la esquina suroeste y agrandado; las avenidas se ensanchan y se
+enderezan; el Paseo Costa Canaria arranca en el mirador, aunque el real empieza
+junto a la esquina nordeste del hotel; se omiten los hoteles entre el palmeral,
+la Charca y el faro; el puente entre las dos medialunas del Riu y los colores de
+Pepe Chiringo no están contrastados con fotografías.
 
-- Geometría del recorrido © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL. El [local de Pepe Chiringo](https://www.openstreetmap.org/node/719885194), las avenidas [de Francia](https://www.openstreetmap.org/way/27504540) y [de Tirajana](https://www.openstreetmap.org/way/27504939), y el [mirador](https://www.openstreetmap.org/node/301958026) se proyectan sobre el mismo plano. La escala horizontal equivale a 0,16 unidades por metro. La posición de la fachada sur del CITA se aproxima sobre la ortofoto.
-- Suelo urbano en `maspalomas-pnoa.webp`: obra derivada de Ortofoto PNOA máxima actualidad © IGN y productores PNOA, CC BY 4.0. Recorte del WMS que abarca de (−15.5804, 27.7430) a (−15.5722, 27.7540).
-- Recortes PNOA de referencia en `public/assets/visitas/` (coordenadas longitud/latitud): `mogan-pnoa.webp` (−15.7684, 27.8164 a −15.7614, 27.8217), `agaete-pnoa.webp` (−15.7145, 28.0982 a −15.7067, 28.1046), `la-caleta-pnoa.webp` (−17.8890, 27.7997 a −17.8863, 27.8015), `las-palmas-pnoa.webp` (−15.4170, 28.09955 a −15.41385, 28.1014), `orchilla-pnoa.webp` (−18.1498, 27.7052 a −18.1453, 27.7082), `la-restinga-pnoa.webp` (−17.9834, 27.6381 a −17.9782, 27.6423) y `maspalomas-pnoa.webp` (−15.5804, 27.7430 a −15.5722, 27.7540). Recopilados el 26 de noviembre de 2026 para contrastar las visitas; las seis primeras quedan como referencias para integrar en sus maquetas.
-- La cadena sitúa el local de Playa del Inglés en el bajo 4 del hotel Rey Carlos, esquina de Tirajana con Francia. [Directorio oficial](https://pepechiringo.es/restaurantes/).
-- Referencias fotográficas para modelar arcadas, torretas y rótulo del CITA y contrastar el aspecto del hotel. [Fotografías del CITA](https://www.dunasmap.com/post/cita-shopping-centre-playa-del-ingles) · [RIU Palace, fotografía de 2025](https://commons.wikimedia.org/wiki/File:Riu_Palace_Maspalomas,_2025-01.jpg). La maqueta agrupa los motivos decorativos del centro.
+- Trazado sobre la [ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es). Recortes consultados el 28 de noviembre de 2026 en longitud/latitud: el conjunto de (−15.602, 27.730) a (−15.566, 27.762), el faro y la Charca de (−15.6010, 27.7335) a (−15.5897, 27.7435) y Playa del Inglés de (−15.5810, 27.7420) a (−15.5675, 27.7540). Solo se usaron como referencia; no se incluyen en el juego.
+- Geometría de las avenidas de Tirajana, Francia y Alemania, del Paseo Costa Canaria, del [Mirador Las Dunas](https://www.openstreetmap.org/node/301958026) y del [local de Pepe Chiringo](https://www.openstreetmap.org/node/719885194) © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL. Dirección del local en el [directorio de Pepe Chiringo](https://pepechiringo.es/restaurantes/).
+- Faro de Maspalomas: torre troncocónica de sillería gris azulada de 56 m, obra de Juan de León y Castillo, encendida el 1 de febrero de 1890, con la casa del torrero adosada al norte y hoy centro etnográfico. [Wikipedia](https://es.wikipedia.org/wiki/Faro_de_Maspalomas).
+- Reserva natural de unas 400 ha, protegida desde 1987, y origen marino de la arena: [Wikipedia, Maspalomas Dunes](https://en.wikipedia.org/wiki/Maspalomas_Dunes). Charca y aves limícolas: [Birding Places](https://birdingplaces.eu/es/birdingplaces/spain/la-charca-de-maspalomas). Balancones y dunas en montículo de la playa del Inglés: [proyecto MASDUNAS, Adaptecca](https://adaptecca.es/en/casos-practicos/environmental-restoration-maspalomas-dune-system-masdunas-project-0).
+- CITA, inaugurado hacia 1970, con monumentos de cartón piedra en sus fachadas y un Volkswagen rosa en el patio: [Dunas Map](https://www.dunasmap.com/post/cita-shopping-centre-playa-del-ingles). Riu Palace Maspalomas, de estilo colonial y primer hotel Palace de la cadena: [Riu](https://www.riu.com/blog/riu-te-ensena-el-antes-y-el-despues-del-riu-palace-maspalomas/). El pasaje público que cruza el hotel hacia el mirador sigue el [Plan Director de la reserva](https://www.idecanarias.es/resources/PLA_ENP_URB/GC/AD/C-07_Las_Dunas_de_Maspalomas/RNE/TIP/pd_rne_dma_mi.pdf).

@@ -37,6 +37,20 @@ export class PuertoScene extends Phaser.Scene {
       if (paso?.tipo === 'hablar') return PUERTO.entrega;
       return '';
     };
+    // Mientras el pastor espera sus cabras, el rastro lleva al mapa de tiles de las dunas, y se vuelve
+    // de él a la isla por el mismo punto por el que se entró al lugar.
+    const tras = qm.pasoActual(mision)?.tipo;
+    const seguirRastro =
+      PUEBLOS[pueblo].rastro && (tras === 'recoger' || tras === 'derrotar')
+        ? () => {
+            const punto = this.make
+              .tilemap({ key: 'map-' + islaId })
+              .getObjectLayer('pois')!
+              .objects.find((o) => o.name === poi)!;
+            iniciarUI();
+            this.scene.start('Detail', { mapaId: 'dunas', retorno: { islaId, x: punto.x!, y: punto.y! } });
+          }
+        : undefined;
     let vista: Awaited<ReturnType<typeof abrirPuerto>>;
     const turno = ++this.turno;
     this.events.once('shutdown', () => this.turno++);
@@ -59,9 +73,15 @@ export class PuertoScene extends Phaser.Scene {
           this.scene.restart({ pueblo: destino, llegada: porMar ? muelle(destino) : camino(destino) });
         },
         datos.llegada,
+        seguirRastro,
       );
     } catch (error) {
       console.warn('Puerto de Mogán utilizará su mapa de detalle.', error);
+      // Sin 3D, la misión de las cabras sigue en su mapa de tiles.
+      if (seguirRastro) {
+        seguirRastro();
+        return;
+      }
       if (pueblo === 'agaete') {
         iniciarUI();
         this.scene.start('TravelMap', { origen: islaId, terminal: 'gc-agaete' });

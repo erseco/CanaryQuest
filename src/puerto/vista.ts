@@ -13,7 +13,7 @@ import {
   type PuntoPuerto,
 } from './paseo';
 import { PUERTO as t, PASEO as guia } from '../data/dialogos';
-import { PUEBLOS, type Pueblo, type CasaPuerto } from '../data/pueblos';
+import { PUEBLOS, type Pueblo, type CasaPuerto, type Rincon } from '../data/pueblos';
 import { ISLAS } from '../data/islas';
 import { crearInterior, sueloInterior } from './interior';
 import './puerto.css';
@@ -25,6 +25,8 @@ export async function abrirPuerto(
   pueblo: Pueblo,
   viajar: (destino: Pueblo | 'ferry', porMar?: boolean) => void,
   llegada?: PuntoPuerto,
+  /** Mientras la misión del pastor pasa por aquí: lleva al mapa de tiles tras el rastro de las cabras. */
+  seguirRastro?: () => void,
 ) {
   const barrio = PUEBLOS[pueblo];
   const { plano, salidas } = barrio;
@@ -230,18 +232,21 @@ export async function abrirPuerto(
     });
   }
   // Rincones a los que se pasea: al llegar se describen, como en una aventura gráfica.
-  for (const r of barrio.rincones)
-    lugares.push({
-      nombre: r.nombre,
-      punto: r,
-      activar: () => {
-        quienHabla = r.nombre;
-        dialogo = [r.texto];
-        // Gira por el camino más corto hacia el encuadre del rincón.
-        if (r.vista !== undefined) giroRincon = angulo + Math.atan2(Math.sin(r.vista - angulo), Math.cos(r.vista - angulo));
-        refrescar();
-      },
-    });
+  function contar(r: Rincon, luego?: () => void) {
+    quienHabla = r.nombre;
+    dialogo = [r.texto];
+    finDialogo = luego;
+    // Gira por el camino más corto hacia el encuadre del rincón.
+    if (r.vista !== undefined) giroRincon = angulo + Math.atan2(Math.sin(r.vista - angulo), Math.cos(r.vista - angulo));
+    refrescar();
+  }
+  for (const r of barrio.rincones) lugares.push({ nombre: r.nombre, punto: r, activar: () => contar(r) });
+  // El rastro de la misión, con su cartel: al leerlo se sigue a las cabras.
+  const { rastro } = barrio;
+  if (rastro && seguirRastro) {
+    carteles.push({ indice: lugares.length, texto: rastro.nombre });
+    lugares.push({ nombre: rastro.nombre, punto: rastro, activar: () => contar(rastro, seguirRastro) });
+  }
   if (pastor.visible)
     lugares.push({ nombre: t.hablar, punto: { x: PASTOR.x - 0.75, z: PASTOR.z }, activar: hablar });
   const senales = carteles.map(({ indice, texto }) => {
@@ -262,7 +267,7 @@ export async function abrirPuerto(
     const mapa = new T.CanvasTexture(lienzo);
     mapa.colorSpace = T.SRGBColorSpace;
     const cartel = new T.Sprite(new T.SpriteMaterial({ map: mapa }));
-    cartel.position.set(l.punto.x, 1.45, l.punto.z);
+    cartel.position.set(l.punto.x, 1.45 + alturaPaseo(l.punto.x, l.punto.z, pueblo), l.punto.z);
     cartel.scale.set(3, 0.54, 1);
     exterior.add(cartel);
     return cartel;
@@ -296,7 +301,16 @@ export async function abrirPuerto(
             ? barrio.nombre
             : guia.muelle;
     parrafo.textContent =
-      dialogo[0] ?? (casaActual ? guia.enCasa : pastor.visible ? objetivo() || t.buscar : barrio.casas.length ? guia.explorar : guia.recorrer);
+      dialogo[0] ??
+      (casaActual
+        ? guia.enCasa
+        : pastor.visible
+          ? objetivo() || t.buscar
+          : seguirRastro
+            ? objetivo()
+            : barrio.casas.length
+              ? guia.explorar
+              : guia.recorrer);
     accion.textContent = dialogo.length
       ? dialogo.length === 1
         ? t.cerrar

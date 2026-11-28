@@ -80,10 +80,10 @@ rectangulares genéricas — afinar con Tiled copiando el patrón de
 `public/assets/maps/islas/gran-canaria.tmj`.
 
 Los lugares 3D son pueblos de `src/data/pueblos.ts` montados con la maqueta
-del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde
-y Las Palmas. Cada uno con trazado propio vive en `src/puerto/sitios/<lugar>.ts`.
-Solo las dunas de Maspalomas siguen en `src/atlas`, porque ahí transcurre la
-misión de las cabras.
+del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde,
+Las Palmas y las dunas de Maspalomas. Cada uno con trazado propio vive en
+`src/puerto/sitios/<lugar>.ts`. En las dunas, mientras la misión de las cabras
+está en curso, el rincón «Rastro de las cabras» abre su mapa de tiles.
 
 En desarrollo (o con `?debug=1`) el desplegable «Ir a…» y `window.irA(escena,
 datos)` saltan a cualquier lugar: `irA('Puerto', { pueblo: 'valverde' })`.

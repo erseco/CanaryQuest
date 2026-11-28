@@ -1,7 +1,8 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
+import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'dunas';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +20,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'dunas';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -39,6 +40,8 @@ export interface Plano {
   cuesta?: { desnivel: number };
   /** Bruma propia: distancia a la que empieza la niebla y a la que ya lo cubre todo. */
   bruma?: [number, number];
+  /** Altura del suelo en un lugar que no es de losas ni rampas, como unas dunas: manda sobre `suelos`. */
+  cota?: (x: number, z: number) => number;
 }
 export interface Suelo {
   r: [number, number, number, number];
@@ -100,6 +103,11 @@ export interface DatosPueblo {
   embarcadero?: { x: number; z: number };
   /** Punto por el que se sale por carretera hacia `salidas.tierra`, y se llega desde allí. */
   carretera?: { x: number; z: number };
+  /**
+   * Rincón que solo aparece mientras la misión del pastor pasa por el lugar: al cerrar su texto
+   * se sigue el rastro hasta el mapa de tiles donde andan las cabras.
+   */
+  rastro?: Rincon;
 }
 export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
   mogan: {
@@ -505,5 +513,45 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
     ],
+  },
+  // Gran Canaria, la punta sur. Playa del Inglés en su terraza (la rotonda de Tirajana y Francia,
+  // Pepe Chiringo, el CITA y el Riu Palace en la punta, sobre el Mirador de las Dunas), el Paseo
+  // Costa Canaria por el borde y el campo de dunas hasta el mar, con la Charca, el palmeral y el
+  // faro acercados al suroeste. Trazado en `src/puerto/sitios/dunas-plano.ts`.
+  dunas: {
+    nombre: 'Dunas de Maspalomas',
+    isla: 'gran-canaria',
+    poi: 'dunas',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'dunas',
+      sinFaroles: true,
+      costa: 29,
+      // La cámara sube y baja con el viajero, de la terraza a las dunas.
+      cuesta: { desnivel: 0 },
+      bruma: [60, 175],
+      palmeras: DUNAS.PALMERAS,
+      suelos: DUNAS.SUELOS,
+      vallas: DUNAS.VALLAS,
+      cota: DUNAS.cota,
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 9.4, z: -4.4 },
+    rincones: [
+      { nombre: 'Mirador de las Dunas', x: 8, z: -4.9, texto: 'En la punta de Playa del Inglés la calle se acaba y empieza la arena. Desde aquí se ve todo el campo de dunas, hasta el faro, y una escalera baja a pisarlas.', vista: 3.1 },
+      { nombre: 'Riu Palace Maspalomas', x: 7.6, z: -12.6, texto: 'El primer hotel Palace de la cadena Riu, de estilo colonial, con la fachada curva abrazando un jardín de palmeras al borde de las dunas. Un pasaje público lo cruza para bajar de Tirajana al mirador.', vista: 0.2 },
+      { nombre: 'Pepe Chiringo', x: 11.6, z: -38.7, texto: 'Hamburguesas, bocadillos y terraza en la esquina de Tirajana con Francia, en los bajos del hotel Rey Carlos.', vista: 0 },
+      { nombre: 'Centro Comercial CITA', x: 17.6, z: -38.7, texto: 'Uno de los centros comerciales más antiguos de Playa del Inglés, de comienzos de los años setenta. Lo adornan réplicas de monumentos europeos, como la torre Eiffel o la de Pisa, y en su patio un Volkswagen rosa hace de emblema.', vista: 0 },
+      { nombre: 'Paseo Costa Canaria', x: 21.6, z: -22.6, texto: 'El paseo bordea las dunas desde el Riu hacia la playa del Inglés: a un lado, hoteles y apartamentos; al otro, el mar de arena.', vista: 1.2 },
+      { nombre: 'Campo de dunas', x: 14, z: 8, texto: 'Unas 400 hectáreas de arena, reserva natural desde 1987. El alisio sopla del nordeste y empuja las dunas despacio hacia el suroeste. Hay quien dice que esta arena voló desde el Sáhara, pero, según los geólogos, salió del mar: el viento la sopló desde la plataforma que quedó al aire en la última glaciación.', vista: 2.4 },
+      { nombre: 'Balancones de Playa del Inglés', x: 44.5, z: -14, texto: 'El balancón, un arbusto de hojas carnosas, frena la arena que trae el viento y la retiene a su alrededor: así nacen estos montículos al borde de la playa.', vista: 1.6 },
+      { nombre: 'Playa de Maspalomas', x: 5, z: 25.6, texto: 'Arena dorada abierta al Atlántico, del faro a la punta donde empieza la playa del Inglés. A la espalda, las dunas; delante, mar abierto.', vista: -0.2 },
+      { nombre: 'La Charca', x: -24.6, z: 19.5, texto: 'Laguna de agua salobre donde acaba el barranco de Maspalomas, separada del mar por una barra de arena. Es parada de aves migratorias; las más abundantes son las limícolas, como el chorlitejo patinegro.', vista: 1.5 },
+      { nombre: 'Palmeral del Oasis', x: -41, z: 14, texto: 'Palmeras canarias junto a la Charca: lo que queda de un palmeral mucho mayor. Por ellas a este rincón lo llaman el Oasis.', vista: 0.4 },
+      { nombre: 'Faro de Maspalomas', x: -36.8, z: 24.6, texto: 'Torre troncocónica de cantería gris de 56 metros, obra del ingeniero Juan de León y Castillo. Se encendió el 1 de febrero de 1890. La casa del torrero, adosada a su pie, es hoy un centro etnográfico.', vista: 1.1 },
+    ],
+    rastro: { nombre: 'Rastro de las cabras', x: -14, z: -4, texto: 'Huellas de pezuña entre los matorrales y ramas mordisqueadas. Las cabras del pastor se han metido dunas adentro: hay que seguirlas.' },
   },
 };
