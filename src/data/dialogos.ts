@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  chipude: {
+    nombre: 'La Fortaleza de Chipude', zona: 'Vallehermoso · La Gomera',
+    descripcion: 'De la plaza de Chipude, entre bancales, hasta la cima llana de la mesa de roca, con restos de los antiguos gomeros.',
+  },
 };

@@ -578,7 +578,7 @@ export async function abrirPuerto(
     const giro = angulo;
     const elevacion = casaActual
       ? 0.77
-      : (cuesta ? 0.54 : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
+      : (cuesta ? (plano.cuesta?.picado ?? 0.54) : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
     camara.position.set(
       centro.x + Math.sin(giro) * radio,
       centro.y + radio * elevacion,

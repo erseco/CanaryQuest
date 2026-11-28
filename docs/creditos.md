@@ -133,6 +133,28 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
 
+## La Fortaleza de Chipude (La Gomera)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/chipude.ts`, sin
+assets nuevos. La cornisa de la mesa se trazó sobre las curvas de nivel del IGN
+(la de 1.240 m y las que se apiñan bajo ella) y la ortofoto PNOA; la iglesia, la
+plaza, Pavón, el collado (1.125 m) y la zona arqueológica, sobre las posiciones
+de OpenStreetMap. Los recortes, de (−17.300, 28.090) a (−17.268, 28.118), se
+usaron solo como consulta y no están en el repositorio. Licencias de
+composición: el conjunto gira 131° para que la mesa quede al fondo del
+encuadre y el pueblo 41° más para que la iglesia mire a la cámara; la distancia
+del pueblo a la mesa se acorta a la mitad; la mesa va a escala 1:15 y algo más
+ancha en la punta sur; las alturas se comprimen (la cima a 13 sobre la plaza);
+se omiten la carretera a Pavón y el campo de fútbol.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma) y [curvas de nivel del MDT, servicio WMS del IGN](https://servicios.idee.es/wms-inspire/mdt), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- Posiciones de la iglesia, la plaza, Pavón, el collado, la era y la zona arqueológica: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API Overpass.
+- [Fortaleza de Chipude, Hispanopedia (Wikipedia en español)](https://es.hispanopedia.com/wiki/Fortaleza_de_Chipude): 1.243 m, domo intrusivo, única entrada por un paso estrecho, posible Argodey de las crónicas, estudios de Bethencourt Alfonso (1874), la Universidad de La Laguna (1973), Pellicer y Navarro Mederos.
+- [The historic fortress of Chipude, Jardín Tecina](https://www.jardin-tecina.com/?p=8650) y [El Cercado and the pottery tradition of La Gomera](https://www.jardin-tecina.com/?p=8507): recintos de piedra y ofrendas de cabras como creencia; loza sin torno, alisada con callao y pintada con almagre.
+- [Chipude, Hispanopedia](https://es.hispanopedia.com/wiki/Chipude), [Loceras de El Cercado](https://es.hispanopedia.com/wiki/Loceras_de_El_Cercado) y [Chipude, Hello Canary Islands](https://www.hellocanaryislands.com/places-full-of-charm/la-gomera/chipude/): ermita de Candelaria hecha parroquia en el siglo XVII, cereal en las tierras altas, fiesta del 15 de agosto.
+- Fotografías de referencia de [Wikimedia Commons, categoría Chipude](https://commons.wikimedia.org/wiki/Category:Chipude) (la iglesia de dos naves con su campanario de cantería) y de la [Fortaleza](https://commons.wikimedia.org/wiki/Category:Monumento_Natural_de_La_Fortaleza), solo como consulta.
+- Ruta habitual desde Pavón por la canal de la arista nordeste: SummitPost y la guía Rother de La Gomera (collado de la Fortaleza, 1.125 m), vistas en resultados de búsqueda.
+
 ## Paseo de Playa del Inglés
 
 La maqueta de Pepe Chiringo, las figuras y la torre del CITA, las fachadas del
