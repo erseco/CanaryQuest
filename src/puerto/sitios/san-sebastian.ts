@@ -252,7 +252,7 @@ export function trazarSanSebastian(t: Taller): Sitio {
       w = x1 - x0,
       d = z1 - z0;
     // En la ladera, el muro baja hasta perderse en el terreno.
-    const hondo = base > 0.05 ? 2.5 : 0;
+    const hondo = base > 0.05 ? 6 : 0;
     muro(color, cx, base + (alto - hondo) / 2, cz, w, alto + hondo, d);
     const deLado = Math.abs(Math.sin(giro)) > 0.5;
     const ancho = deLado ? d : w,
