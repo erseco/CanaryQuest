@@ -19,7 +19,7 @@ import { crearInterior, sueloInterior } from './interior';
 import './puerto.css';
 
 export async function abrirPuerto(
-  hablar: () => void,
+  hablar: (npc?: string) => void,
   salir: () => void,
   objetivo: () => string,
   pueblo: Pueblo,
@@ -194,6 +194,8 @@ export async function abrirPuerto(
     ruta = [];
     alLlegar = undefined;
     refrescar();
+    // Quien recibe en la casa habla en cuanto se entra.
+    if (c.anfitrion) hablar(c.anfitrion.npc);
   }
   function volverCalle() {
     angulo=anguloCalle;
@@ -576,9 +578,13 @@ export async function abrirPuerto(
         ? T.MathUtils.damp(centro.y, 5 + alturaPaseo(pos.x, pos.z, pueblo), 5, dt)
         : 2.2;
     const giro = angulo;
+    // Con `mirada`, la cámara va baja a ras del mar y recobra su inclinación al subir un par de metros.
+    const mirada = plano.cuesta?.mirada;
+    const inclinacion =
+      mirada === undefined ? 0.54 : mirada + (0.54 - mirada) * T.MathUtils.clamp((centro.y - 5) / 2.2, 0, 1);
     const elevacion = casaActual
       ? 0.77
-      : (cuesta ? 0.54 : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
+      : (cuesta ? inclinacion : 0.32) + Math.max(0, -Math.cos(giro)) * 0.58 + (cuesta ? 0 : Math.max(0, -pos.z) * 0.09);
     camara.position.set(
       centro.x + Math.sin(giro) * radio,
       centro.y + radio * elevacion,
@@ -593,7 +599,7 @@ export async function abrirPuerto(
     mostrar(lineas: string[], alTerminar?: () => void) {
       ruta = [];
       alLlegar = undefined;
-      quienHabla = t.pastor;
+      quienHabla = casaActual?.anfitrion?.nombre ?? t.pastor;
       dialogo = [...lineas];
       finDialogo = alTerminar;
       refrescar();

@@ -1,5 +1,6 @@
 import * as T from 'three';
 import type { CasaPuerto } from '../data/pueblos';
+import { persona } from './persona';
 
 // Habitación abierta hacia la cámara, con un pasillo libre entre el mobiliario.
 export function crearInterior() {
@@ -64,21 +65,45 @@ export function crearInterior() {
   pieza(madera, 2.75, 0.83, -0.6, 1.5, 0.12, 1.9);
   for (const x of [2.18, 3.32]) for (const z of [-1.32, 0.12]) pieza(madera, x, 0.4, z, 0.11, 0.8, 0.11);
   pieza('#be794e', 2.7, 0.9, -0.9, 1.1, 1.3, 1.1, jarra);
-  pieza(madera, -3.0, 0.34, -1.4, 1.3, 0.6, 2.4);
+  const cama = pieza(madera, -3.0, 0.34, -1.4, 1.3, 0.6, 2.4);
   const colcha = pieza('#b66a50', -3.0, 0.69, -1.16, 1.36, 0.14, 1.85);
   const almohada=pieza(cal, -3, 0.77, -2.27, 1.06, 0.2, 0.51);
   pieza(marco, 0, 0.035, 2.69, 1.5, 0.06, 0.6);
   const enseres=new T.Group();
   for(let i=0;i<5;i++)enseres.add(pieza('#cc8c59',-3.24+(i%2)*0.53,0.69,-2.15+Math.floor(i/2)*0.56,0.94,1.1+i*0.08,0.94,jarra));
   grupo.add(enseres);
+  // Escenario de un local de humor, donde iba la cama: tarima, telón, micrófono y el cómico de chistera.
+  const escenario = new T.Group();
+  grupo.add(escenario);
+  for (const m of [
+    pieza('#4a2f24', -2.95, 0.15, -1.55, 1.9, 0.3, 2.9),
+    pieza('#7a1f2e', -2.95, 1.6, -2.95, 1.9, 2.6, 0.1),
+    pieza('#2b2b2b', -2.1, 0.75, -0.65, 0.04, 0.9, 0.04),
+    pieza('#2b2b2b', -2.1, 1.22, -0.65, 0.09, 0.12, 0.09),
+  ])
+    escenario.add(m);
+  const comico = persona(-2.75, -1.2, false);
+  comico.position.y = 0.3;
+  comico.rotation.y = 0.7;
+  comico.traverse((o) => {
+    // Chaqueta granate en lugar de la camisa del viajero.
+    if (o instanceof T.Mesh && o.material.color.getHex() === new T.Color('#187d99').getHex()) o.material.color.set('#7a2f8f');
+  });
+  const copa = new T.Mesh(new T.CylinderGeometry(0.16, 0.16, 0.32, 12), new T.MeshStandardMaterial({ color: '#1d1a1f' }));
+  copa.position.y = 1.52;
+  const ala = new T.Mesh(new T.CylinderGeometry(0.26, 0.26, 0.03, 12), copa.material);
+  ala.position.y = 1.37;
+  comico.add(copa, ala);
+  escenario.add(comico);
   grupo.visible = false;
   return {
     grupo,
     decorar(casa: CasaPuerto) {
       alfombra.material.color.set(casa.color);
       colcha.material.color.set(casa.color);
-      enseres.visible=/taller|lonja|cofradía|alfarero/i.test(casa.nombre);
-      colcha.visible=almohada.visible=!enseres.visible;
+      escenario.visible = !!casa.anfitrion;
+      enseres.visible=!escenario.visible&&/taller|lonja|cofradía|alfarero/i.test(casa.nombre);
+      cama.visible=colcha.visible=almohada.visible=!enseres.visible&&!escenario.visible;
     },
   };
 }

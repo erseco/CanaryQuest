@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  isleta: {
+    nombre: 'La Isleta', zona: 'Las Palmas · Gran Canaria',
+    descripcion: 'Del Castillo de La Luz y el puerto, sube por las calles empinadas del barrio hasta el pie de los volcanes.',
+  },
 };

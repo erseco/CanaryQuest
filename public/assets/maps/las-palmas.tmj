@@ -3697,23 +3697,6 @@
           "y": 448,
           "visible": true,
           "rotation": 0
-        },
-        {
-          "id": 20,
-          "name": "isleta",
-          "type": "puerta",
-          "point": true,
-          "x": 640,
-          "y": 96,
-          "visible": true,
-          "rotation": 0,
-          "properties": [
-            {
-              "name": "etiqueta",
-              "type": "string",
-              "value": "Hacia La Isleta"
-            }
-          ]
         }
       ]
     }

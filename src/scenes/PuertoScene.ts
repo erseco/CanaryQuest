@@ -43,7 +43,7 @@ export class PuertoScene extends Phaser.Scene {
     try {
       const modulo = await import('../puerto/vista');
       vista = await modulo.abrirPuerto(
-        () => this.game.events.emit('npc-hablar', { npc: 'pastor' }),
+        (npc = 'pastor') => this.game.events.emit('npc-hablar', { npc }),
         () => {
           iniciarUI();
           this.scene.start('Island', { islaId, lugar: poi });
