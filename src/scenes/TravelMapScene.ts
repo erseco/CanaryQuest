@@ -5,6 +5,7 @@ import { destinosDesde, medioDe, type Destino, type MedioTransporte } from '../s
 import { muelle } from '../puerto/paseo';
 import { PASEO } from '../data/dialogos';
 import { Musica } from '../sistemas/Musica';
+import { ESCALA_VEHICULO, texturaFerry } from '../sistemas/vehiculos';
 import type { Partida } from '../sistemas/SaveManager';
 
 interface DatosViaje {
@@ -165,18 +166,58 @@ export class TravelMapScene extends Phaser.Scene {
 
     const desde = this.enPantalla(this.origen.mapa);
     const hasta = this.enPantalla(destino.terminal.mapa);
-    const vehiculo = this.add
-      .image(desde.x, desde.y, this.medio === 'barco' ? 'ferry' : 'avion')
-      .setDepth(80)
-      .setFlipX(hasta.x < desde.x);
+    const alOeste = hasta.x < desde.x;
+    const esBarco = this.medio === 'barco';
+    const clave = esBarco ? texturaFerry(destino.compania, alOeste) : alOeste ? 'avion-oeste' : 'avion';
+    const vehiculo = this.add.image(desde.x, desde.y, clave).setScale(ESCALA_VEHICULO).setDepth(80);
+    // El avión, visto desde arriba, apunta al destino (la versión oeste ya mira a la izquierda)
+    const rumbo = Math.atan2(hasta.y - desde.y, hasta.x - desde.x) - (alOeste ? Math.PI : 0);
+    const sombra = esBarco
+      ? null
+      : this.add.image(desde.x, desde.y, clave).setTint(0x000000).setAlpha(0.25).setScale(ESCALA_VEHICULO * 0.8).setRotation(rumbo).setDepth(79);
+    vehiculo.setRotation(esBarco ? 0 : rumbo);
+    // Estela de espuma: una pompa por cada tramo que avanza la popa del ferry, para
+    // que no se amontone al zarpar y al atracar
+    const estela = esBarco
+      ? this.add
+          .particles(0, 0, 'espuma', {
+            emitting: false,
+            lifespan: 1200,
+            speedX: { min: -5, max: 5 },
+            speedY: { min: -4, max: 4 },
+            scale: { start: 0.5, end: 1.2 },
+            alpha: { start: 0.55, end: 0 },
+          })
+          .setDepth(79)
+      : null;
+    const popa = { x: vehiculo.displayWidth * (alOeste ? 0.45 : -0.45), y: vehiculo.displayHeight * 0.4 };
+    const ultima = { ...desde };
     this.sound.play('sfx-teleport', { volume: 0.6 });
 
-    this.tweens.add({
-      targets: vehiculo,
-      x: hasta.x,
-      y: hasta.y,
+    this.tweens.addCounter({
+      from: 0,
+      to: 1,
       duration: 2200,
-      ease: this.medio === 'barco' ? 'sine.inOut' : 'quad.inOut',
+      ease: esBarco ? 'sine.inOut' : 'quad.inOut',
+      onUpdate: (tween) => {
+        const t = tween.getValue() ?? 0;
+        const x = Phaser.Math.Linear(desde.x, hasta.x, t);
+        const y = Phaser.Math.Linear(desde.y, hasta.y, t);
+        if (esBarco) {
+          // El ferry cabecea suavemente con las olas
+          const s = this.time.now / 1000;
+          vehiculo.setPosition(x, y + Math.sin(s * 5) * 0.8).setRotation(Math.sin(s * 3.4) * 0.035);
+          if (Phaser.Math.Distance.Between(x, y, ultima.x, ultima.y) > 1.5) {
+            estela?.emitParticleAt(x + popa.x, y + popa.y);
+            Object.assign(ultima, { x, y });
+          }
+          return;
+        }
+        // El avión despega, sube y aterriza: crece y su sombra se separa en el mar
+        const altura = Math.sin(Math.PI * t);
+        vehiculo.setPosition(x, y - altura * 6).setScale(ESCALA_VEHICULO * (0.8 + 0.2 * altura));
+        sombra?.setPosition(x + altura * 7, y + altura * 12);
+      },
       onComplete: () => {
         this.cameras.main.fadeOut(300);
         this.cameras.main.once('camerafadeoutcomplete', () => {
