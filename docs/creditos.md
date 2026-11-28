@@ -99,6 +99,28 @@ en el repositorio.
 - [Valverde (El Hierro), Hispanopedia](https://es.hispanopedia.com/wiki/Valverde_(El_Hierro)): fachada de cantería con arco de medio punto, campanario octogonal con cúpula e imagen de la Virgen, y casas consistoriales de piedra levantadas tras el incendio de 1899.
 - [Iglesia de Nuestra Señora de la Concepción, El Hierro Travel](https://elhierro.travel/en/museums-and-places-of-interest/el-hierro/iglesia-de-nuestra-senora-de-la-concepcion/) y [Lonely Planet](https://www.lonelyplanet.com/points-of-interest/iglesia-de-santa-maria-de-la-concepcion/1462646): torre con mirador en lo alto.
 - [La villa histórica de Valverde](https://www.hellocanaryislands.com/places-full-of-charm/el-hierro/the-historical-town-of-valverde/) y [Centro Etnográfico Casa de Las Quinteras](https://www.hellocanaryislands.com/museums-and-places-of-interest/el-hierro/centro-etnografico-casa-de-las-quinteras/), Hello Canary Islands.
+
+## Valle de Aridane (Los Llanos de Aridane)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/aridane.ts`, sin
+assets nuevos; los cuadros y el mural del «museo en la calle» se pintan por
+código y son originales. El trazado del centro (plaza de España, iglesia de
+Nuestra Señora de los Remedios al norte, Ayuntamiento al sur, calles Real, de la
+Iglesia y del Paseo, posición de los laureles) se tomó de la ortofoto PNOA y de
+OpenStreetMap, se comprimió a escala de juego y se giró 90° para que la cámara
+mire valle abajo, hacia el mar. El paisaje (plataneras, Tazacorte, la pared de la
+Caldera, el Bejenado, la Cumbre Nueva con El Paso, el cono de Tajogaite y las
+coladas de 2021) se compuso por rumbos reales, muy comprimido. Los recortes PNOA,
+alrededor de (−17.9132, 28.6590) y de (−17.98, 28.60) a (−17.84, 28.72), se usaron
+solo como consulta y no están en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- Edificios, calles y árboles de la plaza: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API de OSM.
+- [Los Llanos de Aridane, Wikipedia](https://es.wikipedia.org/wiki/Los_Llanos_de_Aridane): laureles de Indias traídos de Cuba a mediados del XIX, la iglesia matriz y sus imágenes, las casas consistoriales de Tomás Machado (1945), la segregación de Tazacorte (1925).
+- Fotografías de Wikimedia Commons de la plaza de España, la iglesia, su torre y el Ayuntamiento (series «La Palma - Los Llanos» y «Ayuntamiento de Los Llanos de Aridane»), usadas solo como referencia visual.
+- La Ciudad en el Museo (CEMFAC): [Diario de Avisos](https://diariodeavisos.elespanol.com/2019/11/el-cemfac-un-museo-que-nacio-para-estar-vivo-en-continuo-cambio/) y [eldiario.es](https://www.eldiario.es/canariasahora/lapalmaahora/municipios/los_llanos_de_aridane/llanos-aridane-amplia-museo-calle-mural-reconocido-artista-frances-3ttman_1_12326096.html).
+- Erupción de 2021 (19 de septiembre – 13 de diciembre, 85 días, unas 1.219 ha): [Vozpópuli](https://www.vozpopuli.com/actualidad/volcan-la-palma-final.html) e [IGN, infografía del primer aniversario](https://www.ign.es/resources/erupcion-la-palma-2021/Infografia-primer-aniversario.pdf).
+
 ## Piscinas de La Caleta
 
 Maqueta original con las piezas del puerto de Mogán (`src/puerto/sitios/caleta.ts`

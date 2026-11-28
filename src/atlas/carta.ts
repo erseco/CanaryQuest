@@ -19,6 +19,7 @@ export const SITIOS = {
   cofete: { isla: 'fuerteventura', carta: proyectarLugar(geografia.fuerteventura.cofete) },
   'la-laguna': { isla: 'tenerife', carta: proyectarLugar(geografia.tenerife['la-laguna']) },
   'roque-de-los-muchachos': { isla: 'la-palma', carta: proyectarLugar(geografia['la-palma']['roque-de-los-muchachos']) },
+  aridane: { isla: 'la-palma', carta: proyectarLugar(geografia['la-palma'].aridane) },
 } as const;
 export type Sitio = keyof typeof SITIOS;
 

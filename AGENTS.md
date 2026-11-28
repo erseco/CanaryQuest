@@ -80,8 +80,12 @@ rectangulares genéricas — afinar con Tiled copiando el patrón de
 `public/assets/maps/islas/gran-canaria.tmj`.
 
 Los lugares 3D son pueblos de `src/data/pueblos.ts` montados con la maqueta
-del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde,
-Las Palmas, La Fortaleza de Chipude y las dunas de Maspalomas. Cada uno con trazado propio vive en
+del puerto (ADR-10). En Gran Canaria: Mogán, Agaete, Las Palmas (Vegueta), La Isleta,
+Las Canteras y las dunas de Maspalomas. En Lanzarote: Yaiza y Playa Blanca. En
+Fuerteventura: Casa Winter (Cofete). En Tenerife: Loro Parque, La Laguna y Las
+Teresitas. En La Gomera: San Sebastián, Garajonay y La Fortaleza de Chipude. En
+La Palma: el valle de Aridane y el Roque de los Muchachos. En El Hierro: La
+Restinga, Orchilla, La Caleta y Valverde. Cada uno con trazado propio vive en
 `src/puerto/sitios/<lugar>.ts`. En las dunas, mientras la misión de las cabras
 está en curso, el rincón «Rastro de las cabras» abre su mapa de tiles.
 

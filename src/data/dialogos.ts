@@ -218,4 +218,8 @@ export const VISITAS = {
     nombre: 'Roque de los Muchachos', zona: 'Cumbre · La Palma',
     descripcion: 'Sube al techo de La Palma: roques oscuros, el abismo de la Caldera y las cúpulas del observatorio sobre el mar de nubes.',
   },
+  aridane: {
+    nombre: 'Valle de Aridane', zona: 'Los Llanos · La Palma',
+    descripcion: 'Pasea bajo los laureles de la plaza de España y asómate al valle, que baja entre plataneras hasta el mar.',
+  },
 };

@@ -53,6 +53,7 @@ export const ISLAS: Record<IslaId, Isla> = {
     ],
     mapaMundo: puntoCarta(-17.85, 28.67),
     zonas: [{ mapa: 'roque-de-los-muchachos', etiqueta: 'Roque de los Muchachos' }],
+    zonas: [{ mapa: 'aridane', etiqueta: 'Valle de Aridane' }],
   },
   'el-hierro': {
     id: 'el-hierro',
