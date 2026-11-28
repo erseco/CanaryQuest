@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { NPCS_BQ, SPRITES_BQ } from '../data/enemigos';
 import { iniciarOrquestador } from '../sistemas/Orquestador';
 import { SaveManager } from '../sistemas/SaveManager';
+import { crearTexturasVehiculos } from '../sistemas/vehiculos';
 import { ISLAS } from '../data/islas';
 
 interface SpriteBq {
@@ -163,29 +164,8 @@ export class PreloadScene extends Phaser.Scene {
     g.fillStyle(0xd9cfc0).fillRect(4, 18, 3, 5).fillRect(12, 18, 3, 5); // patas
     g.generateTexture('cabra', 24, 24);
 
-    // Ferry (estilo Fred Olsen: casco azul, franja roja, superestructura blanca)
-    g.clear();
-    g.fillStyle(0x1c3f94).fillRect(0, 20, 48, 10);
-    g.fillStyle(0xd7263d).fillRect(0, 18, 48, 3);
-    g.fillStyle(0xffffff).fillRect(8, 8, 30, 10);
-    g.fillStyle(0x9fd8ff).fillRect(11, 10, 5, 4).fillRect(19, 10, 5, 4).fillRect(27, 10, 5, 4);
-    g.generateTexture('ferry', 48, 30);
-
-    // Turbohélice interinsular visto desde arriba, con la proa a la derecha.
-    g.clear();
-    g.fillStyle(0xbac9c4).fillTriangle(29, 22, 40, 22, 24, 1).fillTriangle(29, 26, 40, 26, 24, 47);
-    g.fillStyle(0xf4f7f1).fillTriangle(25, 1, 32, 2, 39, 22).fillTriangle(25, 47, 32, 46, 39, 26);
-    g.fillStyle(0x31943e).fillTriangle(5, 24, 14, 24, 5, 12).fillTriangle(5, 24, 14, 24, 5, 36);
-    for (const y of [12, 36]) {
-      g.fillStyle(0xedf4e9).fillRoundedRect(28, y - 2, 13, 5, 2);
-      g.fillStyle(0x293e3b).fillRect(40, y - 6, 2, 13);
-    }
-    g.fillStyle(0xfcfff8).fillEllipse(35, 24, 64, 11);
-    g.fillStyle(0x23783d).fillTriangle(2, 24, 19, 20, 17, 27);
-    g.fillStyle(0x96cb3c).fillTriangle(2, 24, 14, 20, 11, 24);
-    g.fillStyle(0x34524e).fillTriangle(56, 20, 62, 23, 56, 22);
-    for (let x = 23; x < 54; x += 4) g.fillRect(x, 21, 2, 1);
-    g.generateTexture('avion', 68, 48);
+    // Ferris de cada naviera y el ATR de Binter del mapa de viajes
+    crearTexturasVehiculos(this);
 
     // Corazón que sueltan los enemigos (Zelda)
     g.clear();

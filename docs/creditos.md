@@ -28,6 +28,19 @@
 - Suelo y trazado de las visitas en `public/assets/visitas/*-pnoa.webp`. Obra derivada de las ortofotos PNOA de máxima actualidad, © Instituto Geográfico Nacional y productores del PNOA, consultadas el 26 de noviembre de 2026. Recortes del servicio WMS en longitud/latitud, con el norte arriba. La Caleta abarca de (−17.8890, 27.7997) a (−17.8863, 27.8015). Vegueta abarca de (−15.4170, 28.09955) a (−15.41385, 28.1014). [Servicio PNOA](https://pnoa.ign.es/web/portal/pnoa-imagen/visualizadores-y-servicios-web) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es).
 - Referencias locales para las piscinas, la plaza, los perros de Santa Ana y los edificios que la cierran. [Turismo de El Hierro, La Caleta](https://elhierro.travel/piscinas-naturales/el-hierro/piscinas-de-la-caleta/) · [Turismo de Las Palmas de Gran Canaria, plaza de Santa Ana](https://lpavisit.com/atractivo/plaza-de-santa-ana/) · [Casas Consistoriales](https://lpavisit.com/atractivo/casas-consistoriales/).
 
+## Ferris y avión del mapa de viajes
+
+Dibujos originales hechos con el canvas 2D en `src/sistemas/vehiculos.ts`, sin
+ficheros de imagen. Cada naviera lleva sus colores y su nombre en texto, nunca
+su logotipo. Naviera Armas aparece con el casco blanco, la proa y la popa rojas
+barridas de gris, «ARMAS» en rojo y la contraseña azul y amarilla en la
+chimenea. Fred. Olsen Express aparece con el casco blanco, la superestructura
+amarilla y la franja azul, y Líneas Romero con un catamarán turquesa con boca de
+tiburón. El ATR 72-600 de Binter se ve desde arriba, con el fuselaje blanco, las
+franjas verdes y azul de la cola, el morro verde y «Binter» en el techo.
+
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [Volcán de Taburiente](https://commons.wikimedia.org/wiki/File:ARMAS_Ferry_Volcan_de_Taburiente_2.jpg), [Volcán de Tindaya](https://commons.wikimedia.org/wiki/File:Vessel_Volc%C3%A1n_de_Tindaya.JPG), [Volcán de Tagoro](https://commons.wikimedia.org/wiki/File:HSC_Volc%C3%A1n_de_Tagoro,_Port_of_Las_Palmas,_Gran_Canaria,_12._January_2020,_side_view.jpg), [Bencomo Express](https://commons.wikimedia.org/wiki/File:Bencomo_Express_2021_01.jpg), [Benchijigua Express](https://commons.wikimedia.org/wiki/File:Benchijigua_Express_01_2019-12.JPG), [ATR 72-600 EC-MXQ](https://commons.wikimedia.org/wiki/File:Binter_Canarias_ATR_72-600_(EC-MXQ)_@_TFS,_Jan_2019.jpg) y [E195-E2 EC-NHA](https://commons.wikimedia.org/wiki/File:EC-NHA_Embraer_195-E2_Binter_arrecife_29-02-20.jpg). La ilustración del catamarán de [Líneas Romero](https://www.lineasromero.com/) se consultó en su web. Solo se usaron como referencia; no se incluyen en el juego.
+
 ## Recursos evaluados y no incluidos en el build
 
 - **TongaApp** (UCTICEE, Gobierno de Canarias): ~1.200 ilustraciones canarias
