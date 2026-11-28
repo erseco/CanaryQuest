@@ -142,5 +142,6 @@ la primera visita convertida.
 con identidad propia (La Restinga, Orchilla, La Caleta, Agaete, Valverde,
 Las Palmas) se traza sobre su ortofoto PNOA en `src/puerto/sitios/<lugar>.ts`
 con las piezas del `Taller`, y declara en `plano.suelos` por dónde se camina.
-Quedan en `src/atlas` las dunas de Maspalomas, ligadas a la misión de las
-cabras.
+Las dunas de Maspalomas, la última visita de `src/atlas`, son ya un lugar de
+este tipo; su `plano.cota` da la altura de la arena y su `rastro` lleva a la
+misión de las cabras.

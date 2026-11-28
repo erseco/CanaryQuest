@@ -150,7 +150,8 @@ export function rutaPuerto(
 }
 /** Altura del suelo: la joroba de cada puente, la arena que baja al agua, un pantalán flotante. */
 export function alturaPaseo(x: number, z: number, pueblo: Pueblo = 'mogan'): number {
-  const { canales, playa, suelos } = PUEBLOS[pueblo].plano;
+  const { canales, playa, suelos, cota } = PUEBLOS[pueblo].plano;
+  if (cota) return cota(x, z);
   if (suelos) {
     const s = suelos.find((s) => dentro(s.r, x, z));
     if (!s) return 0;

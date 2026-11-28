@@ -15,6 +15,7 @@ import { trazarCanteras } from './sitios/canteras';
 import { trazarIsleta } from './sitios/isleta';
 import { trazarTeresitas } from './sitios/teresitas';
 import { trazarChipude } from './sitios/chipude';
+import { trazarDunas } from './sitios/dunas';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -395,6 +396,7 @@ export function crearMaqueta(
   else if (plano.sitio === 'isleta') sitio = trazarIsleta(taller);
   else if (plano.sitio === 'teresitas') sitio = trazarTeresitas(taller);
   else if (plano.sitio === 'chipude') sitio = trazarChipude(taller);
+  else if (plano.sitio === 'dunas') sitio = trazarDunas(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {

@@ -1,6 +1,4 @@
 import type Phaser from 'phaser';
-import { SITIOS } from '../atlas/carta';
-import { VISITAS } from '../data/dialogos';
 import { ISLAS, type IslaId } from '../data/islas';
 import { PUEBLOS } from '../data/pueblos';
 import { iniciarOrquestador } from '../sistemas/Orquestador';
@@ -44,9 +42,6 @@ export function montarMenu(game: Phaser.Game): void {
 
   const destinos: Record<string, [string, () => void][]> = {
     'Pueblos 3D': Object.entries(PUEBLOS).map(([id, p]) => [p.nombre, () => irA('Puerto', { pueblo: id })]),
-    'Visitas 3D': Object.keys(SITIOS)
-      .filter((s) => !Object.hasOwn(PUEBLOS, s))
-      .map((s) => [VISITAS[s as keyof typeof VISITAS].nombre, () => irA('Visita', { sitio: s })]),
     Islas: Object.values(ISLAS).map((i) => [i.nombre, () => irA('Island', { islaId: i.id })]),
     'Mapas de tiles': MAPAS.map(([mapaId, islaId]) => [
       `${mapaId} (${ISLAS[islaId].nombre})`,

@@ -166,9 +166,9 @@ export const CARTA = {
   fuente: 'Relieve · MDT200 © Instituto Geográfico Nacional', sitios: 'Lugares visitables',
   ayuda: 'Toca el suelo para caminar. Arrastra para girar. Flechas o WASD para moverte.',
 };
-export const MASPALOMAS = {francia:'Av. de Francia · CITA',tirajana:'Av. de Tirajana · Dunas',pepe:'PEPE CHIRINGO',cita:'CITA',riu:'RIU PALACE',sendero:'Seguir la misión de las dunas'};
+export const MASPALOMAS = {francia:'Av. de Francia · CITA',tirajana:'Av. de Tirajana · Dunas',pepe:'PEPE CHIRINGO',cita:'CITA',riu:'RIU PALACE'};
 export const VISITAS = {
-  dunas:{nombre:'Dunas de Maspalomas',zona:'Playa del Inglés · Gran Canaria',descripcion:'El CITA queda al este por Francia. Vuelve a la rotonda y baja por Tirajana para cruzar el RIU hacia el mirador.'},
+  dunas:{nombre:'Dunas de Maspalomas'},
   'la-restinga': {nombre:'La Restinga',zona:'El Pinar · El Hierro',descripcion:'Recorre el paseo del puerto y el pantalán entre los barcos de pesca.'},
   'orchilla': {nombre:'Faro de Orchilla',zona:'El Pinar · El Hierro',descripcion:'Sigue el destello de la torre octogonal entre las coladas de lava.'},
   'la-caleta': {
