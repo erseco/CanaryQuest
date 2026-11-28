@@ -83,7 +83,7 @@ export const ISLAS: Record<IslaId, Isla> = {
       { id: 'tf-sur', nombre: 'Aeropuerto Tenerife Sur', tipo: 'aeropuerto', mapa: proyectarLugar(geografia['tenerife']['tf-sur']) },
     ],
     mapaMundo: puntoCarta(-16.54, 28.28),
-    zonas: [{ mapa: 'las-teresitas', etiqueta: 'Playa de Las Teresitas' }],
+    zonas: [{ mapa: 'las-teresitas', etiqueta: 'Playa de Las Teresitas' }, { mapa: 'loro-parque', etiqueta: 'Loro Parque' }],
   },
   'gran-canaria': {
     id: 'gran-canaria',

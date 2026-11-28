@@ -199,4 +199,8 @@ export const VISITAS = {
     nombre: 'La Fortaleza de Chipude', zona: 'Vallehermoso · La Gomera',
     descripcion: 'De la plaza de Chipude, entre bancales, hasta la cima llana de la mesa de roca, con restos de los antiguos gomeros.',
   },
+  'loro-parque': {
+    nombre: 'Loro Parque', zona: 'Puerto de la Cruz · Tenerife',
+    descripcion: 'Entra por el pabellón tailandés y pasea entre loros, pingüinos y orcas, con el Teide al fondo.',
+  },
 };

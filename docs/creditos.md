@@ -192,6 +192,28 @@ se omiten la carretera a Pavón y el campo de fútbol.
 - [Chipude, Hispanopedia](https://es.hispanopedia.com/wiki/Chipude), [Loceras de El Cercado](https://es.hispanopedia.com/wiki/Loceras_de_El_Cercado) y [Chipude, Hello Canary Islands](https://www.hellocanaryislands.com/places-full-of-charm/la-gomera/chipude/): ermita de Candelaria hecha parroquia en el siglo XVII, cereal en las tierras altas, fiesta del 15 de agosto.
 - Fotografías de referencia de [Wikimedia Commons, categoría Chipude](https://commons.wikimedia.org/wiki/Category:Chipude) (la iglesia de dos naves con su campanario de cantería) y de la [Fortaleza](https://commons.wikimedia.org/wiki/Category:Monumento_Natural_de_La_Fortaleza), solo como consulta.
 - Ruta habitual desde Pavón por la canal de la arista nordeste: SummitPost y la guía Rother de La Gomera (collado de la Fortaleza, 1.125 m), vistas en resultados de búsqueda.
+## Loro Parque (Puerto de la Cruz, Tenerife)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/loro-parque.ts`, sin
+modelos ni texturas nuevas; los dos letreros se pintan en un lienzo al cargar. Las
+posiciones de la entrada y el pueblo tailandés, las carpas koi, los gorilas, Planet
+Penguin, la Isla del Tigre, el delfinario, Orca Ocean y el café Vista Teide se
+tomaron de OpenStreetMap y se contrastaron con la ortofoto PNOA, donde se ven el
+estanque en forma de ocho de las orcas con la cubierta blanca de sus gradas al sur,
+el estanque en riñón del delfinario, el tambor de Planet Penguin con su cubierta de
+placas solares y la cubierta verde de la casa de los gorilas. El plano está girado
+media vuelta para que el Teide quede al fondo y comprimido en dos paseos. Los
+recortes PNOA, de (−16.5682, 28.4083) a (−16.5614, 28.4143), de (−16.5680, 28.4060)
+a (−16.5635, 28.4100) y de (−16.5650, 28.4062) a (−16.5605, 28.4102), se usaron solo
+como consulta y no están en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) ([scne.es](https://www.scne.es/)).
+- Posiciones de las atracciones, estanques y calles: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultadas con la API de OpenStreetMap.
+- [Plano oficial del parque](https://www.loroparque.com/maps/Map_ESP.pdf), para la relación entre las zonas.
+- Historia y fechas (apertura en 1972 con unos 150 loros, delfinario en 1987, Isla del Tigre en 1991, gorilas a comienzos de los noventa, pueblo tailandés en 1993, Planet Penguin en 1999, Orca Ocean en 2006, unos 4.000 loros de unas 350 especies y subespecies): [Loro Parque, Wikipedia en español](https://es.wikipedia.org/wiki/Loro_Parque) y [en inglés](https://en.wikipedia.org/wiki/Loro_Parque).
+- Planet Penguin, su nieve diaria y sus especies: [guía de Barceló](https://www.barcelo.com/guia-turismo/es/espana/tenerife/que-ver/loro-parque-tenerife/) y [ficha de los pingüinos de Loro Parque](https://www.loroparque.com/en/datasheet-animals-penguins/).
+- Fotografías de Wikimedia Commons consultadas para formas y colores: [las casas de la entrada](https://commons.wikimedia.org/wiki/File:Visitors_flock_at_the_entrance_houses_of_a_Zoo_in_Spain_Tenerife.jpg), [el pabellón tailandés y su escalinata](https://commons.wikimedia.org/wiki/File:Pagoda_house_in_a_zoo_in_Spain_Tenerife.jpg), [sus columnas rojas con cisnes dorados](https://commons.wikimedia.org/wiki/File:Buddhist_temple_inside_a_zoo_in_Spain_Tenerife.jpg), [las gradas amarillas de las orcas](https://commons.wikimedia.org/wiki/File:Шоу_косаток_в_Лоро-парке.jpg), [la roca del delfinario](https://commons.wikimedia.org/wiki/File:Шоу_дельфинов_в_Лоро-парке.jpg) y [los pingüinos rey](https://commons.wikimedia.org/wiki/File:Pingu04.jpg). Solo se usaron como referencia; no se incluyen en el juego.
+
 
 ## Dunas de Maspalomas
 

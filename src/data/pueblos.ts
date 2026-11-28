@@ -12,7 +12,7 @@ import {
 } from '../puerto/sitios/teresitas-plano';
 import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -30,7 +30,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -951,6 +951,143 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Faro de Maspalomas', x: -36.8, z: 24.6, texto: 'Torre troncocónica de cantería gris de 56 metros, obra del ingeniero Juan de León y Castillo. Se encendió el 1 de febrero de 1890. La casa del torrero, adosada a su pie, es hoy un centro etnográfico.', vista: 1.1 },
     ],
     rastro: { nombre: 'Rastro de las cabras', x: -14, z: -4, texto: 'Huellas de pezuña entre los matorrales y ramas mordisqueadas. Las cabras del pastor se han metido dunas adentro: hay que seguirlas.' },
+  },
+  // Tenerife, Punta Brava (Puerto de la Cruz). Trazado sobre la ortofoto PNOA y OpenStreetMap y
+  // girado media vuelta para que el Teide, que queda al suroeste, asome al fondo: el norte real
+  // (el mar) apunta a +z y el oeste a +x. Dos paseos de oeste a este: entre ellos, los estanques
+  // de las carpas, de los tigres, de los delfines y de las orcas; al sur, las gradas, el café,
+  // Planet Penguin, los aviarios y los gorilas. El trazado está en `src/puerto/sitios/loro-parque.ts`.
+  'loro-parque': {
+    nombre: 'Loro Parque',
+    isla: 'tenerife',
+    poi: 'loro-parque',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'loro',
+      // Agua clara en todos los estanques; el Atlántico queda al norte, a la espalda de la cámara.
+      costa: 40,
+      sinFaroles: true,
+      bruma: [60, 210],
+      palmeras: [
+        // Explanada y pabellón de la entrada.
+        [49.2, 0.6, 5.2],
+        [50.6, -2.4, 5.6],
+        [39.2, -0.8, 5],
+        [29, 10.6, 5.6],
+        [29.2, -0.6, 5],
+        // Entre los estanques, junto a las sendas.
+        [22.9, 8.9, 5.2],
+        [11, 1.4, 5.8],
+        [11.2, 8.8, 5],
+        [-0.4, 1.2, 5.4],
+        [-0.4, 8.8, 4.8],
+        [-4.6, 1, 6],
+        [-4.6, 8.8, 5.2],
+        [-16.1, 9, 4.6],
+        [-32.4, 8.8, 5.6],
+        [-33.8, -1, 5.2],
+        // Isla del Tigre.
+        [6.4, 4.8, 3.8],
+        // Al sur, tras las gradas, el café y Planet Penguin.
+        [-18.2, -9, 5],
+        [-8.2, -11, 5.6],
+        [0.4, -16, 6.2],
+        [13.6, -15.4, 5.4],
+        [25.2, -10.6, 5.4],
+        [-33.6, -14, 5.8],
+        // Jardín del norte, entre el paseo y la tapia.
+        [-12, 14.4, 4.6],
+        [12, 14.6, 5],
+      ],
+      suelos: [
+        { r: [39.6, 0, 48, 13] }, // explanada de la entrada, con la parada del tren
+        { r: [38, 3.5, 39.6, 6.5], y: 0.4, y2: 0, eje: 'x' }, // escalinata del pabellón tailandés
+        { r: [30, 1.5, 38, 8.5], y: 0.4 }, // pabellón de la entrada
+        { r: [28.4, 3.5, 30, 6.5], y: 0, y2: 0.4, eje: 'x' }, // escalinata hacia el parque
+        { r: [24, -9.5, 28.4, 13] }, // plaza del pueblo tailandés, que baja hasta los gorilas
+        { r: [-19.6, 10, 24, 13] }, // paseo norte, sobre los estanques
+        { r: [-33, -5, 24, -2] }, // paseo sur, entre los estanques y las gradas
+        { r: [-4, -2, -1, 10] }, // senda del palmeral
+        { r: [-19.6, -2, -16.6, 10] }, // senda de las orcas
+        { r: [-5.5, -10, -0.5, -5] }, // terraza del café Vista Teide
+        { r: [2.5, -6.5, 10.5, -5] }, // portada de Planet Penguin
+        { r: [15.6, -2, 18.4, 1.4] }, // tarima de la sala tailandesa, sobre el estanque
+      ],
+      vallas: [
+        [42.2, 8, 45.8, 11.6], // fuente de la explanada
+        [30.8, 1.5, 37.2, 2.9], // taquillas del pabellón
+        [30.8, 7.1, 37.2, 8.5],
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 43.5, z: 5.5 },
+    rincones: [
+      {
+        nombre: 'Entrada tailandesa',
+        x: 42,
+        z: 7.5,
+        texto: 'El parque abrió en 1972 con unos 150 loros. Se entra por un pabellón de estilo tailandés, de tejados escalonados con remates dorados y columnas rojas; el pueblo tailandés se inauguró en 1993.',
+      },
+      {
+        nombre: 'Estanque de las carpas koi',
+        x: 17,
+        z: -0.6,
+        texto: 'Junto al pueblo tailandés, carpas koi blancas, naranjas y negras asoman entre los nenúfares, a la sombra de una sala de tejado verde.',
+      },
+      {
+        nombre: 'Aviarios de los loros',
+        x: 21,
+        z: -3.4,
+        texto: 'Los loros dieron nombre al parque. Hoy reúne unos 4.000, de unas 350 especies y subespecies: una de las mayores colecciones del mundo. Su fundación trabaja para conservar las especies amenazadas.',
+      },
+      {
+        nombre: 'Gorilas',
+        x: 27.4,
+        z: -8.2,
+        texto: 'Una familia de gorilas de llanura entre rocas, hierba y troncos para trepar. Su recinto se abrió a comienzos de los años noventa.',
+        vista: -0.9,
+      },
+      {
+        nombre: 'Planet Penguin',
+        x: 6.5,
+        z: -5.8,
+        texto: 'Abrió en 1999 y recrea la Antártida: dentro cae nieve de verdad cada día. Viven allí pingüinos rey, papúa, barbijo y saltarrocas; los de Humboldt, de costas templadas, nadan fuera, junto a la puerta.',
+        vista: -0.15,
+      },
+      {
+        nombre: 'Palmeral',
+        x: -2.5,
+        z: 4,
+        texto: 'Palmeras, helechos y árboles tropicales cubren los senderos. El parque es tanto jardín como zoológico.',
+      },
+      {
+        nombre: 'Isla del Tigre',
+        x: 5.5,
+        z: 11,
+        texto: 'Los tigres viven en una isla rodeada por un foso de agua. La primera Isla del Tigre se abrió en 1991.',
+      },
+      {
+        nombre: 'Orca Ocean',
+        x: -25.5,
+        z: -3.5,
+        texto: 'Abrió en 2006. Las gradas, bajo una gran cubierta blanca, miran al estanque de las orcas, con forma de ocho.',
+      },
+      {
+        nombre: 'Delfinario',
+        x: -11.3,
+        z: -3.5,
+        texto: 'Se inauguró en 1987. Los delfines mulares nadan ante una pared de roca artificial con su cascada.',
+      },
+      {
+        nombre: 'Café Vista Teide',
+        x: -3,
+        z: -8.6,
+        texto: 'Desde la terraza se ve el Teide, a unos diecisiete kilómetros, al fondo del valle de La Orotava. Con sus 3.718 metros es el pico más alto de España.',
+        vista: -0.45,
+      },
+    ],
   },
 };
 /** Punto redondeado al centímetro, para los rincones de un trazado calculado. */
