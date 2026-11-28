@@ -12,7 +12,7 @@ import {
 } from '../puerto/sitios/teresitas-plano';
 import * as DUNAS from '../puerto/sitios/dunas-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete' | 'san-sebastian' | 'la-laguna';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'playa-blanca' | 'las-canteras' | 'isleta' | 'las-teresitas' | 'chipude' | 'dunas' | 'loro-parque' | 'yaiza' | 'cofete' | 'san-sebastian' | 'la-laguna' | 'roque-de-los-muchachos';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -30,7 +30,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete' | 'san-sebastian' | 'laguna';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'playa-blanca' | 'canteras' | 'isleta' | 'teresitas' | 'chipude' | 'dunas' | 'loro' | 'yaiza' | 'cofete' | 'san-sebastian' | 'laguna' | 'roque';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -59,6 +59,8 @@ export interface Plano {
   horizonte?: number;
   /** Centro (x, z) del recuadro de sombras de un trazado propio; (4, 12) si se omite. */
   foco?: [number, number];
+  /** Cumbre de alta montaña: luz fría, cielo limpio y, de noche, estrellas. */
+  cumbre?: boolean;
 }
 export interface Suelo {
   r: [number, number, number, number];
@@ -106,6 +108,8 @@ export interface Rincon {
   texto: string;
   /** Giro de la cámara al llegar, para encuadrar lo que se describe; si se omite, no gira. */
   vista?: number;
+  /** Punto de misión que se alcanza al llegar aquí: se avisa con el evento `llegar`. */
+  llegar?: string;
 }
 export interface DatosPueblo {
   nombre: string;
@@ -1479,6 +1483,88 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'La cuadrícula', x: 20, z: 24.8, texto: 'Calles rectas que se cruzan en ángulo recto: la Villa de Abajo se trazó a cordel a partir de 1502. Fue la primera ciudad colonial española sin murallas y sirvió de modelo a muchas ciudades de América. Es Patrimonio de la Humanidad desde 1999.', vista: -0.5 },
       { nombre: 'Iglesia de la Concepción', x: -13.7, z: -32.6, texto: 'La primera parroquia de Tenerife, fundada en 1511 en la Villa de Arriba, el núcleo más antiguo de la ciudad. Tres naves de cal y teja con techumbre mudéjar, y delante, la plaza del Doctor Olivera con sus palmeras.', vista: -1.1 },
       { nombre: 'Torre de la Concepción', x: 1.6, z: -39, texto: 'La torre de cantería, de finales del siglo XVII, mide unos 28 metros y guarda la campana más grande de Canarias. Se puede subir a lo alto, desde donde se ve buena parte de la ciudad.', vista: 0.3 },
+    ],
+  },
+  // La Palma, la cumbre: el Roque de los Muchachos (2.426 m) en el borde norte de la Caldera de
+  // Taburiente y las cúpulas del observatorio por la ladera. Trazado sobre la ortofoto PNOA y
+  // OpenStreetMap y girado para que la cámara mire al oeste, a lo largo del borde: el oeste es −z
+  // y el norte, +x. La Caldera queda a la izquierda; delante, la carretera al Galileo y al GTC; a
+  // la derecha, el Nordic y los MAGIC. El modelo está en `src/puerto/sitios/roque.ts`.
+  'roque-de-los-muchachos': {
+    nombre: 'Roque de los Muchachos',
+    isla: 'la-palma',
+    poi: 'roque-de-los-muchachos',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'roque',
+      sinMar: true,
+      sinFaroles: true,
+      cumbre: true,
+      cuesta: { desnivel: 32 },
+      bruma: [60, 170],
+      palmeras: [],
+      suelos: [
+        { r: [-3, -3, 2, 3], y: 1.5 }, // mirador de la cumbre, entre los roques y el borde
+        { r: [2, -3.5, 5, -1.5], y: 1.5, y2: 0, eje: 'x' }, // sendero que baja al aparcamiento
+        { r: [5, -9, 12, -2] }, // aparcamiento de la cumbre
+        { r: [5, -30, 8, -9], y: -1.2, y2: 0 }, // carretera del oeste, junto al Galileo
+        { r: [5, -44, 11.5, -30], y: -1.2 }, // explanada del GTC
+        { r: [12, -6, 18, -3], y: 0, y2: -1.2, eje: 'x' }, // carretera que baja al Nordic
+        { r: [18, -7, 21, -2], y: -1.2 }, // explanada del Nordic, mirador de los telescopios
+      ],
+      vallas: [
+        [8.65, -9.05, 10.15, -6.35], // coches aparcados
+        [10.45, -9.05, 11.95, -6.35],
+        [7.85, -4.75, 9.35, -2.05],
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: 0.2, z: -1.4 },
+    rincones: [
+      {
+        nombre: 'Roque de los Muchachos',
+        x: 1.2,
+        z: 1.6,
+        texto: 'El techo de La Palma, a 2.426 metros. Se cuenta que el nombre viene de estos roques oscuros, de unos tres metros, que de lejos parecen un corro de muchachos.',
+        llegar: 'roque-de-los-muchachos',
+      },
+      {
+        nombre: 'Borde de la Caldera',
+        x: -2.4,
+        z: 0.6,
+        vista: -1.2,
+        texto: 'Tras el pretil, la pared de la Caldera de Taburiente cae a pico cientos de metros. El gran circo, de unos diez kilómetros de ancho, es parque nacional desde 1954. Muchos días el mar de nubes se queda abajo, a tus pies.',
+      },
+      {
+        nombre: 'Gran Telescopio Canarias',
+        x: 8.5,
+        z: -38.5,
+        vista: -1.57,
+        texto: 'El GTC es el mayor telescopio óptico e infrarrojo del mundo. Su espejo de 10,4 metros está hecho de 36 piezas hexagonales que trabajan como una sola. Vio su primera luz en 2007, y su cúpula, de unos 35 metros, se abre al caer la noche.',
+        llegar: 'roque-de-los-muchachos',
+      },
+      {
+        nombre: 'Telescopio Nazionale Galileo',
+        x: 7.4,
+        z: -21,
+        vista: -1.57,
+        texto: 'El telescopio nacional de Italia, con un espejo de 3,58 metros, observa desde 1998. Su edificio anguloso sigue el diseño del NTT de Chile: en vez de abrir una cúpula, gira entero con el telescopio.',
+      },
+      {
+        nombre: 'Mirador de los telescopios',
+        x: 20,
+        z: -4.5,
+        vista: -2.05,
+        texto: 'Ladera abajo: la cúpula en forma de cebolla del William Herschel, de 4,2 metros; la torre del telescopio solar sueco; el Isaac Newton y los dos platos de los MAGIC, de 17 metros, que cazan el destello azul que dejan los rayos gamma al chocar con la atmósfera.',
+      },
+      {
+        nombre: 'Carretera del Roque',
+        x: 6.5,
+        z: -11,
+        texto: 'Hasta aquí sube la LP-4, unos cuarenta kilómetros de curvas desde Santa Cruz de La Palma. Desde 1988 la Ley del Cielo vigila el alumbrado de la isla para que las noches sigan oscuras.',
+      },
     ],
   },
 };

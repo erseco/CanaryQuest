@@ -214,4 +214,8 @@ export const VISITAS = {
     nombre: 'Casa Winter', zona: 'Cofete · Fuerteventura',
     descripcion: 'Baja por la pista de Morro Jable hasta la casa de la torre, sola entre la montaña y la playa salvaje.',
   },
+  'roque-de-los-muchachos': {
+    nombre: 'Roque de los Muchachos', zona: 'Cumbre · La Palma',
+    descripcion: 'Sube al techo de La Palma: roques oscuros, el abismo de la Caldera y las cúpulas del observatorio sobre el mar de nubes.',
+  },
 };

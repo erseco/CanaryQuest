@@ -382,6 +382,29 @@ fotos de consulta no están en el repositorio.
 - [Plaza del Adelantado](https://www.webtenerife.co.uk/tenerife/the-island/municipalities/laguna/places-interest/plaza-adelantado/) y [Palacio de Nava](https://www.webtenerife.co.uk/tenerife/art-and-culture/architecture/traditional/palacio-de-nava), Web Tenerife; [Convento de Santa Catalina](https://www.webtenerife.co.uk/tenerife/art-and-culture/architecture/traditional/convento-de-santa-catalina).
 - [Ficha de San Cristóbal de La Laguna, Patrimonio Mundial de la UNESCO](https://whc.unesco.org/es/list/929) y [crónicas sobre el incendio de San Agustín de 1964, Diario de Avisos](https://diariodeavisos.elespanol.com/2024/06/incendio-iglesia-san-agustin-la-laguna/).
 
+## Roque de los Muchachos (La Palma)
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/roque.ts`, sin
+modelos ni texturas nuevas. La cumbre, el borde de la Caldera de Taburiente, el
+aparcamiento, las carreteras y la posición de cada telescopio se tomaron de un
+recorte de la ortofoto PNOA y de OpenStreetMap, y se giraron para que la cámara
+mire al oeste a lo largo del borde. El trazado está comprimido, sobre todo hacia
+el oeste para que el GTC entre en cuadro, y los edificios van a escala de maqueta.
+Se representan los roques de la cumbre con el mirador y su pretil, la pared de la
+Caldera, el mar de nubes, el GTC con su edificio de control, el Galileo, el
+Nordic, el William Herschel, los telescopios solares sueco y holandés, el Isaac
+Newton, las cúpulas del Liverpool y el Mercator, los dos MAGIC y la LP-4. Se
+dejan fuera los LST del CTA, vecinos de los MAGIC. Los recortes PNOA, de
+(−17.8965, 28.746) a (−17.8735, 28.766), se usaron solo como consulta y no están
+en el repositorio.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- Telescopios, miradores y cumbre (2.426 m): © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
+- [Gran Telescopio Canarias, presentación del GTC](https://www.gtc.iac.es/gtc/presentation.php) y [descripción óptica](https://www.gtc.iac.es/observing/GTCoptics.php): espejo de 10,4 m en 36 segmentos, primera luz en 2007, cúpula de 35 m.
+- [Roque de los Muchachos, Wikipedia](https://en.wikipedia.org/wiki/Roque_de_los_Muchachos), [Hispanopedia](https://es.hispanopedia.com/wiki/Roque_de_los_Muchachos) (origen del nombre, como tradición) y [Observatorio del Roque de los Muchachos, Wikipedia](https://en.wikipedia.org/wiki/Roque_de_los_Muchachos_Observatory).
+- [William Herschel Telescope](https://en.wikipedia.org/wiki/William_Herschel_Telescope), [Telescopio Nazionale Galileo](https://en.wikipedia.org/wiki/Telescopio_Nazionale_Galileo) y [MAGIC](https://en.wikipedia.org/wiki/MAGIC_(telescope)), Wikipedia; diseño del edificio del Galileo según la [tesis de ESO sobre el viento en recintos de telescopios](https://www.eso.org/gen-fac/pubs/astclim/papers/lz-thesis/node26.html).
+- [Parque Nacional de la Caldera de Taburiente, Wikipedia](https://en.wikipedia.org/wiki/Caldera_de_Taburiente_National_Park) y [la Ley del Cielo, IAC](https://iac.es/en/outreach/news/law-sky-30-years-old).
+
 
 ## San Sebastián de La Gomera
 
