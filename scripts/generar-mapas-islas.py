@@ -167,44 +167,6 @@ def jameos() -> None:
     z.guardar()
 
 
-def garajonay() -> None:
-    """Bosque de laurisilva de Garajonay: musgo, senderos, un barranco con agua y niebla."""
-    W, H = 70, 45
-    z = Zona("garajonay", W, H, "lpc-musgo", 5300)
-    z.propiedades["niebla"] = True
-    sendas = [
-        [(35, 45), (33, 36), (22, 30), (18, 20), (26, 12), (35, 7)],
-        [(33, 36), (46, 32), (54, 22), (47, 12), (35, 7)],
-    ]
-
-    def barranco(x: int, y: int) -> bool:
-        cx = 10 + y * 1.1 + 3 * math.sin(y * 0.3)  # arroyo en diagonal
-        return abs(x - cx) < 1.3 + 0.4 * ruido(x, y, 5) and not cerca_de_camino(x, y, sendas, 2.4)
-
-    z.capa("lpc-hierba", "claros", lambda x, y: ruido(x, y, 11) > 0.6 or math.hypot(x - 35, y - 7) < 5)
-    z.capa("lpc-camino", "sendero", lambda x, y: cerca_de_camino(x, y, sendas, 1.1))
-    z.capa("lpc-agua", "barranco", barranco, colision=2)
-
-    z.objeto("Spawn Point", "", 35, 43)
-    z.objeto("maestra-silbo", "npc", 31, 40, {"sprite": "forestnpc"})
-    z.objeto("corazon-garajonay", "hito", 35, 7)
-    z.objeto("corazon-garajonay", "zona", 35, 5)
-    for tx, ty in [(24, 24), (50, 26), (14, 12), (58, 14), (42, 38), (12, 36)]:
-        z.objeto("rata", "enemigo", tx, ty)
-
-    def libre(tx: float, ty: float) -> bool:
-        return (
-            not cerca_de_camino(tx, ty, sendas, 2.5)
-            and not barranco(round(tx), round(ty))
-            and not barranco(round(tx), round(ty) + 1)
-            and math.hypot(tx - 35, ty - 7) > 6
-        )
-
-    z.esparcir("laurel", 170, libre, 62, {"solido": True})
-    z.esparcir("arbusto", 50, libre, 40)
-    z.guardar()
-
-
 def betancuria() -> None:
     """Fuerteventura: arena, malpaís, palmeras y la villa de Betancuria al norte."""
     W, H = 70, 45
@@ -244,5 +206,4 @@ def betancuria() -> None:
 if __name__ == "__main__":
     timanfaya()
     jameos()
-    garajonay()
     betancuria()

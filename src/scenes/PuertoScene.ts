@@ -59,6 +59,7 @@ export class PuertoScene extends Phaser.Scene {
           this.scene.restart({ pueblo: destino, llegada: porMar ? muelle(destino) : camino(destino) });
         },
         datos.llegada,
+        (evento, carga) => this.game.events.emit(evento, carga),
       );
     } catch (error) {
       console.warn('Puerto de Mogán utilizará su mapa de detalle.', error);

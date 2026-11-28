@@ -12,7 +12,7 @@
 | Mapas dunas, Las Palmas, Isleta, Chistera | `public/assets/maps/*.tmj` | Layout propio sobre tilesets PixelLab | Propio |
 | Tilesets Wang cumbre (camino, risco, presa) y casa-cueva 32 px | `public/assets/tilesets/pixellab-cumbre-*.png`, `pixellab-casa-cueva-32.png` | PixelLab (`scripts/pixellab-generate.py roque-nublo`) | Propios |
 | Pino canario | `public/assets/sprites/pixellab-pino-canario.png` | PixelLab (`map-objects`) | Propio |
-| Terrenos Wang LPC (lava, picón, tierra roja, arena, camino, agua, hierba, musgo) y props (laurel, arbusto, agujas volcánicas, roca de malpaís) | `public/assets/tilesets/lpc-*.png`, `public/assets/sprites/lpc-*.png` (fuentes en `art/lpc/`, recoloreados por `scripts/lpc-a-wang.py`) | [Liberated Pixel Cup](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles), Lanea «Sharm» Zimmerman (ver `art/lpc/CREDITS.TXT`) | CC-BY-SA 3.0 / GPL 3.0 (también OGA-BY 3.0) |
+| Terrenos Wang LPC (lava, picón, tierra roja, arena, camino, agua, hierba) y props (arbusto, agujas volcánicas, roca de malpaís) | `public/assets/tilesets/lpc-*.png`, `public/assets/sprites/lpc-*.png` (fuentes en `art/lpc/`, recoloreados por `scripts/lpc-a-wang.py`) | [Liberated Pixel Cup](https://opengameart.org/content/liberated-pixel-cup-lpc-base-assets-sprites-map-tiles), Lanea «Sharm» Zimmerman (ver `art/lpc/CREDITS.TXT`) | CC-BY-SA 3.0 / GPL 3.0 (también OGA-BY 3.0) |
 | Logo, favicon e imagen Open Graph | `public/logo.png`, `public/favicon.png`, `public/og-image.jpg` | Generados por `scripts/generar-logo.py` a partir del mapa del archipiélago (fuente bitmap de Pillow) | Propios |
 | Mapas Timanfaya, Jameos, Garajonay y Betancuria | `public/assets/maps/*.tmj` | Generados por `scripts/generar-mapas-islas.py` | Propios |
 | Mapas Roque Nublo y casa-cueva | `public/assets/maps/roque-nublo.tmj`, `casa-cueva.tmj` | Generados por `scripts/generar-mapas-cumbre.py` | Propios |
@@ -132,6 +132,32 @@ del Espíritu Santo con su templete y su ermita, y casas canarias con balcones d
 - Callejero, árboles y esculturas: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
 - [Plaza de Santa Ana, Wikipedia](https://es.wikipedia.org/wiki/Plaza_de_Santa_Ana_(Las_Palmas_de_Gran_Canaria)), [Catedral de Canarias, Wikipedia](https://es.wikipedia.org/wiki/Catedral_de_Canarias) y [Las Palmas Cathedral, Wikipedia](https://en.wikipedia.org/wiki/Las_Palmas_Cathedral).
 - [Santa Ana Square, LPA Visit](https://lpavisit.com/en/?p=19107) y [guía del barrio de Vegueta, eldiario.es](https://www.eldiario.es/_2d2e8a7c).
+
+## Parque Nacional de Garajonay
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/garajonay.ts`, sin
+modelos ni texturas nuevas. El claro de la Laguna Grande, el Alto de Garajonay,
+el Contadero, la carretera dorsal y la ermita de Lourdes de El Cedro se situaron
+con la ortofoto PNOA (CC BY 4.0, scne.es) y OpenStreetMap y se comprimieron a
+escala de juego, con el norte hacia −z. Se representan la laurisilva y el
+fayal-brezal (troncos con musgo, barbas de liquen, helechos), la bruma, el corro de
+piedras y las figuras de madera de Gara y Jonay del claro, el mirador redondo de
+mampostería con las aras de la cima, la ermita blanca de puerta verde y espadaña,
+el arroyo de El Cedro y el Teide asomando sobre el mar de nubes. La misión del silbo
+gomero, que antes tenía un mapa de tiles propio, se juega ahora en el bosque 3D.
+
+Licencias de composición: las distancias reales (unos 4 km entre la Laguna Grande
+y El Cedro) se reducen a un paseo; el sendero de El Cedro une el corazón del bosque
+con la ermita, aunque en la realidad se baja a El Cedro desde el Contadero; el
+«corazón del bosque» es un rincón inventado para la misión; el Teide se pone más
+cerca y más grande de lo que se ve desde la cumbre.
+
+- Ortofoto PNOA: © Instituto Geográfico Nacional, CC BY 4.0, [scne.es](https://www.scne.es/).
+- Senderos, miradores y ermita: © colaboradores de [OpenStreetMap](https://www.openstreetmap.org/copyright), ODbL, consultados con la API Overpass.
+- [Parque nacional de Garajonay](https://es.wikipedia.org/wiki/Parque_nacional_de_Garajonay), [Alto de Garajonay](https://es.wikipedia.org/wiki/Alto_de_Garajonay) y [Leyenda de Gara y Jonay](https://es.wikipedia.org/wiki/Leyenda_de_Gara_y_Jonay), Wikipedia.
+- [Garajonay: centros de visitantes y otras instalaciones](https://www.miteco.gob.es/es/red-parques-nacionales/nuestros-parques/garajonay/guia-visitante/centros.html), MITECO.
+- [La Laguna Grande](https://www.hellocanaryislands.com/leisure-centers-and-tourist-attractions/la-gomera/la-laguna-grande/), Hello Canary Islands.
+- Fotos de referencia en Wikimedia Commons: la cima y su mirador, el corro de piedras y las figuras de Gara y Jonay de la Laguna Grande, y la ermita de Nuestra Señora de Lourdes de El Cedro.
 
 ## Paseo de Playa del Inglés
 

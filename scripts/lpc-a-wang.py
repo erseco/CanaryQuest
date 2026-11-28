@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Convierte terrenos LPC (plantilla 3×6 de 32 px, fondo transparente) en hojas Wang de esquinas
-compatibles con los generadores de mapas, y compone props (laurel, rocas volcánicas).
+compatibles con los generadores de mapas, y compone props (arbusto, rocas volcánicas).
 
 Fuentes en art/lpc/ (Liberated Pixel Cup, Sharm: CC-BY-SA 3.0 / GPL 3.0 / OGA-BY 3.0).
 Salida: public/assets/tilesets/lpc-<nombre>-32.png, art/lpc/lpc-<nombre>-layout.json
@@ -100,12 +100,6 @@ def terreno(nombre: str, fuente: str, **color: float) -> None:
 
 def props() -> None:
     copas = Image.open(ART / "treetop.png").convert("RGBA")
-    troncos = Image.open(ART / "trunk.png").convert("RGBA")
-    # Laurel de la laurisilva: copa redonda LPC más oscura y fría sobre su tronco
-    laurel = Image.new("RGBA", (96, 128))
-    laurel.alpha_composite(troncos.crop((0, 0, 96, 96)), (0, 32))
-    laurel.alpha_composite(recolorear(copas.crop((0, 0, 96, 96)), tono=25, sat=1.1, luz=0.72), (0, 0))
-    laurel.save(SPRITES / "lpc-laurel.png")
     # Tabaiba/brezo: la misma copa en pequeño, sin tronco
     arbusto = recolorear(copas.crop((0, 0, 96, 96)), tono=35, sat=0.9, luz=0.8).resize((48, 48), Image.NEAREST)
     arbusto.save(SPRITES / "lpc-arbusto.png")
@@ -114,7 +108,7 @@ def props() -> None:
     montes.crop((32, 256, 64, 288)).save(SPRITES / "lpc-aguja-ocre.png")
     rocas = Image.open(ART / "rock.png").convert("RGBA")
     recolorear(rocas.crop((0, 0, 32, 32)), sat=0.4, luz=0.35).save(SPRITES / "lpc-roca-malpais.png")
-    print("props: laurel, arbusto, agujas, roca-malpais")
+    print("props: arbusto, agujas, roca-malpais")
 
 
 if __name__ == "__main__":
@@ -125,5 +119,4 @@ if __name__ == "__main__":
     terreno("camino", "dirt2.png")
     terreno("agua", "water.png")
     terreno("hierba", "grass.png")
-    terreno("musgo", "grass.png", tono=15, sat=1.1, luz=0.7)
     props()

@@ -1,7 +1,7 @@
 import type { IslaId } from './islas';
 import { SUELOS as SUELOS_CALETA, VALLAS as VALLAS_CALETA } from '../puerto/sitios/caleta-plano';
 
-export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas';
+export type Pueblo = 'mogan' | 'agaete' | 'la-restinga' | 'orchilla' | 'valverde' | 'la-caleta' | 'las-palmas' | 'garajonay';
 /** Trazado del pueblo: con qué piezas de la maqueta se monta. */
 export interface Plano {
   /** Centro de cada orilla de mampostería, de 13,4 de ancho. */
@@ -19,7 +19,7 @@ export interface Plano {
   /** Palmeras: x, z y altura. */
   palmeras: [number, number, number][];
   /** Lugar con trazado propio en `src/puerto/sitios`, en vez del pueblo de orillas y canales. */
-  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta';
+  sitio?: 'restinga' | 'orchilla' | 'valverde' | 'caleta' | 'agaete' | 'vegueta' | 'garajonay';
   /** Casas blancas de azotea, por plantas, en lugar de las de teja y buganvilla. */
   estilo?: 'blanca';
   /** Zonas pisables de un trazado propio: rectángulo x0, z0, x1, z1 y su altura. */
@@ -84,6 +84,10 @@ export interface Rincon {
   texto: string;
   /** Giro de la cámara al llegar, para encuadrar lo que se describe; si se omite, no gira. */
   vista?: number;
+  /** Personaje de misión que espera en el rincón: al llegar se habla con él (evento `npc-hablar`). */
+  npc?: string;
+  /** Punto de misión: tras leer el texto, cuenta como haber llegado a él (evento `llegar`). */
+  poi?: string;
 }
 export interface DatosPueblo {
   nombre: string;
@@ -504,6 +508,119 @@ export const PUEBLOS: Record<Pueblo, DatosPueblo> = {
       { nombre: 'Calle del Castillo', x: -27.6, z: 12.7, texto: 'Empedrado, fachadas de colores y balcones de madera de tea: así es Vegueta. Esta calle une la plaza de Santa Ana con la del Espíritu Santo; en una de sus casas vivió y murió el ilustrado Viera y Clavijo.', vista: -0.5 },
       { nombre: 'Plaza del Espíritu Santo', x: -30.4, z: 15.4, texto: 'Una plazoleta recogida, con su fuente bajo un templete neoclásico y la pequeña ermita del Espíritu Santo.', vista: -0.36 },
       { nombre: 'Casa de Colón', x: 40, z: 2.6, texto: 'La antigua casa de los gobernadores, a espaldas de la catedral. Según la tradición, Colón se alojó aquí en 1492. Tras su portada de piedra labrada hay hoy un museo sobre Canarias y América.', vista: -0.2 },
+    ],
+  },
+  // La Gomera, la cumbre. Trazado sobre la ortofoto PNOA y comprimido: el claro de la Laguna Grande
+  // al noroeste, el Alto de Garajonay al sur con su mirador, el Contadero en la carretera dorsal y,
+  // bosque abajo hacia el nordeste, la ermita de Lourdes de El Cedro. Al norte del claro, el corazón
+  // del bosque. Trazado en `sitios/garajonay.ts`.
+  garajonay: {
+    nombre: 'Parque Nacional de Garajonay',
+    isla: 'la-gomera',
+    poi: 'garajonay',
+    plano: {
+      orillas: [],
+      canales: [],
+      sitio: 'garajonay',
+      sinMar: true,
+      sinFaroles: true,
+      cuesta: { desnivel: 30 },
+      bruma: [20, 82],
+      palmeras: [],
+      suelos: [
+        { r: [-34, -8, -12, 6] }, // claro de la Laguna Grande
+        { r: [-22, -24, -18.5, -8], y: -1.5, y2: 0 }, // sendero que baja al norte, al corazón del bosque
+        { r: [-26, -32, -8, -24], y: -1.5 }, // corazón del bosque
+        { r: [-8, -30, 26, -26.5], y: -1.5, y2: -4.5, eje: 'x' }, // sendero de El Cedro, entre barandillas
+        { r: [26, -32, 36, -24], y: -4.5 }, // explanada de la ermita de Lourdes
+        { r: [30, -24, 33.5, -2], y: -4.5, y2: 2.5 }, // subida de El Cedro al Contadero, junto al arroyo
+        { r: [20, -2, 36, 4], y: 2.5 }, // el Contadero
+        { r: [-12, -3, 20, 0.5], y: 0, y2: 2.5, eje: 'x' }, // carretera dorsal
+        { r: [24, 4, 27.5, 22.5], y: 2.5, y2: 5.5 }, // sendero del Contadero al Alto
+        { r: [24, 22.5, 27.5, 26], y: 5.5 }, // su recodo
+        { r: [7.5, 22.5, 24, 26], y: 6, y2: 5.5, eje: 'x' }, // último tramo, hasta el mirador
+        { r: [0.5, 22.5, 7.5, 29.5], y: 6 }, // mirador del Alto de Garajonay
+        { r: [-26, 6, -22.5, 24], y: 0, y2: 3 }, // pista de la Laguna Grande al Alto
+        { r: [-26, 24, -22.5, 27.5], y: 3 }, // su recodo
+        { r: [-22.5, 24, 0.5, 27.5], y: 3, y2: 6, eje: 'x' }, // subida al mirador
+      ],
+      vallas: [
+        [2.2, 24.2, 5.8, 27.8], // aras del Alto
+        [-29.2, 1.2, -25.8, 2.4], // Gara y Jonay
+        [-14.4, 2.4, -12.6, 5.4], // coches del aparcamiento
+        [-14.4, -7.4, -12.6, -4.4],
+        [-12.4, -30.4, -9.6, -27.6], // el til viejo del corazón del bosque
+      ],
+    },
+    salidas: {},
+    casas: [],
+    inicio: { x: -15, z: -1.25 },
+    rincones: [
+      {
+        nombre: 'La maestra silbadora',
+        npc: 'maestra-silbo',
+        x: -22.6,
+        z: -6.4,
+        texto: 'Una maestra de silbo gomero espera a la entrada del sendero, con los dedos listos para silbar.',
+      },
+      {
+        nombre: 'Laguna Grande',
+        x: -29,
+        z: -0.5,
+        texto: 'El gran claro del parque, rodeado de bosque, con sus mesas, sus fogones y un corro de piedras. Cuando llueve fuerte se encharca y vuelve a ser la laguna que le da nombre.',
+      },
+      {
+        nombre: 'Gara y Jonay',
+        x: -27.5,
+        z: 3.6,
+        texto: 'Dos figuras de madera recuerdan la leyenda. Se cuenta que Gara, princesa gomera, y Jonay, príncipe de Tenerife, se amaron contra la voluntad de los suyos y, acorralados en la cumbre, prefirieron morir juntos. De sus nombres vendría el de Garajonay, aunque los estudiosos creen que la leyenda nació del nombre, y no al revés.',
+      },
+      {
+        nombre: 'Corazón del bosque',
+        poi: 'corazon-garajonay',
+        x: -14,
+        z: -27,
+        texto: 'Aquí la laurisilva es más vieja y más oscura: tiles y viñátigos forrados de musgo, helechos hasta la cintura y la niebla enredada en las ramas. Bosques de laurel como este cubrían el sur de Europa hace millones de años.',
+      },
+      {
+        nombre: 'Sendero de El Cedro',
+        x: 8,
+        z: -28.25,
+        texto: 'De las ramas cuelga la barba de capuchino, un liquen que solo crece con aire limpio y húmedo. La niebla del alisio se queda prendida en las hojas y gotea: es la lluvia horizontal que da de beber al bosque.',
+      },
+      {
+        nombre: 'Ermita de Lourdes',
+        x: 31,
+        z: -29,
+        texto: 'Una ermita blanca en medio del bosque de El Cedro, con la puerta verde y una espadaña con su campana. La encuentra quien baja a pie desde el Contadero.',
+        vista: -0.36,
+      },
+      {
+        nombre: 'Arroyo de El Cedro',
+        x: 33.4,
+        z: -14,
+        texto: 'Uno de los pocos arroyos de Canarias que llevan agua casi todo el año. Baja hacia el valle de Hermigua y se despeña en el chorro de El Cedro.',
+        vista: -1.1,
+      },
+      {
+        nombre: 'El Contadero',
+        x: 28,
+        z: 1,
+        texto: 'Un cruce de caminos junto a la carretera dorsal: de aquí sube el sendero al Alto de Garajonay y baja, bosque adentro, el que lleva a El Cedro.',
+      },
+      {
+        nombre: 'Alto de Garajonay',
+        x: 4,
+        z: 23.2,
+        texto: 'El techo de La Gomera, a 1.487 metros. Los días claros, desde el mirador se ve el Teide asomando sobre el mar de nubes y, al otro lado, La Palma y El Hierro.',
+        vista: -1.28,
+      },
+      {
+        nombre: 'Aras del Alto',
+        x: 4,
+        z: 28.8,
+        texto: 'En la cima se han hallado aras de piedra donde los antiguos gomeros quemaban ofrendas de animales. Los arqueólogos creen que el Alto fue el gran santuario de toda la isla.',
+      },
     ],
   },
 };

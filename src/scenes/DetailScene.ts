@@ -343,7 +343,6 @@ export class DetailScene extends Phaser.Scene {
       presa: 'Presa de los Hornos',
       'crater-timanfaya': 'Cráter de Timanfaya',
       'jameos-del-agua': 'Jameos del Agua',
-      'corazon-garajonay': 'Corazón de Garajonay',
       betancuria: 'Betancuria',
     };
     return nombres[id] ?? id;
@@ -544,7 +543,6 @@ export class DetailScene extends Phaser.Scene {
     if (id === 'pastor') return 'el pastor';
     if (id === 'abuela') return 'la abuela';
     if (id === 'guardiana-jameos') return 'la guardiana';
-    if (id === 'maestra-silbo') return 'la maestra silbadora';
     if (id === 'quesera') return 'la quesera';
     if (id === 'testigo-dunas') return 'el cabrero';
     return id;

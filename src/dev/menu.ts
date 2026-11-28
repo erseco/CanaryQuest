@@ -16,7 +16,6 @@ const MAPAS: [string, IslaId][] = [
   ['jameos', 'lanzarote'],
   ['timanfaya', 'lanzarote'],
   ['betancuria', 'fuerteventura'],
-  ['garajonay', 'la-gomera'],
 ];
 
 /** Escenas que necesitan el HUD de Phaser; las vistas 3D lo duermen ellas mismas. */

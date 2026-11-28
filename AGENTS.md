@@ -80,8 +80,8 @@ rectangulares genéricas — afinar con Tiled copiando el patrón de
 `public/assets/maps/islas/gran-canaria.tmj`.
 
 Los lugares 3D son pueblos de `src/data/pueblos.ts` montados con la maqueta
-del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde
-y Las Palmas. Cada uno con trazado propio vive en `src/puerto/sitios/<lugar>.ts`.
+del puerto (ADR-10): Mogán, Agaete, La Restinga, Orchilla, La Caleta, Valverde,
+Las Palmas y Garajonay. Cada uno con trazado propio vive en `src/puerto/sitios/<lugar>.ts`.
 Solo las dunas de Maspalomas siguen en `src/atlas`, porque ahí transcurre la
 misión de las cabras.
 

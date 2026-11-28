@@ -183,4 +183,8 @@ export const VISITAS = {
     nombre: 'Valverde', zona: 'Capital · El Hierro',
     descripcion: 'Sube por las calles empinadas hasta la iglesia de la Concepción, entre casas encaladas y bruma.',
   },
+  garajonay: {
+    nombre: 'Parque Nacional de Garajonay', zona: 'Cumbre · La Gomera',
+    descripcion: 'Camina por la laurisilva entre musgo y niebla, de la Laguna Grande al Alto de Garajonay.',
+  },
 };

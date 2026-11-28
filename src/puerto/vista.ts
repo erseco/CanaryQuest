@@ -25,6 +25,8 @@ export async function abrirPuerto(
   pueblo: Pueblo,
   viajar: (destino: Pueblo | 'ferry', porMar?: boolean) => void,
   llegada?: PuntoPuerto,
+  /** Eventos de misión de los rincones: hablar con el personaje que espera en uno, o llegar a él. */
+  avisar?: (evento: 'npc-hablar' | 'llegar', datos: { npc: string } | { poi: string }) => void,
 ) {
   const barrio = PUEBLOS[pueblo];
   const { plano, salidas } = barrio;
@@ -239,6 +241,10 @@ export async function abrirPuerto(
         dialogo = [r.texto];
         // Gira por el camino más corto hacia el encuadre del rincón.
         if (r.vista !== undefined) giroRincon = angulo + Math.atan2(Math.sin(r.vista - angulo), Math.cos(r.vista - angulo));
+        // Su personaje responde con sus propias líneas; un punto de misión cuenta al cerrar el texto.
+        const { npc, poi } = r;
+        if (npc) avisar?.('npc-hablar', { npc });
+        else if (poi) finDialogo = () => avisar?.('llegar', { poi });
         refrescar();
       },
     });
@@ -324,8 +330,10 @@ export async function abrirPuerto(
     if (dialogo.length) {
       dialogo.shift();
       if (!dialogo.length) {
-        finDialogo?.();
+        // Se suelta antes de llamarlo: puede abrir otro diálogo con su propio final.
+        const fin = finDialogo;
         finDialogo = undefined;
+        fin?.();
       }
       refrescar();
       return;
@@ -593,7 +601,8 @@ export async function abrirPuerto(
     mostrar(lineas: string[], alTerminar?: () => void) {
       ruta = [];
       alLlegar = undefined;
-      quienHabla = t.pastor;
+      // Fuera de Mogán habla quien espera en el rincón, que ya da nombre al panel.
+      if (pastor.visible) quienHabla = t.pastor;
       dialogo = [...lineas];
       finDialogo = alTerminar;
       refrescar();
