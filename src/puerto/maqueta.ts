@@ -13,6 +13,7 @@ import { trazarVegueta } from './sitios/vegueta';
 import { trazarPlayaBlanca } from './sitios/playa-blanca';
 import { trazarCanteras } from './sitios/canteras';
 import { trazarIsleta } from './sitios/isleta';
+import { trazarTeresitas } from './sitios/teresitas';
 
 /** Piezas del taller con las que se monta cualquier lugar: las usan los trazados de `sitios/`. */
 export interface Taller {
@@ -391,6 +392,7 @@ export function crearMaqueta(
   else if (plano.sitio === 'playa-blanca') sitio = trazarPlayaBlanca(taller);
   else if (plano.sitio === 'canteras') sitio = trazarCanteras(taller);
   else if (plano.sitio === 'isleta') sitio = trazarIsleta(taller);
+  else if (plano.sitio === 'teresitas') sitio = trazarTeresitas(taller);
   else decorarCanales();
   // Lo que acompaña a un pueblo de orillas y canales: torres, toldos, puentes engalanados, costa.
   function decorarCanales() {

@@ -191,4 +191,8 @@ export const VISITAS = {
     nombre: 'La Isleta', zona: 'Las Palmas · Gran Canaria',
     descripcion: 'Del Castillo de La Luz y el puerto, sube por las calles empinadas del barrio hasta el pie de los volcanes.',
   },
+  'las-teresitas': {
+    nombre: 'Playa de Las Teresitas', zona: 'San Andrés · Tenerife',
+    descripcion: 'Pasea por la arena dorada entre palmeras, frente al rompeolas, hasta el castillo de San Andrés.',
+  },
 };

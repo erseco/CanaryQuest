@@ -238,3 +238,19 @@ ampliaciones, se usaron solo como consulta y no están en el repositorio.
 - [La Isleta in Gran Canaria, Lopesan](https://www.lopesan.com/blog/en/?p=15158): el ataque de Drake en 1595 y el Puerto de La Luz de 1883.
 - [Rehabilitación de la iglesia de La Luz, RTVC](https://rtvc.es/rehabilitacion-iglesia-de-la-luz-las-palmas-de-gran-canaria-28-septiembre-202/): inaugurada en 1914, tres rosetones, bóvedas de media naranja y la Virgen de Luján Pérez.
 - Fotografías de Wikimedia Commons consultadas para formas y colores: [el castillo](https://commons.wikimedia.org/wiki/File:Castillo_de_la_Luz_D81_5344_(27910263459).jpg), [su garita](https://commons.wikimedia.org/wiki/File:Castilo_de_La_Luz-torreon_Las-Palmas-Gran-Canaria.jpg), [casas de la calle Coronel Rocha](https://commons.wikimedia.org/wiki/File:Residential_by_Calle_del_Coronel_Rocha_in_La_Isleta,_Las_Palmas_de_Gran_Canaria,_Gran_Canaria,_2023_May.jpg) y [La Isleta desde el interior de la isla](https://commons.wikimedia.org/wiki/File:Mirando_hacia_La_Isleta_-_panoramio.jpg). Solo se usaron como referencia; no se incluyen en el juego.
+## Playa de Las Teresitas y San Andrés
+
+Maqueta original hecha con primitivas en `src/puerto/sitios/teresitas.ts` y
+`teresitas-plano.ts`, sin assets nuevos. La media luna de la playa, el
+rompeolas exento con sus dos bocas, los espigones, el paseo azul, la mediana de
+palmeras, el aparcamiento, la cofradía, el cauce del barranco, el castillo y la
+avenida de San Andrés se trazaron sobre recortes de la ortofoto PNOA de
+(−16.205, 28.495) a (−16.175, 28.520), usados solo como consulta y fuera del
+repositorio. Licencias: la curva de la playa se aplana a la mitad de su hondura
+y se ensancha; el pueblo se comprime en manzanas rectas al oeste del barranco y
+el cauce se endereza; el castillo queda detrás de la avenida y no en su glorieta.
+
+- [Ortofoto PNOA, servicio WMS del IGN](https://www.ign.es/wms-inspire/pnoa-ma), © Instituto Geográfico Nacional y productores del PNOA, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.es) (scne.es).
+- [Playa de Las Teresitas, Wikipedia](https://es.wikipedia.org/wiki/Playa_de_Las_Teresitas): 1.300 m por 80, rompeolas de casi un kilómetro a unos 150 m con una boca en cada punta, espigones de la cofradía y de la punta de los Órganos, embarque de la Virgen del Carmen.
+- Diario de Avisos sobre [la arena del Sáhara](https://diariodeavisos.elespanol.com/2022/05/las-teresitas-sahara/) (obras desde 1968, unas 270.000 toneladas en 1973), [los kioscos](https://diariodeavisos.elespanol.com/2026/03/luz-verde-quioscos-las-teresitas/) y [el castillo](https://diariodeavisos.elespanol.com/2023/04/castillo-de-san-andres/).
+- [Castle of San Andrés, Wikipedia](https://en.wikipedia.org/wiki/Castle_of_San_Andr%C3%A9s): torre de hacia 1706, media torre derribada por el barranco, Bien de Interés Cultural, disparos sobre el HMS Theseus en 1797 (contado como tradición).
